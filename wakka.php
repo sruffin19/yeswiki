@@ -40,14 +40,6 @@
  * to look as small as what it does. Basically. Oh, I just suck. :)
  */
 
-// do not change this line, you fool. In fact, don't change anything! Ever!
-
-
-// A decommenter pour afficher les erreurs
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-
 require_once 'includes/constants.php';
 include_once 'includes/urlutils.inc.php';
 include_once 'includes/i18n.inc.php';
@@ -59,17 +51,6 @@ $t_SQL = 0;
 // stupid version check
 if (! isset($_REQUEST)) {
     die(_t('NO_REQUEST_FOUND'));
-}
-
-if (get_magic_quotes_runtime()) {
-    // Deactivate
-    set_magic_quotes_runtime(false);
-}
-
-if (get_magic_quotes_gpc()) {
-    magicQuotesSuck($_POST);
-    magicQuotesSuck($_GET);
-    magicQuotesSuck($_COOKIE);
 }
 
 // default configuration values

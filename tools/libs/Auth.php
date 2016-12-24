@@ -429,17 +429,13 @@ class Auth {
      */
     function assignData()
     {
-        if (   isset($this->post[$this->_postUsername])
-            && $this->post[$this->_postUsername] != '') {
-            $this->username = (get_magic_quotes_gpc() == 1
-                    ? stripslashes($this->post[$this->_postUsername])
-                    : $this->post[$this->_postUsername]);
+        if (isset($this->post[$this->_postUsername])
+            and $this->post[$this->_postUsername] != '') {
+            $this->username = $this->post[$this->_postUsername];
         }
-        if (   isset($this->post[$this->_postPassword])
-            && $this->post[$this->_postPassword] != '') {
-            $this->password = (get_magic_quotes_gpc() == 1
-                    ? stripslashes($this->post[$this->_postPassword])
-                    : $this->post[$this->_postPassword] );
+        if (isset($this->post[$this->_postPassword])
+            and $this->post[$this->_postPassword] != '') {
+            $this->password = $this->post[$this->_postPassword];
         }
     }
 
