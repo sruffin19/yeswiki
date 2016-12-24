@@ -144,11 +144,6 @@ if ($CookiePath != '/') {
     $CookiePath .= '/';
 }
 
-$a = session_get_cookie_params();
-session_set_cookie_params($a['lifetime'], $CookiePath);
-unset($a);
-unset($CookiePath);
-
 // start session
 session_start();
 
