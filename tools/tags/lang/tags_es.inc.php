@@ -23,7 +23,7 @@
 /**
 * Fichier de traduction en espagnol de l'extension Hashcash
 *
-*@package 		tags
+*@package         tags
 *@author        Louise Didier <louise@quincaillere.org>
 *@copyright     2016 Outils-Réseaux
 */

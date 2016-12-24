@@ -23,7 +23,7 @@
 /**
 * Fitxer de traducció al català de l'extensió Login
 *
-*@package 		login
+*@package         login
 *@author        Jordi Picart <jordi.picart@aposta.coop>
 *@copyright     2014 Outils-Réseaux
 */

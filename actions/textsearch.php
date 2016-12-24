@@ -53,58 +53,58 @@ if (!$phrase && isset($_GET['phrase'])) $phrase = $_GET['phrase'];
 // dans le cas contraire, présenter une zone de saisie
 if (!$paramPhrase)
 {
-	echo $this->FormOpen('', '', 'get');
-	echo '<div class="input-prepend input-append input-group input-group-lg">
-			<span class="add-on input-group-addon"><i class="glyphicon glyphicon-search icon-search"></i></span>
+    echo $this->FormOpen('', '', 'get');
+    echo '<div class="input-prepend input-append input-group input-group-lg">
+            <span class="add-on input-group-addon"><i class="glyphicon glyphicon-search icon-search"></i></span>
       <input name="phrase" type="text" class="form-control" placeholder="'.(($label) ? $label : '').'" size="', $size, '" value="', htmlspecialchars($phrase, ENT_COMPAT, YW_CHARSET), '" >
       <span class="input-group-btn">
         <input type="submit" class="btn btn-primary btn-lg" value="', $button, '" />
       </span>
     </div><!-- /input-group --><br>';
-	echo "\n", $this->FormClose();
+    echo "\n", $this->FormClose();
 }
 
 if ($phrase)
 {
-	// on cherche sur le mot avec entités html, le mot encodé par le wiki, ou le mot encodé par bazar en json
-	$search = $phrase.','.utf8_decode($phrase).','.substr(json_encode($phrase),1,-1);
-	$results = $this->FullTextSearch($search);
-	if ($results)
-	{
-	    if ($separator)
-	    {
-		$separator = htmlspecialchars($separator, ENT_COMPAT, YW_CHARSET);
-		if (!$paramPhrase)
-		{
-			echo '<p>'._t('SEARCH_RESULT_OF').' "', htmlspecialchars($phrase, ENT_COMPAT, YW_CHARSET), '"&nbsp;: ';
-		}
-		foreach ($results as $i => $page)
-		{
-			if ($i > 0) echo $separator;
-			echo $this->ComposeLinkToPage($page['tag']);
-		}
-		if (!$paramPhrase)
-		{
-			echo '</p>', "\n";
-		}
-	    }
-	    else
-	    {
-		echo	'<p><strong>'._t('SEARCH_RESULT_OF').' "', htmlspecialchars($phrase, ENT_COMPAT, YW_CHARSET), '"&nbsp;:</strong></p>', "\n",
-			'<ol>', "\n";
-		foreach ($results as $i => $page)
-		{
-			echo "<li>", $this->ComposeLinkToPage($page["tag"]), "</li>\n";
-		}
-		echo "</ol>\n";
-	    }
-	}
-	else
-	{
-	    if (!$paramPhrase)
-	    {
-		echo "<div class=\"alert alert-info\">"._t('NO_RESULT_FOR')." \"", htmlspecialchars($phrase, ENT_COMPAT, YW_CHARSET), "\". :-(</div>\n";
-	    }
-	}
+    // on cherche sur le mot avec entités html, le mot encodé par le wiki, ou le mot encodé par bazar en json
+    $search = $phrase.','.utf8_decode($phrase).','.substr(json_encode($phrase),1,-1);
+    $results = $this->FullTextSearch($search);
+    if ($results)
+    {
+        if ($separator)
+        {
+        $separator = htmlspecialchars($separator, ENT_COMPAT, YW_CHARSET);
+        if (!$paramPhrase)
+        {
+            echo '<p>'._t('SEARCH_RESULT_OF').' "', htmlspecialchars($phrase, ENT_COMPAT, YW_CHARSET), '"&nbsp;: ';
+        }
+        foreach ($results as $i => $page)
+        {
+            if ($i > 0) echo $separator;
+            echo $this->ComposeLinkToPage($page['tag']);
+        }
+        if (!$paramPhrase)
+        {
+            echo '</p>', "\n";
+        }
+        }
+        else
+        {
+        echo    '<p><strong>'._t('SEARCH_RESULT_OF').' "', htmlspecialchars($phrase, ENT_COMPAT, YW_CHARSET), '"&nbsp;:</strong></p>', "\n",
+            '<ol>', "\n";
+        foreach ($results as $i => $page)
+        {
+            echo "<li>", $this->ComposeLinkToPage($page["tag"]), "</li>\n";
+        }
+        echo "</ol>\n";
+        }
+    }
+    else
+    {
+        if (!$paramPhrase)
+        {
+        echo "<div class=\"alert alert-info\">"._t('NO_RESULT_FOR')." \"", htmlspecialchars($phrase, ENT_COMPAT, YW_CHARSET), "\". :-(</div>\n";
+        }
+    }
 }
 ?>

@@ -27,38 +27,38 @@ source : http://pear.php.net/package/PHP_Compat
 /* files_get_contents */
 if (!function_exists('file_get_contents'))
 {
-	function file_get_contents($filename, $incpath = false, $resource_context = null)
-	{
-		if (false === $fh = fopen($filename, 'rb', $incpath))
-		{
-			trigger_error('file_get_contents() failed to open stream: No such file or directory', E_USER_WARNING);
-			return false;
-		}
-		clearstatcache();
-		if ($fsize = filesize($filename))
-		{
-			$data = fread($fh, $fsize);
-		}
-		else
-		{
-			while (!feof($fh)) {
-				$data .= fread($fh, 8192);
-			}
-		}
-		fclose($fh);
-		return $data;
-	}
+    function file_get_contents($filename, $incpath = false, $resource_context = null)
+    {
+        if (false === $fh = fopen($filename, 'rb', $incpath))
+        {
+            trigger_error('file_get_contents() failed to open stream: No such file or directory', E_USER_WARNING);
+            return false;
+        }
+        clearstatcache();
+        if ($fsize = filesize($filename))
+        {
+            $data = fread($fh, $fsize);
+        }
+        else
+        {
+            while (!feof($fh)) {
+                $data .= fread($fh, 8192);
+            }
+        }
+        fclose($fh);
+        return $data;
+    }
 }
 
 if (!function_exists('is_a'))
 {
-	function is_a($obj, $classname)
-	{
-		if (strtolower(get_class($obj)) == strtolower($classname)) {
-			return true;
-		} else {
-			return(is_subclass_of($obj, $classname));
-		}
-	}
+    function is_a($obj, $classname)
+    {
+        if (strtolower(get_class($obj)) == strtolower($classname)) {
+            return true;
+        } else {
+            return(is_subclass_of($obj, $classname));
+        }
+    }
 }
 ?>

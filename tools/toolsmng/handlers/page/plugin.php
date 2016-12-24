@@ -37,15 +37,15 @@ echo "Liste des plugins installés :";
 echo '<dl>';
 foreach ($plugins_list as $k => $v)
 {
-	echo  '<dt>'.$v['label'].' - '.$k.'</dt>';
-	echo  '<dd>'.$v['desc'].' <br />';
-	echo  'par '.$v['author'].' - '.'version'.' '.$v['version'].' <br />';
-	echo('</dd>');
+    echo  '<dt>'.$v['label'].' - '.$k.'</dt>';
+    echo  '<dd>'.$v['desc'].' <br />';
+    echo  'par '.$v['author'].' - '.'version'.' '.$v['version'].' <br />';
+    echo('</dd>');
 }
 echo('</dl>');
 
 ?>
 </div>
 <?php 
-	echo $this->Footer(); 
+    echo $this->Footer(); 
 ?>

@@ -37,11 +37,11 @@ if (empty($_POST['config'])) {
     die(_t('PROBLEM_WHILE_INSTALLING'));
 }
 ?>
-		<div class="jumbotron">
-			<h1><?php echo _t('INSTALLATION_OF_YESWIKI'); ?></h1>
-			<h4>(<?php echo YESWIKI_VERSION.' - '.YESWIKI_RELEASE; ?>)</h4>
-			<p><?php echo _t('VERIFICATION_OF_DATAS_AND_DATABASE_INSTALLATION'); ?></p>
-		</div>
+        <div class="jumbotron">
+            <h1><?php echo _t('INSTALLATION_OF_YESWIKI'); ?></h1>
+            <h4>(<?php echo YESWIKI_VERSION.' - '.YESWIKI_RELEASE; ?>)</h4>
+            <p><?php echo _t('VERIFICATION_OF_DATAS_AND_DATABASE_INSTALLATION'); ?></p>
+        </div>
 <?php
 
 // fetch configuration
@@ -327,6 +327,6 @@ switch ($version) {
 <form action="<?php echo  myLocation(); ?>?installAction=writeconfig" method="POST">
 <input type="hidden" name="config" value="<?php echo  htmlspecialchars(serialize($config), ENT_COMPAT, 'ISO-8859-1') ?>">
 <div class="form-actions">
-	<input class="btn btn-large btn-primary continuer" type="submit" value="<?php echo _t('CONTINUE'); ?>" />
+    <input class="btn btn-large btn-primary continuer" type="submit" value="<?php echo _t('CONTINUE'); ?>" />
 </div>
 </form>

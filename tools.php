@@ -11,7 +11,7 @@ require_once ('tools/libs/class.wiki.php');
 include 'includes/i18n.inc.php';
 
 function __($str) {
-	return $str;
+    return $str;
 }
 
 if (!defined('DC_ECRIRE')) {
@@ -32,8 +32,8 @@ class CustomAuthContainer extends Auth_Container
 
     function CustomAuthContainer($mysql_user, $mysql_password )
     {
-    	$this->mysql_user=$mysql_user;
-	    $this->mysql_password=$mysql_password;
+        $this->mysql_user=$mysql_user;
+        $this->mysql_password=$mysql_password;
     }
 
     function fetchData($username, $password, $isChallengeResponse = false)
@@ -68,7 +68,7 @@ if($a->checkAuth()) {
 
 }
 else {
-	exit;
+    exit;
 }
 
 $plugins_root = 'tools/';
@@ -83,12 +83,12 @@ $PLUGIN_BODY = '';
 if ((!empty($_REQUEST['p']) && !empty($plugins_list[$_REQUEST['p']])
 && $plugins_list[$_REQUEST['p']]['active']))
 {
-	$p = $_REQUEST['p'];
-	$buffer = new buffer();
-	$buffer->init();
-	include $plugins_root.$p.'/index.php';
-	$PLUGIN_BODY = $buffer->getContent();
-	$buffer->clean();
+    $p = $_REQUEST['p'];
+    $buffer = new buffer();
+    $buffer->init();
+    include $plugins_root.$p.'/index.php';
+    $PLUGIN_BODY = $buffer->getContent();
+    $buffer->clean();
 
 }
 
@@ -114,54 +114,54 @@ echo '<a href="'.$tools_url.'?tools_action=logout">'._t('DISCONNECT').'</a>';
 
 if ($PLUGIN_HEAD != '')
 {
-	echo '<h1>';
-	echo $PLUGIN_HEAD;
-	echo '</h1>';
+    echo '<h1>';
+    echo $PLUGIN_HEAD;
+    echo '</h1>';
 }
 
 if ($PLUGIN_BODY != '')
 {
-	echo '<h1>';
-	echo '<a href="'.$tools_url.'">'._t('RETURN_TO_EXTENSION_LIST').'</a>';
-	echo '</h1>';
-	echo $PLUGIN_BODY;
+    echo '<h1>';
+    echo '<a href="'.$tools_url.'">'._t('RETURN_TO_EXTENSION_LIST').'</a>';
+    echo '</h1>';
+    echo $PLUGIN_BODY;
 }
 else
 {
-	if (count($plugins_list) == 0)
-	{
-		echo '<p>'._t('NO_TOOL_AVAILABLE').'</p>';
-	}
-	else
-	{
+    if (count($plugins_list) == 0)
+    {
+        echo '<p>'._t('NO_TOOL_AVAILABLE').'</p>';
+    }
+    else
+    {
 
-		# Tri des plugins par leur nom
-		uasort($plugins_list,create_function('$a,$b','return strcmp($a["label"],$b["label"]);'));
+        # Tri des plugins par leur nom
+        uasort($plugins_list,create_function('$a,$b','return strcmp($a["label"],$b["label"]);'));
 
-		# Liste des plugins
-		echo '<h1>';
-		echo '<a href="'.$tools_url.'">'._t('LIST_OF_ACTIVE_TOOLS').'</a>';
-		echo '</h1>';
+        # Liste des plugins
+        echo '<h1>';
+        echo '<a href="'.$tools_url.'">'._t('LIST_OF_ACTIVE_TOOLS').'</a>';
+        echo '</h1>';
 
-		echo '<dl class="plugin-list">';
-		foreach ($plugins_list as $k => $v)
-		{
-			$plink = '<a href="tools.php?p='.$k.'">%s</a>';
-			$plabel = (!empty($v['label'])) ? $v['label'] : $v['name'];
+        echo '<dl class="plugin-list">';
+        foreach ($plugins_list as $k => $v)
+        {
+            $plink = '<a href="tools.php?p='.$k.'">%s</a>';
+            $plabel = (!empty($v['label'])) ? $v['label'] : $v['name'];
 
-			echo '<dt>';
-			if (file_exists($plugins_root.$k.'/icon.png')) {
-				printf($plink,'<img alt="" src="tools/'.$k.'/icon.png" />');
-				echo ' ';
-			}
+            echo '<dt>';
+            if (file_exists($plugins_root.$k.'/icon.png')) {
+                printf($plink,'<img alt="" src="tools/'.$k.'/icon.png" />');
+                echo ' ';
+            }
 
-			printf($plink,$plabel);
-			echo '</dt>';
+            printf($plink,$plabel);
+            echo '</dt>';
 
-			echo '<dd>'.$v['desc'].'</dd>';
-		}
-		echo '</dl>';
-	}
+            echo '<dd>'.$v['desc'].'</dd>';
+        }
+        echo '</dl>';
+    }
 }
 ?>
 </body>

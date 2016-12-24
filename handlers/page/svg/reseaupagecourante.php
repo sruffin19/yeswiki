@@ -283,13 +283,13 @@ foreach ($p as $page)
                     $id = $retroLien["tag"]; //$p[$id]['n'] est donc une page qui pointe vers p[$nompage]
                     if(array_key_exists($id, $p))
                     {
-                    	if($p[$id]['n'] != $this->getPageTag()) // si le noeud n'est pas deja enregistré
+                        if($p[$id]['n'] != $this->getPageTag()) // si le noeud n'est pas deja enregistré
                         {
-	                        $svg_rs .= "<line id=\"l[$i]\" x1=\"".$p[$id]['x']."\" y1=\"".$p[$id]['y']."\" x2=\"".$page['x']."\" y2=\"".$page['y']."\"/>\n";
-	                        $page['w']++; //incrementation de la taille de la page liée
-	                        $i++;
-	                    }
-	                }
+                            $svg_rs .= "<line id=\"l[$i]\" x1=\"".$p[$id]['x']."\" y1=\"".$p[$id]['y']."\" x2=\"".$page['x']."\" y2=\"".$page['y']."\"/>\n";
+                            $page['w']++; //incrementation de la taille de la page liée
+                            $i++;
+                        }
+                    }
                 }
             }
         }

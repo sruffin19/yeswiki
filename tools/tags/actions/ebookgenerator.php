@@ -140,7 +140,7 @@ if (isset($_POST["page"])) {
         $sql .= ', ' . $this->config['table_prefix'] . 'triples tags';
     }
     $sql .= ' WHERE latest="Y"
-				AND comment_on="" AND tag NOT LIKE "LogDesActionsAdministratives%" ';
+                AND comment_on="" AND tag NOT LIKE "LogDesActionsAdministratives%" ';
 
     if ($type == 'wiki') {
         $sql .= ' AND tag NOT IN (SELECT resource FROM ' . $this->GetConfigValue('table_prefix') . 'triples WHERE property="http://outils-reseaux.org/_vocabulary/type") ';
@@ -186,8 +186,8 @@ if (isset($_POST["page"])) {
     $template_export = new SquelettePhp('tools/tags/presentation/templates/exportpages_table.tpl.html');
     // charge le templates
     $template_export->set(
-    	array('pages' => $pages, 'ebookstart' => $ebookstart, 'ebookend' => $ebookend, 'addinstalledpage' => $addinstalledpage, 'installedpages' => $installpagename, 'coverimageurl' => $coverimageurl, 'ebookpagename' => $ebookpagename, 'metadatas' => $this->page["metadatas"], 'selectedpages' => $selectedpages, 'url' => $this->href('', $this->GetPageTag()))
-    	); // on passe le tableau de pages en parametres
+        array('pages' => $pages, 'ebookstart' => $ebookstart, 'ebookend' => $ebookend, 'addinstalledpage' => $addinstalledpage, 'installedpages' => $installpagename, 'coverimageurl' => $coverimageurl, 'ebookpagename' => $ebookpagename, 'metadatas' => $this->page["metadatas"], 'selectedpages' => $selectedpages, 'url' => $this->href('', $this->GetPageTag()))
+        ); // on passe le tableau de pages en parametres
     $output .= $template_export->analyser(); // affiche les resultats
 }
 

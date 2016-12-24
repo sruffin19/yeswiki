@@ -23,7 +23,7 @@
 /**
 * English translation file for YesWiki's main program
 *
-*@package 		yeswiki
+*@package         yeswiki
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */

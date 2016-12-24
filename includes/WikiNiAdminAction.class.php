@@ -7,7 +7,7 @@
  */
 class WikiNiAdminAction extends WikiNiAction {
     function GetDefaultACL()
-	{
-		return '@'.ADMIN_GROUP;
-	}
+    {
+        return '@'.ADMIN_GROUP;
+    }
 }

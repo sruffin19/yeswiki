@@ -23,7 +23,7 @@
 /**
 * English translation for the Templates extension
 *
-*@package 		templates
+*@package         templates
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */

@@ -169,8 +169,8 @@ class Wiki
     public function GetConfigValue($name, $default=null)
     {
         return isset($this->config[$name])
-        	? trim($this->config[$name])
-        	: ($default != null ? $default : '') ;
+            ? trim($this->config[$name])
+            : ($default != null ? $default : '') ;
     }
 
     public function GetWakkaName()
@@ -255,30 +255,30 @@ class Wiki
      */
     public function GetAllTriplesValues($resource, $property, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
     {
-		$res = $re_prefix . $resource ;
-		$prop = $prop_prefix . $property ;
-		if( isset( $this->triplesCacheByResource[$res]) )
-    	{
-    		// All resource's properties was previously loaded.
-			//error_log(__METHOD__.' cache hits ['.$res.']['.$prop.'] '. count($this->triplesCacheByResource));
-    		if( isset( $this->triplesCacheByResource[$res][$prop]) )
-    		{
-    			return $this->triplesCacheByResource[$res][$prop] ;
-    		}
-    		// LoadAll($sql) return an empty array when no result, do the same.
-   			return array();
-    	}
-		//error_log(__METHOD__.' cache miss ['.$res.']['.$prop.'] '. count($this->triplesCacheByResource));
-    	$this->triplesCacheByResource[$res] = array();
+        $res = $re_prefix . $resource ;
+        $prop = $prop_prefix . $property ;
+        if( isset( $this->triplesCacheByResource[$res]) )
+        {
+            // All resource's properties was previously loaded.
+            //error_log(__METHOD__.' cache hits ['.$res.']['.$prop.'] '. count($this->triplesCacheByResource));
+            if( isset( $this->triplesCacheByResource[$res][$prop]) )
+            {
+                return $this->triplesCacheByResource[$res][$prop] ;
+            }
+            // LoadAll($sql) return an empty array when no result, do the same.
+               return array();
+        }
+        //error_log(__METHOD__.' cache miss ['.$res.']['.$prop.'] '. count($this->triplesCacheByResource));
+        $this->triplesCacheByResource[$res] = array();
         $sql = 'SELECT * FROM ' . $this->GetConfigValue('table_prefix') . 'triples ' . 'WHERE resource = "' . addslashes($res) . '"' ;
         foreach( $this->LoadAll($sql) as $triple )
         {
-        	if( ! isset($this->triplesCacheByResource[$res][ $triple['property'] ]))
-        		$this->triplesCacheByResource[$res][ $triple['property'] ] = array();
-        	$this->triplesCacheByResource[$res][ $triple['property'] ][] = array( 'id'=>$triple['id'], 'value'=>$triple['value']) ;
+            if( ! isset($this->triplesCacheByResource[$res][ $triple['property'] ]))
+                $this->triplesCacheByResource[$res][ $triple['property'] ] = array();
+            $this->triplesCacheByResource[$res][ $triple['property'] ][] = array( 'id'=>$triple['id'], 'value'=>$triple['value']) ;
         }
         if( isset( $this->triplesCacheByResource[$res][$prop]) )
-        	return $this->triplesCacheByResource[$res][$prop] ;
+            return $this->triplesCacheByResource[$res][$prop] ;
         return array() ;
     }
 
@@ -350,7 +350,7 @@ class Wiki
      */
     public function InsertTriple($resource, $property, $value, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
     {
-    	$res = $re_prefix . $resource ;
+        $res = $re_prefix . $resource ;
 
         if ($this->TripleExists($res, $property, $value, '', $prop_prefix)) {
             return 3;
@@ -358,7 +358,7 @@ class Wiki
 
         // invalidate the cache
         if( isset( $this->triplesCacheByResource[$res]) )
-        	unset($this->triplesCacheByResource[$res]);
+            unset($this->triplesCacheByResource[$res]);
 
         $sql = 'INSERT INTO ' . $this->GetConfigValue('table_prefix') . 'triples (resource, property, value)' . 'VALUES ("' . addslashes($res) . '", "' . addslashes($prop_prefix . $property) . '", "' . addslashes($value) . '")';
         return $this->Query($sql) ? 0 : 1;
@@ -385,7 +385,7 @@ class Wiki
      */
     public function UpdateTriple($resource, $property, $oldvalue, $newvalue, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
     {
-    	$res = $re_prefix . $resource ;
+        $res = $re_prefix . $resource ;
 
         $id = $this->TripleExists($res, $property, $oldvalue, '', $prop_prefix);
         if (! $id) {
@@ -398,7 +398,7 @@ class Wiki
 
         // invalidate the cache
         if( isset( $this->triplesCacheByResource[$res]) )
-        	unset($this->triplesCacheByResource[$res]);
+            unset($this->triplesCacheByResource[$res]);
 
         $sql = 'UPDATE ' . $this->GetConfigValue('table_prefix') . 'triples ' . 'SET value = "' . addslashes($newvalue) . '" ' . 'WHERE id = ' . $id;
         return $this->Query($sql) ? 0 : 1;
@@ -421,7 +421,7 @@ class Wiki
      */
     public function DeleteTriple($resource, $property, $value = null, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
     {
-    	$res = $re_prefix . $resource ;
+        $res = $re_prefix . $resource ;
 
         $sql = 'DELETE FROM ' . $this->GetConfigValue('table_prefix') . 'triples ' . 'WHERE resource = "' . addslashes($res) . '" ' . 'AND property = "' . addslashes($prop_prefix . $property) . '" ';
         if ($value !== null) {
@@ -430,7 +430,7 @@ class Wiki
 
         // invalidate the cache
         if( isset( $this->triplesCacheByResource[$res]) )
-        	unset($this->triplesCacheByResource[$res]);
+            unset($this->triplesCacheByResource[$res]);
 
         $this->Query($sql);
     }

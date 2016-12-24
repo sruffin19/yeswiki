@@ -621,11 +621,11 @@ if (!class_exists('attach')) {
             $this->file = $_GET['file'];
             echo "<h3>" . _t('ATTACH_UPLOAD_FORM_FOR_FILE') . " " . $this->file . "</h3>\n";
             echo "<form enctype=\"multipart/form-data\" name=\"frmUpload\" method=\"POST\" action=\"" . $this->wiki->href('upload', $this->wiki->GetPageTag()) . "\">\n"
-            . "	<input type=\"hidden\" name=\"wiki\" value=\"" . $this->wiki->GetPageTag() . "/upload\" />\n"
-            . "	<input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"" . $this->attachConfig['max_file_size'] . "\" />\n"
-            . "	<input type=\"hidden\" name=\"file\" value=\"$this->file\" />\n"
-            . "	<input type=\"file\" name=\"upFile\" size=\"50\" /><br />\n"
-            . "	<input class=\"btn btn-primary\" type=\"submit\" value=\"" . _t("ATTACH_SAVE") . "\" />\n"
+            . "    <input type=\"hidden\" name=\"wiki\" value=\"" . $this->wiki->GetPageTag() . "/upload\" />\n"
+            . "    <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"" . $this->attachConfig['max_file_size'] . "\" />\n"
+            . "    <input type=\"hidden\" name=\"file\" value=\"$this->file\" />\n"
+            . "    <input type=\"file\" name=\"upFile\" size=\"50\" /><br />\n"
+            . "    <input class=\"btn btn-primary\" type=\"submit\" value=\"" . _t("ATTACH_SAVE") . "\" />\n"
                 . "</form>\n";
         }
         /**
@@ -803,8 +803,8 @@ if (!class_exists('attach')) {
 
             $method = ($this->wiki->GetMethod() != 'show' ? $this->wiki->GetMethod() : '');
             $output = '<ul id="fmtab' . $this->wiki->tag . '" class="nav nav-tabs">
-				<li' . (($trash) ? '' : ' class="active"') . '><a href="' . $this->wiki->href($method, $this->wiki->tag . '#fmtab' . $this->wiki->tag) . '" title="Gestion des fichiers"><i class="glyphicon glyphicon-file icon-file"></i>&nbsp;Gestion des fichiers</a></li>
-				<li' . (($trash) ? ' class="active"' : '') . '><a href="' . $this->wiki->href($method, $this->wiki->GetPageTag(), 'do=trash') . '" title="Corbeille"><i class="glyphicon glyphicon-trash icon-trash"></i>&nbsp;Corbeille</a></li>
+                <li' . (($trash) ? '' : ' class="active"') . '><a href="' . $this->wiki->href($method, $this->wiki->tag . '#fmtab' . $this->wiki->tag) . '" title="Gestion des fichiers"><i class="glyphicon glyphicon-file icon-file"></i>&nbsp;Gestion des fichiers</a></li>
+                <li' . (($trash) ? ' class="active"' : '') . '><a href="' . $this->wiki->href($method, $this->wiki->GetPageTag(), 'do=trash') . '" title="Corbeille"><i class="glyphicon glyphicon-trash icon-trash"></i>&nbsp;Corbeille</a></li>
             </ul>';
 
             $files = $this->fmGetFiles($trash);
@@ -815,17 +815,17 @@ if (!class_exists('attach')) {
                 // tri du tableau des fichiers
                 $files = $this->sortByNameRevFile($files);
                 //entete du tableau
-                $fmHeadTable = '	<thead>' . "\n" .
-                    '		<tr>' . "\n" .
-                    '			<td class="fmfilename">Nom du fichier</td>' . "\n" .
-                    '			<td class="fmfilesize">Taille</td>' . "\n" .
-                    '			<td class="fmfiledate">Date de modification</td>' . "\n" .
-                    '			<td class="fmfileactions">&nbsp;</td>' . "\n";
-                $fmHeadTable .= '		</tr>' . "\n" .
-                    '	</thead>' . "\n";
+                $fmHeadTable = '    <thead>' . "\n" .
+                    '        <tr>' . "\n" .
+                    '            <td class="fmfilename">Nom du fichier</td>' . "\n" .
+                    '            <td class="fmfilesize">Taille</td>' . "\n" .
+                    '            <td class="fmfiledate">Date de modification</td>' . "\n" .
+                    '            <td class="fmfileactions">&nbsp;</td>' . "\n";
+                $fmHeadTable .= '        </tr>' . "\n" .
+                    '    </thead>' . "\n";
 
                 //corps du tableau
-                $fmBodyTable = '	<tbody>' . "\n";
+                $fmBodyTable = '    <tbody>' . "\n";
                 $i = 0;
                 foreach ($files as $file) {
                     $i++;
@@ -853,16 +853,16 @@ if (!class_exists('attach')) {
                         $fileinfo .= ' - Supprim&eacute; le : ' . $this->parseDate($file['trashdate']);
                     }
                     $dlLink = '<a class="filenamelink" href="' . $url . '" title="' . $fileinfo . '">' . substr($file['name'], 0, 25) . '&hellip;' . '.' . $file['ext'] . "</a>";
-                    $fmBodyTable .= '		<tr class="' . $color . '">' . "\n" .
+                    $fmBodyTable .= '        <tr class="' . $color . '">' . "\n" .
 
-                    '			<td class="fmfilename">' . $dlLink . '</td>' . "\n" .
-                    '			<td class="fmfilesize">' . $this->size_readable($file['size']) . '</td>' . "\n" .
-                    '			<td class="fmfiledate">' . $this->parseDate($file['dateupload']) . '</td>' . "\n" .
-                        '			<td class="fmfileactions">' . $restlink . ' ' . $dellink . '</td>' . "\n";
+                    '            <td class="fmfilename">' . $dlLink . '</td>' . "\n" .
+                    '            <td class="fmfilesize">' . $this->size_readable($file['size']) . '</td>' . "\n" .
+                    '            <td class="fmfiledate">' . $this->parseDate($file['dateupload']) . '</td>' . "\n" .
+                        '            <td class="fmfileactions">' . $restlink . ' ' . $dellink . '</td>' . "\n";
 
-                    $fmBodyTable .= '		</tr>' . "\n";
+                    $fmBodyTable .= '        </tr>' . "\n";
                 }
-                $fmBodyTable .= '	</tbody>' . "\n";
+                $fmBodyTable .= '    </tbody>' . "\n";
                 //affichage
                 $output .= '<table class="fmtable table table-condensed table-hover table-striped">' . "\n" . $fmHeadTable . $fmBodyTable . '</table>' . "\n";
                 if ($trash) {
@@ -883,41 +883,41 @@ if (!class_exists('attach')) {
                 $fmTitlePage .= '<div class="prev_alert">Les fichiers effac&eacute;s sur cette page le sont d&eacute;finitivement</div>';
                 //Pied du tableau
                 $url = $this->wiki->Link($this->wiki->tag, 'filemanager', 'Gestion des fichiers');
-                $fmFootTable = '	<tfoot>' . "\n" .
-                    '		<tr>' . "\n" .
-                    '			<td colspan="6">' . $url . '</td>' . "\n";
+                $fmFootTable = '    <tfoot>' . "\n" .
+                    '        <tr>' . "\n" .
+                    '            <td colspan="6">' . $url . '</td>' . "\n";
                 $url = $this->wiki->Link($this->wiki->tag, 'filemanager&do=emptytrash', 'Vider la corbeille');
-                $fmFootTable .= '			<td>' . $url . '</td>' . "\n" .
-                    '		</tr>' . "\n" .
-                    '	</tfoot>' . "\n";
+                $fmFootTable .= '            <td>' . $url . '</td>' . "\n" .
+                    '        </tr>' . "\n" .
+                    '    </tfoot>' . "\n";
             } else {
                 //pied du tableau
                 $url = '<a href="' . $this->wiki->href('filemanager', $this->wiki->GetPageTag(), 'do=trash') . '" title="Corbeille">' . $this->attachConfig['fmTrash_symbole'] . "</a>";
-                $fmFootTable = '	<tfoot>' . "\n" .
-                    '		<tr>' . "\n" .
-                    '			<td colspan="6">' . $url . '</td>' . "\n" .
-                    '		</tr>' . "\n" .
-                    '	</tfoot>' . "\n";
+                $fmFootTable = '    <tfoot>' . "\n" .
+                    '        <tr>' . "\n" .
+                    '            <td colspan="6">' . $url . '</td>' . "\n" .
+                    '        </tr>' . "\n" .
+                    '    </tfoot>' . "\n";
             }
             //entete du tableau
-            $fmHeadTable = '	<thead>' . "\n" .
-                '		<tr>' . "\n" .
-                '			<td>&nbsp;</td>' . "\n" .
-                '			<td>Nom du fichier</td>' . "\n" .
-                '			<td>Nom r&eacute;el du fichier</td>' . "\n" .
-                '			<td>Taille</td>' . "\n" .
-                '			<td>R&eacute;vision de la page</td>' . "\n" .
-                '			<td>R&eacute;vison du fichier</td>' . "\n";
+            $fmHeadTable = '    <thead>' . "\n" .
+                '        <tr>' . "\n" .
+                '            <td>&nbsp;</td>' . "\n" .
+                '            <td>Nom du fichier</td>' . "\n" .
+                '            <td>Nom r&eacute;el du fichier</td>' . "\n" .
+                '            <td>Taille</td>' . "\n" .
+                '            <td>R&eacute;vision de la page</td>' . "\n" .
+                '            <td>R&eacute;vison du fichier</td>' . "\n";
             if ($trash) {
-                $fmHeadTable .= '			<td>Suppression</td>' . "\n";
+                $fmHeadTable .= '            <td>Suppression</td>' . "\n";
             }
-            $fmHeadTable .= '		</tr>' . "\n" .
-                '	</thead>' . "\n";
+            $fmHeadTable .= '        </tr>' . "\n" .
+                '    </thead>' . "\n";
             //corps du tableau
             $files = $this->fmGetFiles($trash);
             $files = $this->sortByNameRevFile($files);
 
-            $fmBodyTable = '	<tbody>' . "\n";
+            $fmBodyTable = '    <tbody>' . "\n";
             $i = 0;
             foreach ($files as $file) {
                 $i++;
@@ -939,19 +939,19 @@ if (!class_exists('attach')) {
                 //lien pour downloader le fichier
                 $url = $this->wiki->href("download", $this->wiki->GetPageTag(), "file=" . $file['realname']);
                 $dlLink = '<a href="' . $url . '">' . $file['name'] . '.' . $file['ext'] . "</a>";
-                $fmBodyTable .= '		<tr class="' . $color . '">' . "\n" .
-                '			<td>' . $dellink . ' ' . $restlink . '</td>' . "\n" .
-                '			<td>' . $dlLink . '</td>' . "\n" .
-                '			<td>' . $file['realname'] . '</td>' . "\n" .
-                '			<td>' . $file['size'] . '</td>' . "\n" .
-                '			<td>' . $this->parseDate($file['datepage']) . '</td>' . "\n" .
-                '			<td>' . $this->parseDate($file['dateupload']) . '</td>' . "\n";
+                $fmBodyTable .= '        <tr class="' . $color . '">' . "\n" .
+                '            <td>' . $dellink . ' ' . $restlink . '</td>' . "\n" .
+                '            <td>' . $dlLink . '</td>' . "\n" .
+                '            <td>' . $file['realname'] . '</td>' . "\n" .
+                '            <td>' . $file['size'] . '</td>' . "\n" .
+                '            <td>' . $this->parseDate($file['datepage']) . '</td>' . "\n" .
+                '            <td>' . $this->parseDate($file['dateupload']) . '</td>' . "\n";
                 if ($trash) {
-                    $fmBodyTable .= '			<td>' . $this->parseDate($file['trashdate']) . '</td>' . "\n";
+                    $fmBodyTable .= '            <td>' . $this->parseDate($file['trashdate']) . '</td>' . "\n";
                 }
-                $fmBodyTable .= '		</tr>' . "\n";
+                $fmBodyTable .= '        </tr>' . "\n";
             }
-            $fmBodyTable .= '	</tbody>' . "\n";
+            $fmBodyTable .= '    </tbody>' . "\n";
             //pied de la page
             $fmFooterPage = "---\n-----\n[[" . $this->wiki->tag . " " . _t('ATTACH_BACK_TO_PAGE') . " " . $this->wiki->tag . "]]\n";
             //affichage

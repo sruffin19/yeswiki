@@ -23,30 +23,30 @@
 /**
 * Catalan translation for ACeditor extension
 *
-*@package 		aceditor
+*@package         aceditor
 *@author        Jordi Picart <jordi.picart@aposta.coop>
 *@copyright     2014 Outils-Réseaux
 */
 
 $GLOBALS['translations'] = array_merge($GLOBALS['translations'], array(
 
-'ACEDITOR_SAVE'				=> 'Desa',
-'ACEDITOR_FORMAT'			=> 'Format',
-'ACEDITOR_TITLE1'			=> 'Nivell de text enorme',
-'ACEDITOR_TITLE2'			=> 'Nivell de text força gros',
-'ACEDITOR_TITLE3'			=> 'Nivell de text gros',
-'ACEDITOR_TITLE4'			=> 'Nivell de text normal',
-'ACEDITOR_TITLE5'			=> 'Nivell de text petit',
-'ACEDITOR_BIGGER_TEXT'		=> 'Text augmentat',
-'ACEDITOR_HIGHLIGHT_TEXT'	=> 'Text destacat',
-'ACEDITOR_SOURCE_CODE'		=> 'Codi font',
-'ACEDITOR_BOLD_TEXT'		=> 'Negreta (Ctrl+b)',
-'ACEDITOR_ITALIC_TEXT'		=> 'Itàlica (Ctrl+i)',
-'ACEDITOR_UNDERLINE_TEXT'	=> 'Subratllat (Ctrl+u)',
-'ACEDITOR_STRIKE_TEXT'		=> 'Ratllat (Ctrl+y)',
-'ACEDITOR_LINE'				=> 'Insereix una línia horitzontal',
-'ACEDITOR_LINK'				=> 'Enllaç',
-'ACEDITOR_LINK_PROMPT'		=> 'Escriviu ladreça URL',
-'ACEDITOR_LINK_TITLE'		=> 'Insereix un enllaç'
+'ACEDITOR_SAVE'                => 'Desa',
+'ACEDITOR_FORMAT'            => 'Format',
+'ACEDITOR_TITLE1'            => 'Nivell de text enorme',
+'ACEDITOR_TITLE2'            => 'Nivell de text força gros',
+'ACEDITOR_TITLE3'            => 'Nivell de text gros',
+'ACEDITOR_TITLE4'            => 'Nivell de text normal',
+'ACEDITOR_TITLE5'            => 'Nivell de text petit',
+'ACEDITOR_BIGGER_TEXT'        => 'Text augmentat',
+'ACEDITOR_HIGHLIGHT_TEXT'    => 'Text destacat',
+'ACEDITOR_SOURCE_CODE'        => 'Codi font',
+'ACEDITOR_BOLD_TEXT'        => 'Negreta (Ctrl+b)',
+'ACEDITOR_ITALIC_TEXT'        => 'Itàlica (Ctrl+i)',
+'ACEDITOR_UNDERLINE_TEXT'    => 'Subratllat (Ctrl+u)',
+'ACEDITOR_STRIKE_TEXT'        => 'Ratllat (Ctrl+y)',
+'ACEDITOR_LINE'                => 'Insereix una línia horitzontal',
+'ACEDITOR_LINK'                => 'Enllaç',
+'ACEDITOR_LINK_PROMPT'        => 'Escriviu ladreça URL',
+'ACEDITOR_LINK_TITLE'        => 'Insereix un enllaç'
 
 ));

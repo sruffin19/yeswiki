@@ -23,7 +23,7 @@
 /**
 * Fichier de traduction en néerlandais de YesWiki
 *
-*@package 		yeswiki
+*@package         yeswiki
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */

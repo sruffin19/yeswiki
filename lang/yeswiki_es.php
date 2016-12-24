@@ -23,7 +23,7 @@
 /**
 * Archivo de traducción en español de YesWiki
 
-*@package 		yeswiki
+*@package         yeswiki
 *@author        Louise Didier <louise@quincaillere.org>
 *@copyright     2016 Outils-Réseaux
 */

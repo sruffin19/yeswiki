@@ -30,7 +30,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 if (!defined('WIKINI_VERSION')) {
-	die('acc&egrave;s direct interdit');
+    die('acc&egrave;s direct interdit');
 }
 
 echo $this->Format('====='._t('USER_SETTINGS').'=====');
@@ -116,15 +116,15 @@ if ($action == 'logout') {
     <tr>
       <td></td>
       <td>
-      	<input type="submit" value="<?php echo _t('UPDATE');?>" />
-      	<input type="button" value="<?php echo _t('DISCONNECT');?>" onclick="document.location='<?php echo $this->href('', '', 'usersettings_action=logout');?>'" />
+          <input type="submit" value="<?php echo _t('UPDATE');?>" />
+          <input type="button" value="<?php echo _t('DISCONNECT');?>" onclick="document.location='<?php echo $this->href('', '', 'usersettings_action=logout');?>'" />
       </td>
     </tr>
   </table>
-	<?php
+    <?php
     echo $this->FormClose();
     echo $this->FormOpen();
-	?>
+    ?>
   <input type="hidden" name="usersettings_action" value="changepass" />
   <table>
     <tr>
@@ -168,18 +168,18 @@ if ($action == 'logout') {
                 $this->SetUser($existingUser, $_POST['remember']);
                 $this->Redirect($this->href('', '', 'usersettings_action=checklogged', false));
             } else {
-            	$error = _t('WRONG_PASSWORD').'&nbsp;!';
+                $error = _t('WRONG_PASSWORD').'&nbsp;!';
             }
         } else {
             // otherwise, create new account
-        	$name = trim($_POST['name']);
+            $name = trim($_POST['name']);
             $email = trim($_POST['email']);
             $password = $_POST['password'];
             $confpassword = $_POST['confpassword'];
 
             // check if name is WikkiName style
             if (!$this->IsWikiName($name)) {
-            	$error = _t('USERNAME_MUST_BE_WIKINAME').'.';
+                $error = _t('USERNAME_MUST_BE_WIKINAME').'.';
             } elseif (!$email) {
                 $error = _t('YOU_MUST_SPECIFY_AN_EMAIL').'.';
             } elseif (!preg_match("/^.+?\@.+?\..+$/", $email)) {

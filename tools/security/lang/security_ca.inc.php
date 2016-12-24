@@ -23,7 +23,7 @@
 /**
 * Catalan translation for Hashcash extension
 *
-*@package 		hashcash
+*@package         hashcash
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */

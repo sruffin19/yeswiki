@@ -6,9 +6,9 @@ if (!defined("WIKINI_VERSION"))
 
 // inclusion de la langue
 if (file_exists('tools/contact/lang/contact_'.$wakkaConfig['lang'].'.inc.php')) {
-	include_once 'tools/contact/lang/contact_'.$wakkaConfig['lang'].'.inc.php';
+    include_once 'tools/contact/lang/contact_'.$wakkaConfig['lang'].'.inc.php';
 } else {
-	include_once 'tools/contact/lang/contact_fr.inc.php';
+    include_once 'tools/contact/lang/contact_fr.inc.php';
 }
 
 //Savoir comment le mail envoie le message: "mail", "sendmail" ou "smtp"

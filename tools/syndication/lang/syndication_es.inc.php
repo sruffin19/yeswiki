@@ -23,7 +23,7 @@
 /**
 * Fichier de traduction en espagnol de l'extension syndication
 *
-*@package 		syndication
+*@package         syndication
 *@author        Louise Didier <louise@quincaillere.org>
 *@copyright     2016 Outils-Réseaux
 */

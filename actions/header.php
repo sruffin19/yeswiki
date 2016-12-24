@@ -40,15 +40,15 @@ header("Content-Type: text/html; charset=$charset");
 
 // <head> : metas & style
 if ($this->GetMethod() != 'show'
-	|| !empty($_REQUEST['phrase'])
-	|| !empty($_REQUEST['show_comments'])
-	|| isset($_REQUEST['time']))
+    || !empty($_REQUEST['phrase'])
+    || !empty($_REQUEST['show_comments'])
+    || isset($_REQUEST['time']))
 {
-	$additionnal_metas = "<meta name=\"robots\" content=\"noindex, nofollow\" />\n";
+    $additionnal_metas = "<meta name=\"robots\" content=\"noindex, nofollow\" />\n";
 }
 else
 {
-	$additionnal_metas = '';
+    $additionnal_metas = '';
 }
 $meta_keywords = $this->GetConfigValue("meta_keywords");
 $meta_description = $this->GetConfigValue("meta_description");
@@ -66,76 +66,76 @@ $disconnect_link = $this->GetUser() ? '(<a href="' . $this->href('', 'Parametres
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=<?php echo $charset ?>" />
-		<meta name="keywords" content="<?php echo $meta_keywords ?>" />
-		<meta name="description" content="<?php echo $meta_description ?>" />
-		<?php echo $additionnal_metas ?>
-		<title><?php echo "$wiki_name:$page_name" ?></title>
-		<link rel="stylesheet" type="text/css" media="screen" href="wakka.basic.css" />
-		<style type="text/css" media="all">
-			<!--
-			@import url(<?php echo $imported_style ?>.css);
-			-->
-		</style>
-		<script type="text/javascript">
-			<!--
-			function fKeyDown(e) {
-				if (e == null) e = event;
-				if (e.keyCode == 9) {
-					if (typeof(document["selection"]) != "undefined") {	// ie
-						e.returnValue = false;
-						document.selection.createRange().text = String.fromCharCode(9);
-					} else if (typeof(this["setSelectionRange"]) != "undefined") {	// other
-						var start = this.selectionStart;
-						this.value = this.value.substring(0, start) + String.fromCharCode(9) + this.value.substring(this.selectionEnd);
-						this.setSelectionRange(start + 1, start + 1);
-						return false;
-					}
-				}
-				return true;
-			}
-			function doubleClickEdit(e)
-			{
-				if (e == null) e = event;
-				source = document.all ? e.srcElement : e.target;
-				if( source.nodeName == "TEXTAREA" || source.nodeName == "INPUT") return;
-				document.location = '<?php echo addslashes($this->Href('edit')) ?>';
-			}
-			/** invert all checkboxes that are descendant of a given parent */
-			function invert_selection(parent_id)
-			{
-				items = document.getElementById(parent_id).getElementsByTagName('input');
-				for (i = 0; i < items.length; i++)
-				{
-					item = items[i];
-					if (item && item.type == 'checkbox')
-					{
-						item.checked = !item.checked;
-					}
-				}
-				return false;
-			}
-			//-->
-		</script>
-	</head>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=<?php echo $charset ?>" />
+        <meta name="keywords" content="<?php echo $meta_keywords ?>" />
+        <meta name="description" content="<?php echo $meta_description ?>" />
+        <?php echo $additionnal_metas ?>
+        <title><?php echo "$wiki_name:$page_name" ?></title>
+        <link rel="stylesheet" type="text/css" media="screen" href="wakka.basic.css" />
+        <style type="text/css" media="all">
+            <!--
+            @import url(<?php echo $imported_style ?>.css);
+            -->
+        </style>
+        <script type="text/javascript">
+            <!--
+            function fKeyDown(e) {
+                if (e == null) e = event;
+                if (e.keyCode == 9) {
+                    if (typeof(document["selection"]) != "undefined") {    // ie
+                        e.returnValue = false;
+                        document.selection.createRange().text = String.fromCharCode(9);
+                    } else if (typeof(this["setSelectionRange"]) != "undefined") {    // other
+                        var start = this.selectionStart;
+                        this.value = this.value.substring(0, start) + String.fromCharCode(9) + this.value.substring(this.selectionEnd);
+                        this.setSelectionRange(start + 1, start + 1);
+                        return false;
+                    }
+                }
+                return true;
+            }
+            function doubleClickEdit(e)
+            {
+                if (e == null) e = event;
+                source = document.all ? e.srcElement : e.target;
+                if( source.nodeName == "TEXTAREA" || source.nodeName == "INPUT") return;
+                document.location = '<?php echo addslashes($this->Href('edit')) ?>';
+            }
+            /** invert all checkboxes that are descendant of a given parent */
+            function invert_selection(parent_id)
+            {
+                items = document.getElementById(parent_id).getElementsByTagName('input');
+                for (i = 0; i < items.length; i++)
+                {
+                    item = items[i];
+                    if (item && item.type == 'checkbox')
+                    {
+                        item.checked = !item.checked;
+                    }
+                }
+                return false;
+            }
+            //-->
+        </script>
+    </head>
 
 
-	<body <?php echo $body_attr ?> >
+    <body <?php echo $body_attr ?> >
 
-	<div style="display: none;">
-		<a href="<?php echo $page_addr ?>/resetstyle" accesskey="7"></a>
-	</div>
+    <div style="display: none;">
+        <a href="<?php echo $page_addr ?>/resetstyle" accesskey="7"></a>
+    </div>
 
-	<h1 class="wiki_name"><?php echo $wiki_name ?></h1>
+    <h1 class="wiki_name"><?php echo $wiki_name ?></h1>
 
-	<h1 class="page_name">
-		<a href="<?php echo $page_search ?>"><?php echo $page_name ?></a>
-	</h1>
+    <h1 class="page_name">
+        <a href="<?php echo $page_search ?>"><?php echo $page_name ?></a>
+    </h1>
 
-	<div class="header">
-		<?php echo $root_page ?> ::
-		<?php echo $navigation_links ?> ::
-		Vous &ecirc;tes <?php echo $user_name ?> <?php echo $disconnect_link ?>
-	</div>
+    <div class="header">
+        <?php echo $root_page ?> ::
+        <?php echo $navigation_links ?> ::
+        Vous &ecirc;tes <?php echo $user_name ?> <?php echo $disconnect_link ?>
+    </div>
 

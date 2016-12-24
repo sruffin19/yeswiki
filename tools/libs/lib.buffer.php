@@ -22,25 +22,25 @@
 
 class buffer
 {
-	function init()
-	{
-		$GLOBALS['__dc_buffer'] = NULL;
-	}
-	
-	function clean()
-	{
-		$GLOBALS['__dc_buffer'] = NULL;
-	}
-	
-	function getContent()
-	{
-		return $GLOBALS['__dc_buffer'];
-	}
-	
-	function str($str)
-	{
-		$GLOBALS['__dc_buffer'] .= $str;
-	}
+    function init()
+    {
+        $GLOBALS['__dc_buffer'] = NULL;
+    }
+    
+    function clean()
+    {
+        $GLOBALS['__dc_buffer'] = NULL;
+    }
+    
+    function getContent()
+    {
+        return $GLOBALS['__dc_buffer'];
+    }
+    
+    function str($str)
+    {
+        $GLOBALS['__dc_buffer'] .= $str;
+    }
 }
 
 ?>

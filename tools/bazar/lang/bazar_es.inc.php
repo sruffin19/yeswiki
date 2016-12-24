@@ -23,7 +23,7 @@
 *
 * Archivo de traducción en español de la aplicación Bazar
 *
-*@package 		bazar
+*@package         bazar
 *@author        Louise Didier <louise@quincaillere.org>
 *@copyright     2016 Outils-Réseaux
 */

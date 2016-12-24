@@ -37,15 +37,15 @@ $nbcartrunc = 200;
 $template = (isset($_GET['template'])) ? $_GET['template'] : 'pages_accordion.tpl.html';
 $valtemplate=array();
 if (!file_exists('themes/tools/tags/presentation/templates/'.$template)) {
-	if (!file_exists('tools/tags/presentation/templates/'.$template)) {
-		exit('Le fichier template du formulaire de microblog "tools/tags/presentation/templates/'.$template.'" n\'existe pas. Il doit exister...');
-	}
-	else {
-		$squel = new SquelettePhp('tools/tags/presentation/templates/'.$template);
-	}
+    if (!file_exists('tools/tags/presentation/templates/'.$template)) {
+        exit('Le fichier template du formulaire de microblog "tools/tags/presentation/templates/'.$template.'" n\'existe pas. Il doit exister...');
+    }
+    else {
+        $squel = new SquelettePhp('tools/tags/presentation/templates/'.$template);
+    }
 }
 else {
-	$squel = new SquelettePhp('themes/tools/tags/presentation/templates/'.$template);
+    $squel = new SquelettePhp('themes/tools/tags/presentation/templates/'.$template);
 }
 
 $output = '';
@@ -59,23 +59,23 @@ $selectiontags = ' AND value IN ("'.implode(",",$tab_selected_tags).'")';
 $sql = 'SELECT DISTINCT value FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" ORDER BY value ASC';
 $tab_tous_les_tags = $this->LoadAll($sql);
 
-if (is_array($tab_tous_les_tags)) {	
-	foreach ($tab_tous_les_tags as $tag) {
-		$tag['value'] = _convert(stripslashes($tag['value']), 'ISO-8859-1');
-		if (in_array($tag['value'], $tab_selected_tags)) {
-			$tab_tag[] = '&nbsp;<a class="tag-label label label-primary label-active" href="'.$this->href('listpages',$this->GetPageTag(),'tags='.urlencode($tag['value'])).'">'.$tag['value'].'</a>'."\n";
-		} 
-		else {
-			$tab_tag[] = '&nbsp;<a class="tag-label label label-info" href="'.$this->href('listpages',$this->GetPageTag(),'tags='.urlencode($tag['value'])).'">'.$tag['value'].'</a>'."\n";
-		}
-	}
-	$outputselecttag = '';
-	if (is_array($tab_tag))	{
-		$outputselecttag .= '<strong><i class="icon icon-tags"></i> '._t('TAGS_FILTER').' : </strong>';
-		foreach ($tab_tag as $tag) {
-			$outputselecttag .= $tag;
-		}
-	}
+if (is_array($tab_tous_les_tags)) {    
+    foreach ($tab_tous_les_tags as $tag) {
+        $tag['value'] = _convert(stripslashes($tag['value']), 'ISO-8859-1');
+        if (in_array($tag['value'], $tab_selected_tags)) {
+            $tab_tag[] = '&nbsp;<a class="tag-label label label-primary label-active" href="'.$this->href('listpages',$this->GetPageTag(),'tags='.urlencode($tag['value'])).'">'.$tag['value'].'</a>'."\n";
+        } 
+        else {
+            $tab_tag[] = '&nbsp;<a class="tag-label label label-info" href="'.$this->href('listpages',$this->GetPageTag(),'tags='.urlencode($tag['value'])).'">'.$tag['value'].'</a>'."\n";
+        }
+    }
+    $outputselecttag = '';
+    if (is_array($tab_tag))    {
+        $outputselecttag .= '<strong><i class="icon icon-tags"></i> '._t('TAGS_FILTER').' : </strong>';
+        foreach ($tab_tag as $tag) {
+            $outputselecttag .= $tag;
+        }
+    }
 }
 
 
@@ -84,28 +84,28 @@ $text = '';
 // affiche le resultat de la recherche
 $resultat = $this->PageList($tags,$type,$nb,$tri,$template,$class,$lienedit);
 if ($resultat) {
-	$nb_total = count($resultat);
+    $nb_total = count($resultat);
 
-	foreach ($resultat as $page) {
-		$element[$page['tag']]['tagnames'] = '';
-		$element[$page['tag']]['tagbadges'] = '';
-		$element[$page['tag']]['body'] = $page['body'];
-		$element[$page['tag']]['owner'] = $page['owner'];
-		$element[$page['tag']]['user'] = $page['user'];
-		$element[$page['tag']]['time'] = $page['time'];
-		$element[$page['tag']]['title'] = get_title_from_body($page);
-		$element[$page['tag']]['image'] = get_image_from_body($page);
-		$element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->Format($page['body'])), $nbcartrunc);
-		$pagetags = $this->GetAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
-		foreach ($pagetags as $tag) {
-			$element[$page['tag']]['tagnames'] .= sanitizeEntity($tag['value']).' ';
-			$element[$page['tag']]['tagbadges'] .= '<span class="tag-label label label-primary">'.$tag['value'].'</span>&nbsp;';
-		}
-	}
-	$squel->set(array('elements' => $element));
-	$text .= $squel->analyser();			
+    foreach ($resultat as $page) {
+        $element[$page['tag']]['tagnames'] = '';
+        $element[$page['tag']]['tagbadges'] = '';
+        $element[$page['tag']]['body'] = $page['body'];
+        $element[$page['tag']]['owner'] = $page['owner'];
+        $element[$page['tag']]['user'] = $page['user'];
+        $element[$page['tag']]['time'] = $page['time'];
+        $element[$page['tag']]['title'] = get_title_from_body($page);
+        $element[$page['tag']]['image'] = get_image_from_body($page);
+        $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->Format($page['body'])), $nbcartrunc);
+        $pagetags = $this->GetAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+        foreach ($pagetags as $tag) {
+            $element[$page['tag']]['tagnames'] .= sanitizeEntity($tag['value']).' ';
+            $element[$page['tag']]['tagbadges'] .= '<span class="tag-label label label-primary">'.$tag['value'].'</span>&nbsp;';
+        }
+    }
+    $squel->set(array('elements' => $element));
+    $text .= $squel->analyser();            
 } else {
-	$nb_total = 0;
+    $nb_total = 0;
 }
 
 $output .= '<div class="alert alert-info">'."\n";

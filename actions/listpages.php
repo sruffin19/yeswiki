@@ -404,8 +404,8 @@ else
                 a.user, name IS NOT NULL user_is_registered, user_page.tag IS NOT NULL user_has_ownpage
                 FROM ' . $prefix . 'pages a
                 LEFT JOIN ' . $prefix . 'users ON a.user = name
-		LEFT JOIN ' . $prefix . 'pages user_page ON name = user_page.tag AND user_page.latest = "Y"
-		LEFT JOIN ' . $prefix . 'pages owner_page ON a.owner = owner_page.tag AND owner_page.latest = "Y"';
+        LEFT JOIN ' . $prefix . 'pages user_page ON name = user_page.tag AND user_page.latest = "Y"
+        LEFT JOIN ' . $prefix . 'pages owner_page ON a.owner = owner_page.tag AND owner_page.latest = "Y"';
         }
         else
         {

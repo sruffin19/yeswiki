@@ -23,7 +23,7 @@
 /**
 * Fichier de traduction en francais de l'extension Hashcash
 *
-*@package 		tags
+*@package         tags
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2012 Outils-Réseaux
 */

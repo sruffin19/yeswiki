@@ -23,7 +23,7 @@
 /**
 * Fichier de traduction en francais de l'extension Contact
 *
-*@package 		contact
+*@package         contact
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2012 Outils-Réseaux
 */

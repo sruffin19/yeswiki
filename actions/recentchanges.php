@@ -47,30 +47,30 @@ else
 // Show recently changed pages
 if ($pages = $this->LoadRecentlyChanged($max))
 {
-	if ($this->GetParameter("max"))
-	{
-		foreach ($pages as $i => $page)
-		{
-			// echo entry
-			echo "(",$page["time"],") (",$this->ComposeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->Format($page["user"]),"<br />\n" ;
-		}
-	}
-	else
-	{
-		$curday='';
+    if ($this->GetParameter("max"))
+    {
         foreach ($pages as $i => $page)
-		{
-			// day header
-			list($day, $time) = explode(" ", $page["time"]);
-			if ($day != $curday)
-			{
-				if ($curday) echo "<br />\n" ;
-				echo "<b>$day&nbsp;:</b><br />\n" ;
-				$curday = $day;
-			}
-			// echo entry
-			echo "&nbsp;&nbsp;&nbsp;(",$time,") (",$this->ComposeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->Format($page["user"]),"<br />\n" ;
-		}
-	}
+        {
+            // echo entry
+            echo "(",$page["time"],") (",$this->ComposeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->Format($page["user"]),"<br />\n" ;
+        }
+    }
+    else
+    {
+        $curday='';
+        foreach ($pages as $i => $page)
+        {
+            // day header
+            list($day, $time) = explode(" ", $page["time"]);
+            if ($day != $curday)
+            {
+                if ($curday) echo "<br />\n" ;
+                echo "<b>$day&nbsp;:</b><br />\n" ;
+                $curday = $day;
+            }
+            // echo entry
+            echo "&nbsp;&nbsp;&nbsp;(",$time,") (",$this->ComposeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->Format($page["user"]),"<br />\n" ;
+        }
+    }
 }
 ?>

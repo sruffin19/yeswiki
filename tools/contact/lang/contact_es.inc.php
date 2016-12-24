@@ -23,7 +23,7 @@
 /**
 * Fichier de traduction en espagnol de l'extension Contact
 *
-*@package 		login
+*@package         login
 *@author        Louise Didier <louise@quincaillere.org>
 *@copyright     2016 Outils-Réseaux
 */

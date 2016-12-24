@@ -41,40 +41,40 @@ if (!defined("WIKINI_VERSION")) {
 //recuperation des parametres
 $contactelements['mail'] = $this->GetParameter('mail');
 if (empty($contactelements['mail'])) {
-	echo '<div class="alert alert-danger"><strong>'._t('CONTACT_ACTION_CONTACT').' :</strong>&nbsp;'._t('CONTACT_MAIL_REQUIRED').'</div>';
+    echo '<div class="alert alert-danger"><strong>'._t('CONTACT_ACTION_CONTACT').' :</strong>&nbsp;'._t('CONTACT_MAIL_REQUIRED').'</div>';
 }
 else {
-	// on utilise une variable globale pour savoir de quel formulaire la demande est envoyee, s'il y en a plusieurs sur la meme page
-	if (isset($GLOBALS['nbactionmail'])) {
-		$GLOBALS['nbactionmail']++;
-	}
-	else {
-		$GLOBALS['nbactionmail'] = 1;
-	}
-	$contactelements['nbactionmail'] = $GLOBALS['nbactionmail']; 
-	
-	$contactelements['entete'] = $this->GetParameter('entete');
-	if (empty($contactelements['entete'])) {
-		$contactelements['entete'] = $this->config['wakka_name'];
-	}
+    // on utilise une variable globale pour savoir de quel formulaire la demande est envoyee, s'il y en a plusieurs sur la meme page
+    if (isset($GLOBALS['nbactionmail'])) {
+        $GLOBALS['nbactionmail']++;
+    }
+    else {
+        $GLOBALS['nbactionmail'] = 1;
+    }
+    $contactelements['nbactionmail'] = $GLOBALS['nbactionmail']; 
+    
+    $contactelements['entete'] = $this->GetParameter('entete');
+    if (empty($contactelements['entete'])) {
+        $contactelements['entete'] = $this->config['wakka_name'];
+    }
 
-	// on choisit le template utilisé
-	$template = $this->GetParameter('template'); 
-	if (empty($template)) {
-		$template = 'complete-contact-form.tpl.html';
-	}
+    // on choisit le template utilisé
+    $template = $this->GetParameter('template'); 
+    if (empty($template)) {
+        $template = 'complete-contact-form.tpl.html';
+    }
 
-	// on peut ajouter des classes à la classe par défaut
-	$contactelements['class'] = ($this->GetParameter('class') ? 'form-contact '.$this->GetParameter('class') : 'form-contact');
+    // on peut ajouter des classes à la classe par défaut
+    $contactelements['class'] = ($this->GetParameter('class') ? 'form-contact '.$this->GetParameter('class') : 'form-contact');
 
-	// adresse url d'envoi du mail
-	$contactelements['mailerurl'] = $this->href('mail');
+    // adresse url d'envoi du mail
+    $contactelements['mailerurl'] = $this->href('mail');
 
-	include_once('tools/libs/squelettephp.class.php');
-	$contacttemplate = new SquelettePhp('tools/contact/presentation/templates/'.$template);
-	$contacttemplate->set($contactelements);
-	echo $contacttemplate->analyser();
+    include_once('tools/libs/squelettephp.class.php');
+    $contacttemplate = new SquelettePhp('tools/contact/presentation/templates/'.$template);
+    $contacttemplate->set($contactelements);
+    echo $contacttemplate->analyser();
 
-	$GLOBALS['js'] = ((isset($GLOBALS['js'])) ? str_replace('	<script src="tools/contact/libs/contact.js"></script>'."\n", '', $GLOBALS['js']) : '').'	<script src="tools/contact/libs/contact.js"></script>'."\n";
+    $GLOBALS['js'] = ((isset($GLOBALS['js'])) ? str_replace('    <script src="tools/contact/libs/contact.js"></script>'."\n", '', $GLOBALS['js']) : '').'    <script src="tools/contact/libs/contact.js"></script>'."\n";
 }
 ?>

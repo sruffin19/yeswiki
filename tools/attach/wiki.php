@@ -27,7 +27,7 @@ $wakkaConfig['image-big-height'] = isset($wakkaConfig['image-big-height']) ? $wa
 $wikiClasses [] = 'ExtendAttach';
 
 $wikiClassesContent [] = '
-	// Fonction supplementaire pour paser des parametres a l\'upload
+    // Fonction supplementaire pour paser des parametres a l\'upload
     function setParameter($parameter,$value) {
         $this->parameter[$parameter]=$value;
     }

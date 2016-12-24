@@ -22,14 +22,14 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 if ($pages = $this->LoadOrphanedPages())
 {
-	foreach ($pages as $page)
-	{
-		echo $this->ComposeLinkToPage($page["tag"], "", "", 0),"<br />\n" ;
-	}
+    foreach ($pages as $page)
+    {
+        echo $this->ComposeLinkToPage($page["tag"], "", "", 0),"<br />\n" ;
+    }
 }
 else
 {
-	echo "<i>"._t('NO_ORPHAN_PAGES')."</i>" ;
+    echo "<i>"._t('NO_ORPHAN_PAGES')."</i>" ;
 }
 
 ?>

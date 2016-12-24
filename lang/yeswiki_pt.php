@@ -23,7 +23,7 @@
 /**
 * Arquivo de tradução em português (do Brasil) da Yeswiki
 *
-*@package 		yeswiki
+*@package         yeswiki
 *@author        François Labastie <francois@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */

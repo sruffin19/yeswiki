@@ -22,7 +22,7 @@
 /**
 * Arquivo de tradução em português (do Brasil) da extensão bazar
 *
-*@package 		bazar
+*@package         bazar
 *@author        François Labastie <francois@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */

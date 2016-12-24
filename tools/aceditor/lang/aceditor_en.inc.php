@@ -23,30 +23,30 @@
 /**
 * English translation for ACeditor extension
 *
-*@package 		aceditor
+*@package         aceditor
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */
 
 $GLOBALS['translations'] = array_merge($GLOBALS['translations'], array(
 
-'ACEDITOR_SAVE'				=> 'Save',
-'ACEDITOR_FORMAT'			=> 'Format',
-'ACEDITOR_TITLE1'			=> 'Huge title',
-'ACEDITOR_TITLE2'			=> 'Very big title',
-'ACEDITOR_TITLE3'			=> 'Big title',
-'ACEDITOR_TITLE4'			=> 'Basic title',
-'ACEDITOR_TITLE5'			=> 'Small title',
-'ACEDITOR_BIGGER_TEXT'		=> 'Bigger text',
-'ACEDITOR_HIGHLIGHT_TEXT'	=> 'Highlighted text',
-'ACEDITOR_SOURCE_CODE'		=> 'Source code',
-'ACEDITOR_BOLD_TEXT'		=> 'Bold text ( Ctrl-b )',
-'ACEDITOR_ITALIC_TEXT'		=> 'Italic text ( Ctrl-i )',
-'ACEDITOR_UNDERLINE_TEXT'	=> 'Underline the selected text ( Ctrl-u )',
-'ACEDITOR_STRIKE_TEXT'		=> 'Stroke the selected text ( Ctrl-y )',
-'ACEDITOR_LINE'				=> 'Insert horizontal line',
-'ACEDITOR_LINK'				=> 'Link',
-'ACEDITOR_LINK_PROMPT'		=> 'Enter the link adress',
-'ACEDITOR_LINK_TITLE'		=> 'Add a link to selected text'
+'ACEDITOR_SAVE'                => 'Save',
+'ACEDITOR_FORMAT'            => 'Format',
+'ACEDITOR_TITLE1'            => 'Huge title',
+'ACEDITOR_TITLE2'            => 'Very big title',
+'ACEDITOR_TITLE3'            => 'Big title',
+'ACEDITOR_TITLE4'            => 'Basic title',
+'ACEDITOR_TITLE5'            => 'Small title',
+'ACEDITOR_BIGGER_TEXT'        => 'Bigger text',
+'ACEDITOR_HIGHLIGHT_TEXT'    => 'Highlighted text',
+'ACEDITOR_SOURCE_CODE'        => 'Source code',
+'ACEDITOR_BOLD_TEXT'        => 'Bold text ( Ctrl-b )',
+'ACEDITOR_ITALIC_TEXT'        => 'Italic text ( Ctrl-i )',
+'ACEDITOR_UNDERLINE_TEXT'    => 'Underline the selected text ( Ctrl-u )',
+'ACEDITOR_STRIKE_TEXT'        => 'Stroke the selected text ( Ctrl-y )',
+'ACEDITOR_LINE'                => 'Insert horizontal line',
+'ACEDITOR_LINK'                => 'Link',
+'ACEDITOR_LINK_PROMPT'        => 'Enter the link adress',
+'ACEDITOR_LINK_TITLE'        => 'Add a link to selected text'
 
 ));

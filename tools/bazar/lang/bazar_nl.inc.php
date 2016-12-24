@@ -23,7 +23,7 @@
 *
 * Fichier de traduction en francais de l'extension Bazar
 *
-*@package 		bazar
+*@package         bazar
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     Outils-Réseaux
 *

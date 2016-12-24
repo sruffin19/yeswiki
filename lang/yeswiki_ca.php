@@ -23,7 +23,7 @@
 /**
 * Fitxer de traducció al català de YesWiki
 *
-*@package 		yeswiki
+*@package         yeswiki
 *@author        Jordi Picart <jordi.picart@aposta.coop>
 *@copyright     2014 Outils-Réseaux
 */

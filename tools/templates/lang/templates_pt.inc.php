@@ -23,7 +23,7 @@
 /**
 * Arquivo de tradução em português (do Brasil) da extensão templates
 *
-*@package 		templates
+*@package         templates
 *@author        François Labastie <francois@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */

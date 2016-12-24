@@ -23,30 +23,30 @@
 /**
 * French translation for ACeditor extension
 *
-*@package 		aceditor
+*@package         aceditor
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */
 
 $GLOBALS['translations'] = array_merge($GLOBALS['translations'], array(
 
-'ACEDITOR_SAVE'				=> 'Salvar',
-'ACEDITOR_FORMAT'			=> 'Formato',
-'ACEDITOR_TITLE1'			=> 'Cabeçalho enorme',
-'ACEDITOR_TITLE2'			=> 'Cabeçalho muito grande',
-'ACEDITOR_TITLE3'			=> 'Cabeçalho grande',
-'ACEDITOR_TITLE4'			=> 'Cabeçalho normal',
-'ACEDITOR_TITLE5'			=> 'Cabeçalho pequeno',
-'ACEDITOR_BIGGER_TEXT'		=> 'Texto ampliado',
-'ACEDITOR_HIGHLIGHT_TEXT'	=> 'Texto realçado',
-'ACEDITOR_SOURCE_CODE'		=> 'Código-fonte',
-'ACEDITOR_BOLD_TEXT'		=> 'Passa o texto selecionado em gordura  ( Ctrl-b )',
-'ACEDITOR_ITALIC_TEXT'		=> 'Passa o texto selecionado em itálico ( Ctrl-i )',
-'ACEDITOR_UNDERLINE_TEXT'	=> 'Sublinha o texto selecionado ( Ctrl-u )',
-'ACEDITOR_STRIKE_TEXT'		=> 'Passa o texto selecionado em rasurado ( Ctrl-y )',
-'ACEDITOR_LINE'				=> 'Insere uma linha horizontal',
-'ACEDITOR_LINK'				=> 'Link',
-'ACEDITOR_LINK_PROMPT'		=> 'Digite a URL',
-'ACEDITOR_LINK_TITLE'		=> 'Adiciona um link para o texto selecionado'
+'ACEDITOR_SAVE'                => 'Salvar',
+'ACEDITOR_FORMAT'            => 'Formato',
+'ACEDITOR_TITLE1'            => 'Cabeçalho enorme',
+'ACEDITOR_TITLE2'            => 'Cabeçalho muito grande',
+'ACEDITOR_TITLE3'            => 'Cabeçalho grande',
+'ACEDITOR_TITLE4'            => 'Cabeçalho normal',
+'ACEDITOR_TITLE5'            => 'Cabeçalho pequeno',
+'ACEDITOR_BIGGER_TEXT'        => 'Texto ampliado',
+'ACEDITOR_HIGHLIGHT_TEXT'    => 'Texto realçado',
+'ACEDITOR_SOURCE_CODE'        => 'Código-fonte',
+'ACEDITOR_BOLD_TEXT'        => 'Passa o texto selecionado em gordura  ( Ctrl-b )',
+'ACEDITOR_ITALIC_TEXT'        => 'Passa o texto selecionado em itálico ( Ctrl-i )',
+'ACEDITOR_UNDERLINE_TEXT'    => 'Sublinha o texto selecionado ( Ctrl-u )',
+'ACEDITOR_STRIKE_TEXT'        => 'Passa o texto selecionado em rasurado ( Ctrl-y )',
+'ACEDITOR_LINE'                => 'Insere uma linha horizontal',
+'ACEDITOR_LINK'                => 'Link',
+'ACEDITOR_LINK_PROMPT'        => 'Digite a URL',
+'ACEDITOR_LINK_TITLE'        => 'Adiciona um link para o texto selecionado'
 
 ));

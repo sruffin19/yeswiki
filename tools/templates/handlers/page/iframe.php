@@ -40,7 +40,7 @@ if ($this->HasAccess("read")) {
         // javascript pour gerer les liens (ouvrir vers l'exterieur) dans les iframes
         $scripts_iframe = '<script>
 
-		$(document).ready(function () {
+        $(document).ready(function () {
       // Get height of the main element in the iframe document
       var documentHeight = document.getElementsByClassName("page-widget")[0].scrollHeight
 
@@ -54,59 +54,59 @@ if ($this->HasAccess("read")) {
       // On resize of the window, recalculate the height of the main element, and pass to the parent document again
       window.onresize = function(event) {
         //console.log(document.getElementsByClassName("page-widget")[0]);
-      	var newDocumentHeight = document.getElementsByClassName("page-widget")[0].scrollHeight;
-      	var heightDiff = documentHeight - newDocumentHeight;
+          var newDocumentHeight = document.getElementsByClassName("page-widget")[0].scrollHeight;
+          var heightDiff = documentHeight - newDocumentHeight;
 
-      	// If difference between current height and new height is more than 10px
-      	if ( heightDiff > 10 | heightDiff < -10 ) {
+          // If difference between current height and new height is more than 10px
+          if ( heightDiff > 10 | heightDiff < -10 ) {
 
-      		documentHeight = newDocumentHeight;
-      		message = "documentHeight:"+documentHeight+"&urlIframe:"+window.location.href;
-      		parent.postMessage(message,"*");
-      	}
+              documentHeight = newDocumentHeight;
+              message = "documentHeight:"+documentHeight+"&urlIframe:"+window.location.href;
+              parent.postMessage(message,"*");
+          }
 
       }
 
-			$("iframe").load(function() {
-				this.scroll(0,0);
-				$(window.parent.document).scroll(0,0);
-				//$(this).find(".modalbox").removeClass("modalbox").click(function(event){
-					//event.stopPropagation();
-					//document.location = $(this).attr("href");
-					//return false;
-				//});
-				//$(this).find("form").on("submit", function() {$(window.parent.document).scrollTop(0);});
-			});
-			$("a[href^=\'http://\']:not(a[href*=\'/slide_show\'], a[href*=\'/iframe\'], a.modalbox, a.fc-event, a[target])").click(function() {
-				if (window.location != window.parent.location)
-				{
-					if (!($(this).hasClass("bouton_annuler")))
-					{
-						window.open($(this).attr("href"));
-						return false;
-					}
-				}
-			});
-		});
-		</script>';
+            $("iframe").load(function() {
+                this.scroll(0,0);
+                $(window.parent.document).scroll(0,0);
+                //$(this).find(".modalbox").removeClass("modalbox").click(function(event){
+                    //event.stopPropagation();
+                    //document.location = $(this).attr("href");
+                    //return false;
+                //});
+                //$(this).find("form").on("submit", function() {$(window.parent.document).scrollTop(0);});
+            });
+            $("a[href^=\'http://\']:not(a[href*=\'/slide_show\'], a[href*=\'/iframe\'], a.modalbox, a.fc-event, a[target])").click(function() {
+                if (window.location != window.parent.location)
+                {
+                    if (!($(this).hasClass("bouton_annuler")))
+                    {
+                        window.open($(this).attr("href"));
+                        return false;
+                    }
+                }
+            });
+        });
+        </script>';
 
         // on efface le style par defaut du fond pour l'iframe
         $styleiframe = '<style>
-			html {
-				overflow-y: auto;
-				background-color : transparent;
-				background-image : none;
-			}
-			.yeswiki-body {
-				background-color : transparent;
-				background-image : none;
-				text-align : left;
-				width : auto;
-				min-width : 0;
-				padding-top : 0;
-			}
-			.yeswiki-page-widget { min-height:auto !important; }
-		</style>' . "\n";
+            html {
+                overflow-y: auto;
+                background-color : transparent;
+                background-image : none;
+            }
+            .yeswiki-body {
+                background-color : transparent;
+                background-image : none;
+                text-align : left;
+                width : auto;
+                min-width : 0;
+                padding-top : 0;
+            }
+            .yeswiki-page-widget { min-height:auto !important; }
+        </style>' . "\n";
 
         $GLOBALS['js'] = ((isset($GLOBALS['js'])) ? $GLOBALS['js'] : '') . $scripts_iframe;
         $this->AddJavascriptFile('tools/templates/libs/vendor/iframeResizer.contentWindow.min.js');

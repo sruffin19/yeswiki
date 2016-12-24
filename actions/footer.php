@@ -37,30 +37,30 @@ $owner_info = '';
 // if this page exists
 if ($this->page)
 {
-	// if owner is current user
-	if ($this->UserIsOwner())
-	{
-		$owner_info = "Propri&eacute;taire&nbsp;: vous :: \n";
-	}
-	else
-	{
-		if ($owner = $this->GetPageOwner())
-		{
-			$owner_info = "Propri&eacute;taire : " . $this->Format($owner);
-		}
-		else
-		{
-			$owner_info = "Pas de propri&eacute;taire ";
-			$owner_info .= ($this->GetUser() ? "(<a href=\"".$this->href("claim")."\">Appropriation</a>)" : "");
-		}
-		$owner_info .= " :: \n";
-	}
-	if ($this->UserIsOwner() || $this->UserIsAdmin())
-	{
-		$owner_info .=
-		"<a href=\"" . $this->href("acls") . "\" title=\"Cliquez pour &eacute;diter les permissions de cette page.\">&Eacute;diter permissions</a> :: \n" .
-		"<a href=\"" . $this->href("deletepage") . "\">Supprimer</a> :: \n";
-	}
+    // if owner is current user
+    if ($this->UserIsOwner())
+    {
+        $owner_info = "Propri&eacute;taire&nbsp;: vous :: \n";
+    }
+    else
+    {
+        if ($owner = $this->GetPageOwner())
+        {
+            $owner_info = "Propri&eacute;taire : " . $this->Format($owner);
+        }
+        else
+        {
+            $owner_info = "Pas de propri&eacute;taire ";
+            $owner_info .= ($this->GetUser() ? "(<a href=\"".$this->href("claim")."\">Appropriation</a>)" : "");
+        }
+        $owner_info .= " :: \n";
+    }
+    if ($this->UserIsOwner() || $this->UserIsAdmin())
+    {
+        $owner_info .=
+        "<a href=\"" . $this->href("acls") . "\" title=\"Cliquez pour &eacute;diter les permissions de cette page.\">&Eacute;diter permissions</a> :: \n" .
+        "<a href=\"" . $this->href("deletepage") . "\">Supprimer</a> :: \n";
+    }
 }
 $backlinks = $this->href('backlinks');
 $carto = $this->href('svg');
@@ -70,43 +70,43 @@ $wikini_site_url = $this->Link("WikiNi:PagePrincipale", "", "WikiNi ".$this->Get
 $debug_log = '';
 if ($this->GetConfigValue("debug")=="yes")
 {
-	$debug_log = "<span class=\"debug\"><b>Query log :</b><br />\n";
-	$T_SQL=0;
-	foreach ($this->queryLog as $query)
-	{
-		$debug_log .= $query["query"]." (".round($query["time"],4).")<br />\n";
-		$T_SQL = $T_SQL + $query["time"];
-	}
-	$debug_log .= "</span>\n";
+    $debug_log = "<span class=\"debug\"><b>Query log :</b><br />\n";
+    $T_SQL=0;
+    foreach ($this->queryLog as $query)
+    {
+        $debug_log .= $query["query"]." (".round($query["time"],4).")<br />\n";
+        $T_SQL = $T_SQL + $query["time"];
+    }
+    $debug_log .= "</span>\n";
 
-	$debug_log .= "<span class=\"debug\">".round($T_SQL, 4)." s (total SQL time)</span><br />\n";
+    $debug_log .= "<span class=\"debug\">".round($T_SQL, 4)." s (total SQL time)</span><br />\n";
 
-	define ('T_END', microtime(true));
-	$debug_log .= "<span class=\"debug\"><b>".round(T_END-T_START, 4)." s (total time)</b></span><br />\n";
+    define ('T_END', microtime(true));
+    $debug_log .= "<span class=\"debug\"><b>".round(T_END-T_START, 4)." s (total time)</b></span><br />\n";
 
-	$debug_log .= "<span class=\"debug\">SQL time represent : ".round((($T_SQL/(T_END-T_START))*100),2)."% of total time</span>\n";
+    $debug_log .= "<span class=\"debug\">SQL time represent : ".round((($T_SQL/(T_END-T_START))*100),2)."% of total time</span>\n";
 }
 
 ?>
 
-	<form action="<?php echo $search_page ?>" method="get">
-		<div class="footer">
-			<input type="hidden" name="wiki" value="RechercheTexte" />
-			<?php echo $edit_link, $revisions_link, $owner_info ?>
-			
-			<a href="<?php echo $backlinks ?>" title="Pages faisant r&eacute;f&eacute;rence &agrave; cette page.">R&eacute;tro-liens</a> ::
-			<a href="<?php echo $carto ?>" title="Cartographie des pages liées à cette page (nécessite SVG).">Cartographie</a> ::
-			Recherche : <input name="phrase" size="15" class="searchbox" />
-		</div>
-	</form>
-	
-	<div class="copyright">
-		<a href="<?php echo $xhtml_validation_link ?>">XHTML 1.0 valide ?</a> ::
-		<a href="<?php echo $css_validation_link ?>">CSS valide ?</a> ::
-		-- Fonctionne avec <?php echo $wikini_site_url ?>
-	</div>
-	
-	<?php echo $debug_log ?>
-	
-	</body>
+    <form action="<?php echo $search_page ?>" method="get">
+        <div class="footer">
+            <input type="hidden" name="wiki" value="RechercheTexte" />
+            <?php echo $edit_link, $revisions_link, $owner_info ?>
+
+            <a href="<?php echo $backlinks ?>" title="Pages faisant r&eacute;f&eacute;rence &agrave; cette page.">R&eacute;tro-liens</a> ::
+            <a href="<?php echo $carto ?>" title="Cartographie des pages liées à cette page (nécessite SVG).">Cartographie</a> ::
+            Recherche : <input name="phrase" size="15" class="searchbox" />
+        </div>
+    </form>
+
+    <div class="copyright">
+        <a href="<?php echo $xhtml_validation_link ?>">XHTML 1.0 valide ?</a> ::
+        <a href="<?php echo $css_validation_link ?>">CSS valide ?</a> ::
+        -- Fonctionne avec <?php echo $wikini_site_url ?>
+    </div>
+
+    <?php echo $debug_log ?>
+
+    </body>
 </html>

@@ -23,7 +23,7 @@
 /**
 * Fitxer de traducció al català de l'extensió Contact
 *
-*@package 		contact
+*@package         contact
 *@author        Jordi Picart <jordi.picart@aposta.coop>
 *@copyright     2014 Outils-Réseaux
 */

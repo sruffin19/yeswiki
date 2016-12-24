@@ -23,30 +23,30 @@
 /**
 * French translation for ACeditor extension
 *
-*@package 		aceditor
+*@package         aceditor
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2014 Outils-Réseaux
 */
 
 $GLOBALS['translations'] = array_merge($GLOBALS['translations'], array(
 
-'ACEDITOR_SAVE'		=> 'Opslaan',
-'ACEDITOR_FORMAT'	=> 'Lay-out',
-'ACEDITOR_TITLE1'	=> 'Enorme koptekst',
-'ACEDITOR_TITLE2'	=> 'Zeer grote koptekst',
-'ACEDITOR_TITLE3'	=> 'Grote koptekst',
-'ACEDITOR_TITLE4'	=> 'Normale koptekst',
-'ACEDITOR_TITLE5'	=> 'Kleine koptekst',
-'ACEDITOR_BIGGER_TEXT'	=> 'Grotere tekst',
+'ACEDITOR_SAVE'        => 'Opslaan',
+'ACEDITOR_FORMAT'    => 'Lay-out',
+'ACEDITOR_TITLE1'    => 'Enorme koptekst',
+'ACEDITOR_TITLE2'    => 'Zeer grote koptekst',
+'ACEDITOR_TITLE3'    => 'Grote koptekst',
+'ACEDITOR_TITLE4'    => 'Normale koptekst',
+'ACEDITOR_TITLE5'    => 'Kleine koptekst',
+'ACEDITOR_BIGGER_TEXT'    => 'Grotere tekst',
 'ACEDITOR_HIGHLIGHT_TEXT'=> 'Gemarkeerde tekst',
-'ACEDITOR_SOURCE_CODE'	=> 'Broncode',
-'ACEDITOR_BOLD_TEXT'	=> 'Zet geselecteerde tekst in vet (Ctrl-b)',
-'ACEDITOR_ITALIC_TEXT'	=> 'Zet geselecteerde tekst cursief (Ctrl-i)',
+'ACEDITOR_SOURCE_CODE'    => 'Broncode',
+'ACEDITOR_BOLD_TEXT'    => 'Zet geselecteerde tekst in vet (Ctrl-b)',
+'ACEDITOR_ITALIC_TEXT'    => 'Zet geselecteerde tekst cursief (Ctrl-i)',
 'ACEDITOR_UNDERLINE_TEXT'=> 'Onderstreep de geselecteerde tekst (Ctrl-u)',
-'ACEDITOR_STRIKE_TEXT'	=> 'Doorstreep de geselecteerde tekst (Ctrl-y)',
-'ACEDITOR_LINE'	=> 'Voeg een horizontale lijn in',
-'ACEDITOR_LINK'	=> 'Koppeling',
-'ACEDITOR_LINK_PROMPT'	=> 'Voer de URL in',
+'ACEDITOR_STRIKE_TEXT'    => 'Doorstreep de geselecteerde tekst (Ctrl-y)',
+'ACEDITOR_LINE'    => 'Voeg een horizontale lijn in',
+'ACEDITOR_LINK'    => 'Koppeling',
+'ACEDITOR_LINK_PROMPT'    => 'Voer de URL in',
 'ACEDITOR_LINK_TITLE' => 'Voeg een koppeling toe aan de geselecteerde tekst'
 
 ));

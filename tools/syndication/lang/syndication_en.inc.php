@@ -23,7 +23,7 @@
 /**
 * English translation for the  extension syndication
 *
-*@package 		syndication
+*@package         syndication
 *@author        Florian Schmitt <florian@outils-reseaux.org>
 *@copyright     2013 Outils-Réseaux
 */

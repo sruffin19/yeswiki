@@ -41,5 +41,5 @@ if ($type == 'fiche_bazar') {
     $plugin_output_new = '<div class="'.$class.'">'."\n".baz_voir_fiche(0, $tab_valeurs)."\n".'</div>'."\n";
     //exit;
 } else {
-	$type = '';
+    $type = '';
 }

@@ -148,7 +148,7 @@ while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {
 }
 ?>
 <div class="alert alert-info">
-	<?php echo $num_page; ?> pages trouv&eacute;es
+    <?php echo $num_page; ?> pages trouv&eacute;es
 </div>
 
 <p>En <span style="font-weight:bold;color:orange">orange</span> les valeurs par défaut <em>dans wakka.config.php</em>.</p>
@@ -163,25 +163,25 @@ while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {
 <?php for ($x = 0; $x < $num_page; ++$x) : ?>
     <tr>
       <td>
-      	<input type="checkbox" name="selectpage[]" value="<?php echo $page_et_droits[$x]['page']; ?>">
+          <input type="checkbox" name="selectpage[]" value="<?php echo $page_et_droits[$x]['page']; ?>">
       </td>
       <td>
-      	<?php echo $this->Link($page_et_droits[$x]['page']); ?>
+          <?php echo $this->Link($page_et_droits[$x]['page']); ?>
       </td>
       <td align="center"
         <?php if($page_et_droits[$x]['lire_default']) echo 'style="font-weight:bold;color:orange"' ;?>
         >
-      	<?php echo nl2br(str_replace(' ', '<br>', $page_et_droits[$x]['lire'])); ?>
+          <?php echo nl2br(str_replace(' ', '<br>', $page_et_droits[$x]['lire'])); ?>
       </td>
       <td align="center"
         <?php if($page_et_droits[$x]['ecrire_default']) echo 'style="font-weight:bold;color:orange"' ;?>
         >
-      	<?php echo nl2br(str_replace(' ', '<br>', $page_et_droits[$x]['ecrire'])); ?>
-	  </td>
+          <?php echo nl2br(str_replace(' ', '<br>', $page_et_droits[$x]['ecrire'])); ?>
+      </td>
       <td align="center"
         <?php if($page_et_droits[$x]['comment_default']) echo 'style="font-weight:bold;color:orange"' ;?>
         >
-      	<?php echo nl2br(str_replace(' ', '<br>', $page_et_droits[$x]['comment'])); ?>
+          <?php echo nl2br(str_replace(' ', '<br>', $page_et_droits[$x]['comment'])); ?>
       </td>
     </tr>
 
@@ -190,10 +190,10 @@ while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {
   <h4>Modifier les droits</h4>
   <p><i>Seuls les pages cochées seront modifiées.</i></p>
 
-	<p>
-	<input type=radio name="typemaj" value="default" id="typemajdefault" >
-	<label for="typemajdefault">Valeurs par défaut (<em>wakka.config.php</em>)</label> (Supprime les droits dans la base de données).
-	</p>
+    <p>
+    <input type=radio name="typemaj" value="default" id="typemajdefault" >
+    <label for="typemajdefault">Valeurs par défaut (<em>wakka.config.php</em>)</label> (Supprime les droits dans la base de données).
+    </p>
 
   <p><i>Seuls les droits cochés seront modifiés.</i></p>
   <table class="table">
@@ -219,14 +219,14 @@ while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {
     </tr>
     <tr>
       <td>
-		<textarea name="newlire" rows=4 cols=10 ><?php
+        <textarea name="newlire" rows=4 cols=10 ><?php
         if (isset($_POST['newlire'])) {
             echo $_POST['newlire'];
         }
         ?></textarea>
       </td>
       <td>
-      	<textarea name="newecrire" rows=4 cols=10 ><?php
+          <textarea name="newecrire" rows=4 cols=10 ><?php
         if (isset($_POST['newecrire'])) {
             echo $_POST['newecrire'];
         }
@@ -241,17 +241,17 @@ while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {
     </tr>
   </table>
 
-	<input type=radio name="typemaj" value="ajouter" id="typemajajouter" checked>
-	<label for="typemajajouter">Ajouter</label> (Les nouveaux droits seront ajout&eacute;s aux actuels).
+    <input type=radio name="typemaj" value="ajouter" id="typemajajouter" checked>
+    <label for="typemajajouter">Ajouter</label> (Les nouveaux droits seront ajout&eacute;s aux actuels).
     <br/>
-	<input type=radio name="typemaj" value="remplacer" id="typemalremplacer">
-	<label for="typemalremplacer">Remplacer</label> (Les droits actuels seront supprim&eacute;s).
+    <input type=radio name="typemaj" value="remplacer" id="typemalremplacer">
+    <label for="typemalremplacer">Remplacer</label> (Les droits actuels seront supprim&eacute;s).
     <br/>
 
-	<p>
-		<input name="geredroits_modifier" class="btn <?php if ($btnclass != '') echo ' '.$btnclass; ?>"
-    		value="Mettre &agrave; jour" type="submit"
-    	>
-	</p>
+    <p>
+        <input name="geredroits_modifier" class="btn <?php if ($btnclass != '') echo ' '.$btnclass; ?>"
+            value="Mettre &agrave; jour" type="submit"
+        >
+    </p>
 <?php
 echo $this->FormClose();

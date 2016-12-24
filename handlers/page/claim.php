@@ -31,14 +31,14 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Vérification de sécurité
 if (!defined("WIKINI_VERSION"))
 {
-	die ("acc&egrave;s direct interdit");
+    die ("acc&egrave;s direct interdit");
 }
 
 // only claim ownership if this page has no owner, and if user is logged in.
 if ($this->page && !$this->GetPageOwner() && $this->GetUser())
 {
-	$this->SetPageOwner($this->GetPageTag(), $this->GetUserName());
-	$this->SetMessage("Vous &ecirc;tes maintenant le propri&eacute;taire de cette page");
+    $this->SetPageOwner($this->GetPageTag(), $this->GetUserName());
+    $this->SetMessage("Vous &ecirc;tes maintenant le propri&eacute;taire de cette page");
 }
 
 $this->Redirect($this->href());

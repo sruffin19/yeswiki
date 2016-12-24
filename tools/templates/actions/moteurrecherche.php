@@ -6,7 +6,7 @@ if (!defined("WIKINI_VERSION")) {
 // on choisit le template utilisé
 $template = $this->GetParameter('template'); 
 if (empty($template)) {
-	$template = 'moteurrecherche_basic.tpl.html';
+    $template = 'moteurrecherche_basic.tpl.html';
 }
 
 // on peut ajouter des classes à la classe par défaut .searchform

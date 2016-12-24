@@ -23,30 +23,30 @@
 /**
 * Spanich translation for ACeditor extension
 *
-*@package 		login
+*@package         login
 *@author        Louise Didier <louise@quincaillere.org>
 *@copyright     2016 Outils-Réseaux
 */
 
 $GLOBALS['translations'] = array_merge($GLOBALS['translations'], array(
 
-'ACEDITOR_SAVE'				=> 'Guardar',
-'ACEDITOR_FORMAT'			=> 'Formato',
-'ACEDITOR_TITLE1'			=> 'Nivel de título enorme',
-'ACEDITOR_TITLE2'			=> 'Nivel de título muy grande',
-'ACEDITOR_TITLE3'			=> 'Nivel de título grande',
-'ACEDITOR_TITLE4'			=> 'Nivel de título normal',
-'ACEDITOR_TITLE5'			=> 'Nivel de título pequeño',
-'ACEDITOR_BIGGER_TEXT'		=> 'Texto ampliado',
-'ACEDITOR_HIGHLIGHT_TEXT'	=> 'Texto puesto de relieve',
-'ACEDITOR_SOURCE_CODE'		=> 'Código fuente',
-'ACEDITOR_BOLD_TEXT'		=> 'Pone el texto selectionado en negrita ( Ctrl-b )',
-'ACEDITOR_ITALIC_TEXT'		=> 'Pone el texto selectionado en cursiva ( Ctrl-i )',
-'ACEDITOR_UNDERLINE_TEXT'	=> 'Subraya el texto selectionado ( Ctrl-u )',
-'ACEDITOR_STRIKE_TEXT'		=> 'Tacha el texto selectionado ( Ctrl-y )',
-'ACEDITOR_LINE'				=> 'Integra una linea horizontal',
-'ACEDITOR_LINK'				=> 'Enlace',
-'ACEDITOR_LINK_PROMPT'		=> 'Entra la dirección URL',
-'ACEDITOR_LINK_TITLE'		=> 'Añadir un enlace al texto selectionado'
+'ACEDITOR_SAVE'                => 'Guardar',
+'ACEDITOR_FORMAT'            => 'Formato',
+'ACEDITOR_TITLE1'            => 'Nivel de título enorme',
+'ACEDITOR_TITLE2'            => 'Nivel de título muy grande',
+'ACEDITOR_TITLE3'            => 'Nivel de título grande',
+'ACEDITOR_TITLE4'            => 'Nivel de título normal',
+'ACEDITOR_TITLE5'            => 'Nivel de título pequeño',
+'ACEDITOR_BIGGER_TEXT'        => 'Texto ampliado',
+'ACEDITOR_HIGHLIGHT_TEXT'    => 'Texto puesto de relieve',
+'ACEDITOR_SOURCE_CODE'        => 'Código fuente',
+'ACEDITOR_BOLD_TEXT'        => 'Pone el texto selectionado en negrita ( Ctrl-b )',
+'ACEDITOR_ITALIC_TEXT'        => 'Pone el texto selectionado en cursiva ( Ctrl-i )',
+'ACEDITOR_UNDERLINE_TEXT'    => 'Subraya el texto selectionado ( Ctrl-u )',
+'ACEDITOR_STRIKE_TEXT'        => 'Tacha el texto selectionado ( Ctrl-y )',
+'ACEDITOR_LINE'                => 'Integra una linea horizontal',
+'ACEDITOR_LINK'                => 'Enlace',
+'ACEDITOR_LINK_PROMPT'        => 'Entra la dirección URL',
+'ACEDITOR_LINK_TITLE'        => 'Añadir un enlace al texto selectionado'
 
 ));

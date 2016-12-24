@@ -44,14 +44,14 @@ echo $this->Header();
 <div class="page">
 <?php
 if($this->UserIsOwner()){
-	if (!class_exists('attach')){
-		include('tools/attach/actions/attach.class.php');
-	}
-	$att = new attach($this);
-	$att->doFilemanager();
-	unset($att);
+    if (!class_exists('attach')){
+        include('tools/attach/actions/attach.class.php');
+    }
+    $att = new attach($this);
+    $att->doFilemanager();
+    unset($att);
 }else{
-	echo $this->Format("//Seul le propriétaire de cette page peut accéder au gestionnaire des fichiers attaché//");
+    echo $this->Format("//Seul le propriétaire de cette page peut accéder au gestionnaire des fichiers attaché//");
 }
 ?>
 </div>
