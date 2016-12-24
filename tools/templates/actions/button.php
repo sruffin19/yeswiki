@@ -46,4 +46,3 @@ if (empty($link)) {
 else {
     echo '<a href="'.$link.'" class="'.$class.'"'.(!empty($title) ? ' title="'.htmlentities($title, ENT_COMPAT,YW_CHARSET).'"' : (!empty($text) ? ' title="'.htmlentities($text, ENT_COMPAT,YW_CHARSET).'"' : '') ).'>'.$icon.(!empty($text)? htmlentities($text, ENT_COMPAT,YW_CHARSET) : '').'</a>'."\n";
 }
-?>

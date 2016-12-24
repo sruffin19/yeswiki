@@ -17,5 +17,3 @@ echo '</pre>'."\n";
 echo '<div class="alert alert-info">'._t('TEMPLATE_WIDGET_COPY_PASTE').'</div>'."\n";
 echo '<iframe class="yeswiki_frame" width="'.$width.'" height="'.$height.'" frameborder="0" src="'.$this->Href('iframe').'"></iframe>';
 echo $this->Footer();
-
-?>

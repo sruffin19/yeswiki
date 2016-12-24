@@ -63,5 +63,3 @@ else
 {
     echo "<i>"._t('NO_RECENT_COMMENTS').".</i>" ;
 }
-
-?>

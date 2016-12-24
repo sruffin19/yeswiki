@@ -29,10 +29,10 @@ if (!function_exists("wakka2callbacktoc"))
                 return "\"\"<span id=\"$toc\" class=\"yeswiki-title-anchor\"></span>\"\"==";
             }
 
- 
+
 
             // Fermeture du titre precedent
-            else  
+            else
             {
                 return "==";
             }
@@ -55,9 +55,9 @@ if (!function_exists("wakka2callbacktoc"))
                 return "\"\"<span id=\"$toc\" class=\"yeswiki-title-anchor\"></span>\"\"===";
             }
 
- 
+
             // Fermeture du titre precedent
-            else  
+            else
             {
                 return "===";
             }
@@ -150,6 +150,3 @@ if (preg_match_all ("/".'(\\{\\{toc)'.'(.*?)'.'(\\}\\})'."/is", $text, $matches)
             "/(======|=====|====|===|==|".
             "\n)/ms", "wakka2callbacktoc", $text);
 }
-
-
-?>

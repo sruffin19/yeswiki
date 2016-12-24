@@ -16,5 +16,3 @@ Le plugin "Tags" vous permet de gerer des mots clés par page et ajoute des acti
 
 
 );
-
-?>

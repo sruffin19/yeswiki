@@ -28,4 +28,3 @@ else {
     style="width: '.$val.'%;"></div>
     </div>'."\n";
 }
-?>

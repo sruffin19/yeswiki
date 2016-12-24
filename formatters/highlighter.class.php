@@ -7,7 +7,7 @@
 * copyright Eric Feldstein 2004 mailto:garfield_fr@tiscali.fr
 *
 * Licence : la meme que wikini(voir le fichier LICENCE).
-* Vous étes libre d'utiliser et de modifier ce code é condition de laisser le copyright 
+* Vous étes libre d'utiliser et de modifier ce code é condition de laisser le copyright
 * d'origine. Vous pouvez  bien sur vous ajouter é la liste des auteurs.
 *
 * INSTALLATION : copier le fichier dans le repertoire "formatters" de WikiNi
@@ -247,4 +247,3 @@ class Highlighter{
         return $text;
     }
 }    //class Highlighter
-?>

@@ -98,4 +98,3 @@ if (!$sommaire) {
    }
    echo '<ul class="pager">'."\n".$btnPrev.$btnTOC.$btnNext.'</ul>'."\n";
 }
-?>

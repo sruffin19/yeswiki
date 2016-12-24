@@ -147,4 +147,3 @@ $libs .= "} $libs_name();";
 
 // return code
 echo $libs;
-?>

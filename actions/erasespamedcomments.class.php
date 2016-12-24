@@ -143,5 +143,3 @@ class ActionErasespamedcomments extends WikiniAdminAction
         return ob_get_clean();
     }
 }
-
-?>

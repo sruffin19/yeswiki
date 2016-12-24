@@ -49,9 +49,9 @@
 class Pager_HtmlWidgets
 {
     var $pager = null;
-    
+
     // {{{ constructor
-    
+
     /**
      * Constructor
      *
@@ -61,7 +61,7 @@ class Pager_HtmlWidgets
     {
         $this->pager =& $pager;
     }
-    
+
     // }}}
     // {{{ getPerPageSelectBox()
 
@@ -231,7 +231,7 @@ class Pager_HtmlWidgets
                 ERROR_PAGER_INVALID_PLACEHOLDER
             );
         }
-        
+
         $tmp = '<select name="'.$this->pager->_urlVar.'"';
         if (!empty($extraAttributes)) {
             $tmp .= ' '.$extraAttributes;
@@ -277,7 +277,6 @@ class Pager_HtmlWidgets
         $tmp .= '</select>';
         return $tmp;
     }
-    
+
     // }}}
 }
-?>

@@ -9,7 +9,7 @@ if ($this->UserIsAdmin())
 {
 
     if (isset($_GET['delete_tag']))
-    {        
+    {
         $sql = 'DELETE FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" and id IN ('.mysqli_real_escape_string($this->dblink, $_GET['delete_tag']).')';
         $this->Query($sql);
     }
@@ -70,9 +70,9 @@ if ($this->UserIsAdmin())
                     <td class="delete_tag">
                         <a href="'.$this->href().'&amp;delete_tag='.urlencode($tab_les_tags['id']).'" class="btn btn-xs btn-mini btn-error btn-danger"><i class="icon icon-trash icon-white"></i> '._t('TAGS_DELETE_MINUSCULE').' '._t('TAGS_FROM_THIS_PAGE').'.</a>
                     </td>
-                    </tr>'."\n";    
+                    </tr>'."\n";
                 }
-                
+
             }
             $tag_precedent = $tagstripped;
         }
@@ -83,5 +83,3 @@ else
 {
     echo '<div class="alert alert-danger"><strong>'._t('TAGS_ACTION_ADMINTAGS').' :</strong>&nbsp;'._t('TAGS_ACTION_ADMINTAGS_ONLY_FOR_ADMINS').'...</div>'."\n";
 }
-
-?>

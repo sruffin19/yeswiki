@@ -92,5 +92,3 @@ function detectRewriteMode()
     return substr($pieces['path'], - strlen(WAKKA_ENGINE)) != WAKKA_ENGINE;
     // return !preg_match("/".preg_quote(WAKKA_ENGINE)."$/", $_SERVER["REQUEST_URI"]);
 }
-
-?>

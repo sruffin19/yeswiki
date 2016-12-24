@@ -46,6 +46,5 @@ echo('</dl>');
 
 ?>
 </div>
-<?php 
+<?php
     echo $this->Footer(); 
-?>

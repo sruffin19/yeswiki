@@ -46,19 +46,17 @@ if ($user = $this->GetUser()) {
                 <form id="ajax-abonne-form" class="form-mail" action="'.$this->href('mail').'">
                     '.$list.' : '."\n".
                 '</form>'."\n";
-        } 
+        }
         else {
             echo '<div class="alert alert-danger"><strong>'._t('CONTACT_ACTION_LISTSUBSCRIPTION').'</strong> : '._t('CONTACT_LIST_REQUIRED').'.</div>';
         }
-        
-        
+
+
     }
     else {
         echo '<div class="alert alert-danger"><strong>'._t('CONTACT_ACTION_LISTSUBSCRIPTION').'</strong> : '._t('CONTACT_USER_NO_EMAIL').'</div>';
-    }    
+    }
 }
 else {
     echo '<div class="alert alert-danger"><strong>'._t('CONTACT_ACTION_LISTSUBSCRIPTION').'</strong> : '._t('CONTACT_USER_NOT_LOGGED_IN').'</div>';
 }
-
-?>

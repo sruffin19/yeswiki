@@ -31,5 +31,3 @@ else
 {
     echo "<i>"._t('NO_ORPHAN_PAGES')."</i>" ;
 }
-
-?>

@@ -564,5 +564,3 @@ if (!class_exists('WikiniFormatter'))
 $form = new WikiniFormatter($this);
 //$form->getInstance($this);
 echo $form->format($text);
-
-?>

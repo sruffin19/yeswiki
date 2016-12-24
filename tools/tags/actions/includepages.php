@@ -63,9 +63,7 @@ else {
 
 if (empty($class)) {
     echo $output."\n";
-} 
+}
 else {
     echo '<div class="'.$class.'">'."\n".$output."\n".'</div>'."\n";
 }
-
-?>

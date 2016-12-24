@@ -6,5 +6,3 @@ if (!defined("WIKINI_VERSION"))
 }
 
 echo '  <link rel="stylesheet" href="tools/tags/presentation/styles/tags.css" />'."\n";
-
-?>

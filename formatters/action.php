@@ -35,7 +35,7 @@ if (!function_exists("wakka2callback"))
         $thing = $things[1];
 
         global $wiki;
-    
+
         // events
         if (preg_match("/^\{\{(.*?)\}\}$/s", $thing, $matches))
         {
@@ -61,4 +61,3 @@ $text = preg_replace_callback(
     "/(\{\{.*?\}\}|.*)/msU", "wakka2callback", $text);
 
 echo $text ;
-?>

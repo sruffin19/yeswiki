@@ -51,13 +51,13 @@ $sql = 'SELECT value, resource FROM '.$this->config['table_prefix'].'triples WHE
 $tab_tous_les_tags = $this->LoadAll($sql);
 
 if (is_array($tab_tous_les_tags))
-{    
+{
     $i=1;$nb_pages=0;
     $liste_page = '';
     $tag_precedent = '';
     $tab_tag = array();
     $tab_tous_les_tags['dummy']['value']='fin'; //on ajoute un element au tableau pour boucler une derniere fois
-    $tab_tous_les_tags['dummy']['resource']='fin'; 
+    $tab_tous_les_tags['dummy']['resource']='fin';
     foreach ($tab_tous_les_tags as $tab_les_tags) {
         $tagstripped = _convert(stripslashes($tab_les_tags['value']), 'ISO-8859-1');
         if ($tagstripped==$tag_precedent || $tag_precedent== '')
@@ -101,5 +101,3 @@ if (is_array($tab_tous_les_tags))
         echo '</ul><div class="clear"></div>'."\n".'</div>'."\n";
     }
 }
-
-?>

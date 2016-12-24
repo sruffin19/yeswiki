@@ -37,7 +37,7 @@ if ($_REQUEST["action"] == "logout")
 }
 else if ($user = $this->GetUser())
 {
-    
+
     // is user trying to update?
     if ($_REQUEST["action"] == "update")
     {
@@ -49,24 +49,24 @@ else if ($user = $this->GetUser())
             "changescount = '".mysqli_real_escape_string($this->dblink, $_POST["changescount"])."', ".
             "motto = '".mysqli_real_escape_string($this->dblink, $_POST["motto"])."' ".
             "where name = '".$user["name"]."' limit 1");
-        
+
         $this->SetUser($this->LoadUser($user["name"]));
-        
+
         // forward
         $this->SetMessage(_t('PARAMETERS_SAVED')." !");
         $this->Redirect($this->href());
     }
-    
+
     if ($_REQUEST["action"] == "changepass")
     {
             // check password
-            $password = $_POST["password"];            
+            $password = $_POST["password"];
             if (preg_match("/ /", $password)) $error = _t('NO_SPACES_IN_PASSWORD').".";
             else if (strlen($password) < 5) $error = _t('PASSWORD_TOO_SHORT').".";
-            else if ($user["password"] != md5($_POST["oldpass"])) $error = _t('WRONG_PASSWORD')."."; 
+            else if ($user["password"] != md5($_POST["oldpass"])) $error = _t('WRONG_PASSWORD').".";
             else
             {
-                $this->Query("update ".$this->config["table_prefix"]."users set "."password = md5('".mysqli_real_escape_string($this->dblink, $password)."') "."where name = '".$user["name"]."'");                
+                $this->Query("update ".$this->config["table_prefix"]."users set "."password = md5('".mysqli_real_escape_string($this->dblink, $password)."') "."where name = '".$user["name"]."'");
                 $this->SetMessage(_t('PASSWORD_CHANGED')." !");
                 $user["password"]=md5($password);
                 $this->SetUser($user);
@@ -153,7 +153,7 @@ else if ($user = $this->GetUser())
 else
 {
     // user is not logged in
-    
+
     // is user trying to log in or register?
     if ($_REQUEST["action"] == "login")
     {
@@ -257,5 +257,3 @@ else
     <?php
     echo $this->FormClose();
 }
-?>
-

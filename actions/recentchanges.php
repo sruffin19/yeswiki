@@ -73,4 +73,3 @@ if ($pages = $this->LoadRecentlyChanged($max))
         }
     }
 }
-?>

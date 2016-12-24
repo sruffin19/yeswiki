@@ -42,5 +42,3 @@ if ($this->page && !$this->GetPageOwner() && $this->GetUser())
 }
 
 $this->Redirect($this->href());
-
-?>

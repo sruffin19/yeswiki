@@ -71,4 +71,3 @@ else if ($set)
 {
     $this->SetMessage("Le nom '".htmlspecialchars($set, ENT_COMPAT, YW_CHARSET)."' n'est pas conforme é la r&egrave;gle de nommage impos&eacute;e par l'action ChangeStyle. Reportez-vous &agrave; la documentation de cette action pour plus de pr&eacute;cisions.");
 }
-?>

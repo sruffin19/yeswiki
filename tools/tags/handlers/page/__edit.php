@@ -20,7 +20,7 @@ if (!CACHER_MOTS_CLES && $this->HasAccess("write") && $this->HasAccess("read"))
     sort($response);
     $tagsexistants = '\''.implode('\',\'', $response).'\'';
 
-    
+
     // on recupere les tags de la page courante
     $tabtagsexistants = $this->GetAllTags($this->GetPageTag());
     foreach ($tabtagsexistants as $tab)
@@ -44,7 +44,7 @@ if (!CACHER_MOTS_CLES && $this->HasAccess("write") && $this->HasAccess("read"))
         },
         confirmKeys: [13, 188]
     });
-    
+
     //bidouille antispam
     $(".antispam").attr(\'value\', \'1\');
 
@@ -57,16 +57,14 @@ if (!CACHER_MOTS_CLES && $this->HasAccess("write") && $this->HasAccess("read"))
 }
 
 //Sauvegarde
-if (!CACHER_MOTS_CLES && $this->HasAccess("write") && 
-    isset($_POST["submit"]) && $_POST["submit"] == 'Sauver' && 
+if (!CACHER_MOTS_CLES && $this->HasAccess("write") &&
+    isset($_POST["submit"]) && $_POST["submit"] == 'Sauver' &&
     isset($_POST["pagetags"]) && $_POST['antispam']==1 )
 {
     $this->SaveTags($this->GetPageTag(), stripslashes($_POST["pagetags"]));
 }
 
-// If the page is an ebook, we will display the ebook generator 
+// If the page is an ebook, we will display the ebook generator
 if ($this->HasAccess('write') && isset($this->page["metadatas"]["ebook-title"])) {
     $pageeditionebook = $this->Format('{{ebookgenerator}}');
 }
-
-?>

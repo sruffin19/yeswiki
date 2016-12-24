@@ -72,5 +72,3 @@ else
 {
     echo "<i>"._t('NO_RECENT_COMMENTS_ON_PAGES').".</i>" ;
 }
-
-?>

@@ -13,22 +13,19 @@ if (!defined("WIKINI_VERSION"))
     for ($t=1;$t<count($chunks);$t=$t+2) {
         if (preg_match("/{{lang=\"([a-zA-Z][a-zA-Z])*\"}}/",$chunks[$t],$lang_to_display)) {
           if ($lang_to_display[1]==$GLOBALS['prefered_language']) {
-            $this->page["body"]=$chunks[$t+1];            
+            $this->page["body"]=$chunks[$t+1];
             $translation_found=true;
           }
         }
     }
-    
+
     if (!$translation_found) {  // Pas de traduction ? Affichage de la langue par defaut
       for ($t=1;$t<count($chunks);$t=$t+2) {
         if (preg_match("/{{lang=\"([a-zA-Z][a-zA-Z])*\"}}/",$chunks[$t],$lang_to_display)) {
           if ($lang_to_display[1]== $this->config['default_language']) {
-              $this->page["body"]=$chunks[$t+1];            
+              $this->page["body"]=$chunks[$t+1];
           }
         }
       }
     }
   }
-
-
-?>

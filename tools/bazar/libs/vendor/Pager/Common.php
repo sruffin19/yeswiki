@@ -540,7 +540,7 @@ class Pager_Common
         $this->linkTags .= $this->_getPrevLinkTag();
         $this->linkTags .= $this->_getNextLinkTag();
         $this->linkTags .= $this->_getLastLinkTag();
-        
+
         $this->linkTagsRaw['first'] = $this->_getFirstLinkTag(true);
         $this->linkTagsRaw['prev']  = $this->_getPrevLinkTag(true);
         $this->linkTagsRaw['next']  = $this->_getNextLinkTag(true);
@@ -1699,4 +1699,3 @@ class Pager_Common
 
     // }}}
 }
-?>

@@ -32,4 +32,3 @@ if ($lines = file($text)) {
             echo $line;
     }
 }
-?>

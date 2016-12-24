@@ -24,4 +24,3 @@ if (empty($class)) {
      $this->parameter['class'] = 'include '.$class;
     $class = 'include '.$class;
 }
-?>

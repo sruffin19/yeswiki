@@ -4,19 +4,19 @@
  * Description : Handler pour l'affichage SVG du réseau de liens d'une page wikini
  * auteurs : Yann Le Guennec - Charles Nepote
  * version : 0.0.6
- * 
+ *
  * Paramétres utilisateurs :
  * &script=on : active le script de déplacement des mots
  * &subnet=off : desactive le réseau de liens secondaires
  * &center=off : ne centre pas le rectangle de la page courante
  * &style=dark | white (defaut) : styles de couleurs
- * 
+ *
  * Licence GPL
  */
 
 
 $styles = array("white"=>"", "dark"=>"");
-$affich_param = ""; // pour affichage dans le commentaire du source SVG 
+$affich_param = ""; // pour affichage dans le commentaire du source SVG
 $svg_uri = "/svg&amp;svg=reseaupagecourante";
 if(isset($_GET['script']) && $_GET['script'] == 'on') {
   $script = true;
@@ -66,7 +66,7 @@ $p[$id]['w'] = 10;          // largeur de zone par defaut
 
 //Backlinks
 if ($pagesFrom = $this->LoadPagesLinkingTo($this->getPageTag()))
-{    
+{
     foreach ($pagesFrom as $pageFrom)
     {
         $id = $pageFrom["tag"];
@@ -115,32 +115,32 @@ if ($pagesTo = $this->LoadAll($query))
 
 // taille de police
 // la taille de police augmente de 1 em é chaque 30 noeuds supplémentaires dans le graphe
-$fontsize = ceil($n/30); 
+$fontsize = ceil($n/30);
 
-$styles["white"] = " 
-    #fond         { fill:#fff; }  
-    text          { fill:#808080; font-family:arial; font-size:".$fontsize."em;} 
-    rect.cur      { fill:#ffffff; fill-opacity:0.7; stroke:#ff0000; stroke-width:1;} 
+$styles["white"] = "
+    #fond         { fill:#fff; }
+    text          { fill:#808080; font-family:arial; font-size:".$fontsize."em;}
+    rect.cur      { fill:#ffffff; fill-opacity:0.7; stroke:#ff0000; stroke-width:1;}
     rect.in       { fill:#ffff00; fill-opacity:0.5; stroke:#ffff00; stroke-width:1; }
-    rect.out      { fill:#ffcccc; fill-opacity:0.5; stroke:#ff0000; stroke-width:1; } 
-    rect.inout    { fill:#ff0000; fill-opacity:0.5; stroke:#ff0000; stroke-width:1; } 
-    line          { stroke:#808080; opacity:0.1; stroke-width:1;}  
+    rect.out      { fill:#ffcccc; fill-opacity:0.5; stroke:#ff0000; stroke-width:1; }
+    rect.inout    { fill:#ff0000; fill-opacity:0.5; stroke:#ff0000; stroke-width:1; }
+    line          { stroke:#808080; opacity:0.1; stroke-width:1;}
     line.in       { stroke:#ffff00; opacity:0.5 }
-    line.out      { stroke:#ffcccc; opacity:0.5 } 
-    line.inout    { stroke:#ff0000; opacity:0.5; stroke-width:3; } 
+    line.out      { stroke:#ffcccc; opacity:0.5 }
+    line.inout    { stroke:#ff0000; opacity:0.5; stroke-width:3; }
 ";
 
-$styles["dark"] = " 
-    #fond         { fill:#000; }  
-    text          { fill:#ccc; font-family:arial; font-size:".$fontsize."em;} 
-    rect.cur      { fill:#ff0000; fill-opacity:1; } 
+$styles["dark"] = "
+    #fond         { fill:#000; }
+    text          { fill:#ccc; font-family:arial; font-size:".$fontsize."em;}
+    rect.cur      { fill:#ff0000; fill-opacity:1; }
     rect.in       { fill:#00ff00; fill-opacity:0.5; stroke:#00ff00; stroke-width:1; }
-    rect.out      { fill:#0000ff; fill-opacity:0.5; stroke:#0000ff; stroke-width:1; } 
-    rect.inout    { fill:#ff00ff; fill-opacity:0.5; stroke:#ff00ff; stroke-width:1; } 
-    line          { stroke:#808080; opacity:0.1; stroke-width:1;}  
+    rect.out      { fill:#0000ff; fill-opacity:0.5; stroke:#0000ff; stroke-width:1; }
+    rect.inout    { fill:#ff00ff; fill-opacity:0.5; stroke:#ff00ff; stroke-width:1; }
+    line          { stroke:#808080; opacity:0.1; stroke-width:1;}
     line.in       { stroke:#00ff00; opacity:0.5 }
-    line.out      { stroke:#0000ff; opacity:0.5 } 
-    line.inout    { stroke:#ff00ff; opacity:0.5; stroke-width:3; } 
+    line.out      { stroke:#0000ff; opacity:0.5 }
+    line.inout    { stroke:#ff00ff; opacity:0.5; stroke-width:3; }
 ";
 
 
@@ -151,7 +151,7 @@ $vh = round($n*100/3);
 
 //agrandissement pour limiter les debordements
 //largeur de la viewbox
-$vxw = round($vw + 1000/$n); 
+$vxw = round($vw + 1000/$n);
 //hauteur de la viewbox
 $vxh = round($vh + 1000/$n);
 //$vxw = $vw+10;
@@ -191,17 +191,17 @@ $svg_foot = "";     // fin de fichier
 
 //ecriture du SVG
 $svg_head =  "<?xml version=\"1.0\"  encoding=\"iso-8859-1\" ?> \r\n";
-$svg_head .= "<!-- 
-    Cartographie des ".$n." pages liées é la page ".$this->getPageTag().". 
+$svg_head .= "<!--
+    Cartographie des ".$n." pages liées é la page ".$this->getPageTag().".
     Généré par svg.php - version 0.0.6.
-    Le ".date("Y-m-d H:i:s")." 
-$affich_param 
+    Le ".date("Y-m-d H:i:s")."
+$affich_param
 --> \n";
-    
+
 $svg_head .= "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\" \n     \"http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd\">\n";
-$svg_head .= "<svg width=\"100%\" height=\"100%\"  viewBox=\"$viewbox\" preserveAspectRatio=\"none\" 
+$svg_head .= "<svg width=\"100%\" height=\"100%\"  viewBox=\"$viewbox\" preserveAspectRatio=\"none\"
      xml:base=\"http://x-arn.org/y/\"
-     xmlns=\"http://www.w3.org/2000/svg\" 
+     xmlns=\"http://www.w3.org/2000/svg\"
      xmlns:xlink=\"http://www.w3.org/1999/xlink\"> \n";
 $svg_head .= "<style type=\"text/css\"> \n";
 $svg_head .= "   <![CDATA[ \n";
@@ -213,7 +213,7 @@ $svg_head .= "<rect id=\"fond\" x=\"0\" y=\"0\" width=\"100%\" height=\"100%\" /
 
 if($script)
 {
-$svg_head .= " <script type=\"text/ecmascript\"><![CDATA[  
+$svg_head .= " <script type=\"text/ecmascript\"><![CDATA[
 function a(evt,i) {
     //doc = evt.target.ownerDocument;
     doc =  evt.getTarget().getOwnerDocument();
@@ -254,14 +254,14 @@ function d(evt,i) {
         text_element.setAttribute('style', 'fill:#000');
     }
 }
-]]> 
+]]>
 </script>\n";
 }
 
 
 //variables pour les identifiants des éléments
-$i = 0;    
-$j = 0;  
+$i = 0;
+$j = 0;
 
 //valeurs par defaut : pas de script
 $mouseEvent1 = "";
@@ -294,14 +294,14 @@ foreach ($p as $page)
             }
         }
     }
-    
+
     if($script)
     {
       $mouseEvent1 = " onmouseover=\"b(evt,$j)\" ";
       $mouseEvent2 = " onmouseover=\"c(evt,$j)\" onmouseout=\"d(evt,$j)\"  ";
       $mouseEvent3 = " onmouseover=\"a(evt,$j)\" ";
     }
-    
+
     //ajuste les coords de ligne au centre des carrés
     $page['cx'] =  ($page['w']/2) + $page['x'];
     $page['cy'] =  ($page['w']/2) + $page['y'];
@@ -312,15 +312,15 @@ foreach ($p as $page)
     //rectangle equivalent sous le premier pour lien vers page dans wiki
     $y2 = $page['y'] + $page['w'];
     $svg_links .= "<a id=\"ar2[$j]\" $mouseEvent2 xlink:href=\"".$this->config["base_url"].$page['n']."\"><rect id=\"r2[$j]\" x=\"".$page['x']."\" y=\"$y2\" width=\"".$page['w']."\" height=\"".$page['w']."\" class=\"".$page['c']."\"/></a>\n";
-    
-    //texte : nom de la page 
+
+    //texte : nom de la page
     $script ?  $x = 10 : $x = $page['x'];
     $script ?  $svg_txt .= "" : $svg_txt .= "<a xlink:href=\"".$this->config["base_url"].$page['n']."$svg_uri\">";
     $svg_txt .= "<text id=\"t[$j]\" $mouseEvent3  x=\"$x\"  y=\"".$page['y']."\">".$page['n'];
     $svg_txt .= "</text>";
-    $script ?  $svg_txt .= "" : $svg_txt .= "</a>"; 
+    $script ?  $svg_txt .= "" : $svg_txt .= "</a>";
     $svg_txt .= "\n";
-    
+
     //ligne sur la page courante
     $svg_lines .= "<line id=\"l[$i]\" class=\"".$page['c']."\" x1=\"$x1\" y1=\"$y1\" x2=\"".$page['cx']."\" y2=\"".$page['cy']."\"/>\n";
 
@@ -332,4 +332,3 @@ $svg_foot .= "</svg>";
 
 $svg = $svg_head . $svg_rs . $svg_lines . $svg_txt . $svg_links . $svg_foot;
 print($svg);
-?>

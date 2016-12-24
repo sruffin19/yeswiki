@@ -51,15 +51,15 @@ else {
     else {
         $GLOBALS['nbactionmail'] = 1;
     }
-    $contactelements['nbactionmail'] = $GLOBALS['nbactionmail']; 
-    
+    $contactelements['nbactionmail'] = $GLOBALS['nbactionmail'];
+
     $contactelements['entete'] = $this->GetParameter('entete');
     if (empty($contactelements['entete'])) {
         $contactelements['entete'] = $this->config['wakka_name'];
     }
 
     // on choisit le template utilisé
-    $template = $this->GetParameter('template'); 
+    $template = $this->GetParameter('template');
     if (empty($template)) {
         $template = 'complete-contact-form.tpl.html';
     }
@@ -77,4 +77,3 @@ else {
 
     $GLOBALS['js'] = ((isset($GLOBALS['js'])) ? str_replace('    <script src="tools/contact/libs/contact.js"></script>'."\n", '', $GLOBALS['js']) : '').'    <script src="tools/contact/libs/contact.js"></script>'."\n";
 }
-?>

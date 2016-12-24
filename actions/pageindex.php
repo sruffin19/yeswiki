@@ -51,5 +51,3 @@ else
 {
     echo '<i>'._t('NO_PAGE_FOUND').'.</i>' ;
 }
-
-?>

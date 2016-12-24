@@ -45,5 +45,3 @@ if ($this->HasAccess("read")) {
 } else {
     echo json_encode(array('result' => 'ERREUR : pas les droits d\'acc&eacute;s.'));
 }
-
-?>

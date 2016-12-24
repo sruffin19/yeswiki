@@ -37,19 +37,19 @@ if (!defined('WIKINI_VERSION')) {
     die ('acc&egrave;s direct interdit');
 }
 //on ne fait quelque chose uniquement dans le cas d'une requete jsonp
-if (isset($_GET['jsonp_callback'])) 
+if (isset($_GET['jsonp_callback']))
 {
     // on initialise la sortie:
     header('Content-type:application/json');
     $output = '';
-    
+
     if ($this->HasAccess('write') && $this->HasAccess('read')) {
         if (!empty($_GET['submit'])){
             $submit = $_GET['submit'];
         } else {
             $submit = false;
         }
-        
+
         // fetch fields
         if (empty($_GET['previous'])){
             $previous = $this->page['id'];
@@ -61,8 +61,8 @@ if (isset($_GET['jsonp_callback']))
         } else {
             $body =$_GET['body'];
         }
-    
-    
+
+
         switch ($submit){
             case 'savecomment':
                 // check for overwriting
@@ -70,14 +70,14 @@ if (isset($_GET['jsonp_callback']))
                     $error = _t('TAGS_ALERT_PAGE_ALREADY_MODIFIED');
                 } else { // store
                     $body = str_replace("\r", '', utf8_decode($body));
-                    
-                    // teste si la nouvelle page est differente de la précédente 
+
+                    // teste si la nouvelle page est differente de la précédente
                     if(rtrim($body)==rtrim($this->page["body"])) {
                         echo $_GET['jsonp_callback']."(".json_encode(array("nochange"=>'1')).")";
                     } else { // sécurité
                         // add page (revisions)
                         $this->SavePage($this->tag, $body);
-        
+
                         // now we render it internally so we can write the updated link table.
                         $this->ClearLinkTable();
                         $this->StartLinkTracking();
@@ -94,10 +94,10 @@ if (isset($_GET['jsonp_callback']))
                         $this->StopLinkTracking();
                         $this->WriteLinkTable();
                         $this->ClearLinkTable();
-        
+
                         // on recupere le commentzire bien formatte
                         $comment = $this->LoadPage($this->tag);
-                             
+
                         $valcomment['commentaires'][0]['tag'] = $comment["tag"];
                         $valcomment['commentaires'][0]['body'] = $this->Format($comment["body"]);
                         $valcomment['commentaires'][0]['infos'] = $this->Format($comment["user"]).", ".date(_t('TAGS_DATE_FORMAT'), strtotime($comment["time"]));
@@ -110,7 +110,7 @@ if (isset($_GET['jsonp_callback']))
                         $squelcomment->set($valcomment);
                         echo $_GET['jsonp_callback']."(".json_encode(array("html"=>utf8_encode($squelcomment->analyser()))).")";
                     }
-                    
+
                     // sécurité
                     exit;
                 }
@@ -120,12 +120,12 @@ if (isset($_GET['jsonp_callback']))
                 if (isset($error)) {
                     $output .= "<div class=\"alert alert-danger\">$error</div>\n";
                 }
-                
+
                 // append a comment?
                 if (isset($_REQUEST['appendcomment'])) {
                     $body = trim($body);
                 }
-                
+
                 $output .= "<form class=\"form-modify-comment well well-small\" method=\"post\" action=\"".$this->href('ajaxedit')."\">\n".
                     "<input type=\"hidden\" name=\"previous\" value=\"$previous\" />\n".
                     "<textarea name=\"body\" required=\"required\" rows=\"3\" placeholder=\""._t('TAGS_WRITE_YOUR_COMMENT_HERE')."\" class=\"comment-response\">\n".
@@ -141,4 +141,3 @@ if (isset($_GET['jsonp_callback']))
     $response = $_GET['jsonp_callback']."(".json_encode(array("html"=>utf8_encode($output))).")";
     echo $response;
 }
-?>

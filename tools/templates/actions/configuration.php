@@ -6,7 +6,7 @@ if (!defined("WIKINI_VERSION"))
 
 $param = $this->GetParameter('param');
 if (!empty($param)) {
-    switch($param) {        
+    switch($param) {
           case 'wakka_version':
           case 'wikini_version':
           case 'yeswiki_version':
@@ -28,15 +28,12 @@ if (!empty($param)) {
             echo $GLOBALS['prefered_language'];
             break;
         case 'theme_path':
-            echo ((is_dir('themes/'.$this->config['favorite_theme']))) ? 
-                'themes/'.$this->config['favorite_theme'].'/' : 
+            echo ((is_dir('themes/'.$this->config['favorite_theme']))) ?
+                'themes/'.$this->config['favorite_theme'].'/' :
                 'tools/templates/themes/'.$this->config['favorite_theme'].'/';
             break;
           default:
-              break;    
-    }        
-            
-} 
-    
-    
-?>
+              break;
+    }
+
+}

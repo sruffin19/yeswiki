@@ -31,5 +31,3 @@ echo print_diaporama($pagetag, $template, $class);
 //on retablie le bon nom de page
 $this->tag = $oldpage;
 $this->page = $this->LoadPage($oldpage);
-
-?>

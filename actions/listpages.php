@@ -1,7 +1,7 @@
 <?php
 /**
 * WikiNi action allowing to list pages among different ways
-* 
+*
 * @version $Id: listpages.php 833 2007-08-10 01:16:57Z gandon $
 * @author Didier Loiseau
 * @copyright 2005   Didier Loiseau
@@ -9,12 +9,12 @@
 * it under the terms of the GNU General Public License as published by
 * the Free Software Foundation; either version 2 of the License, or
 * (at your option) any later version.
-* 
+*
 * This program is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
 * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 * GNU General Public License for more details.
-* 
+*
 * You should have received a copy of the GNU General Public License
 * along with this program; if not, write to the Free Software
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -49,11 +49,11 @@ $user = $this->GetParameter('user');
 if (!in_array($sort, array('time', 'user', 'owner', 'tag')))
 {
     $sort = 'tag';
-} 
+}
 if ($owner == 'owner')
 {
     $owner = $this->GetPageOwner();
-} 
+}
 if (($owner && $sort == 'owner') || ($user && $sort == 'user'))
 {
     $sort = 'tag';
@@ -68,11 +68,11 @@ if ($tree == 'tree')
     {
         $tree = $this->GetConfigValue('root_page');
     }
-} 
+}
 if ($levels <= 0)
 {
     $levels = 3;
-} 
+}
 elseif ($levels > $max_levels)
 {
     $levels = $max_levels;
@@ -81,7 +81,7 @@ if ($exclude)
 {
     // notice we can addslash() the list before splitting it because escaped character are not separators
     $exclude = preg_split('/[ ;,\|]/', addslashes($exclude), -1, PREG_SPLIT_NO_EMPTY);
-} 
+}
 else
 {
     $exclude = array();
@@ -142,12 +142,12 @@ if ($tree)
     }
     $links[$tree]['page_exists'] = true;
     $links[$tree]['haslinksto'] = array();
-    
+
     // To simplify treatment and to make it more efficient we'll work by referrence.
     // This will allow you to do only one request by tree level
     // $workingon represents every page of the current level
     $workingon = array($tree => &$links[$tree]['haslinksto']);
-    
+
     // to avoid many loops and computing several time the lists needed for the request,
     // we store them into variables
     $from = '"' . AddSlashes($tree) . '"';
@@ -230,7 +230,7 @@ if ($tree)
                 $sql .= 'a.user IS NULL, a.user';
                 break;
         } // switch
-        
+
         if ($pages = $this->LoadAll($sql))
         {
             $from = '';
@@ -277,7 +277,7 @@ if ($tree)
             break;
         }
     }
-    
+
     // Seccond step: display the tree
     // this function allows us to render the tree using HTML lists.
     if (!function_exists('ShowPageTree'))
@@ -357,7 +357,7 @@ if ($tree)
             return '';
         }
     }
-    
+
     echo ShowPageTree($links, $this, $sort);
 }
 else
@@ -441,10 +441,10 @@ else
     {
         $sql .= ' ORDER BY a.' . $sort;
     }
-    
+
     // retrieving the pages
     $pages = $this->LoadAll($sql);
-    
+
     // Display
     // Header
     if ($user)
@@ -486,7 +486,7 @@ else
         return;
     }
     // No header if it is a simple page list that was asked
-    
+
     // Display the list itself
     echo "<ul>\n";
     foreach ($pages as $page)
@@ -544,5 +544,3 @@ else
     }
     echo "</ul>\n";
 }
-
-?>

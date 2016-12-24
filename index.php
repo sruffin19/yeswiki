@@ -27,4 +27,3 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
   header("Location: wakka.php");
   exit;
-?>

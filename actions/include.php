@@ -31,7 +31,7 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  -- edit : option d'accés en édition é la page incluse (facultatif)
     -- par défaut : ne fait rien
     -- valeur "show" :  ajoute un lien "[édition]" en haut é droite de la boite
-*/ 
+*/
 
 // récuperation du nom de la page é inclure
 $incPageName = trim($this->GetParameter('page'));
@@ -49,8 +49,8 @@ if ($this->GetParameter('class'))
         {
             $classes .= ($classes ? ' ':'') . "include_$c";
         }
-    } 
-} 
+    }
+}
 
 // Affichage de la page ou d'un message d'erreur
 //
@@ -66,7 +66,7 @@ elseif ($this->IsIncludedBy($incPageName))
     for($i = 0; $inclusions[$i] != $pg; $i++)
     {
         $err = '[[' . $inclusions[$i] . ']] > ' . $err;
-    } 
+    }
     echo '<div class="alert alert-danger"><strong>'._t('ERROR').' '._t('ACTION').' Include</strong> : '._t('IMPOSSIBLE_FOR_THIS_PAGE').' '.$incPageName.' '._t('TO_INCLUDE_ITSELF')
          . ($i ? ':<br /><strong>'._t('INCLUSIONS_CHAIN').'</strong> : '.$pg.' > '.$err : '').'</div>'."\n"; // si $i = 0, alors c'est une page qui s'inclut elle-méme directement...
 }
@@ -77,7 +77,7 @@ elseif (!$this->HasAccess('read', $incPageName) && $this->GetParameter('auth')!=
 elseif (!$incPage = $this->LoadPage($incPageName))
 {
     echo '<div class="alert alert-danger"><strong>'._t('ERROR').' '._t('ACTION').' Include</strong> : '._t('INCLUDED_PAGE').' '.$incPageName.' '._t('DOESNT_EXIST').'...</div>'."\n";
-} 
+}
 // Affichage de la page quand il n'y a pas d'erreur
 elseif ($this->HasAccess('read', $incPageName))
 {
@@ -94,5 +94,3 @@ elseif ($this->HasAccess('read', $incPageName))
     else echo $output;
     $this->UnregisterLastInclusion();
 }
-
-?>

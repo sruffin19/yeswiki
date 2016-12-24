@@ -7,13 +7,13 @@
  * @author A. Grandt <php@grandt.com>
  * @copyright 2009-2012 A. Grandt
  * @license GNU LGPL, Attribution required for commercial implementations, requested for everything else.
- * @link http://www.phpclasses.org/package/6115 
+ * @link http://www.phpclasses.org/package/6115
  * @link https://github.com/Grandt/PHPePub
  * @version 2.02
  */
 class EPubChapterSplitter {
     const VERSION = 2.02;
-    
+
     private $splitDefaultSize = 250000;
 
     /**
@@ -41,14 +41,14 @@ class EPubChapterSplitter {
 
     /**
      * Split $chapter into multiple parts.
-     * 
-     * The search string can either be a regular string or a PHP PECL Regular Expression pattern as defined here: http://www.php.net/manual/en/pcre.pattern.php 
+     *
+     * The search string can either be a regular string or a PHP PECL Regular Expression pattern as defined here: http://www.php.net/manual/en/pcre.pattern.php
      * If the search string is a regular string, the matching will be for lines in the HTML starting with the string given
-     * 
+     *
      * @param String $chapter XHTML file
-     * @param Bool   $splitOnSearchString Split on chapter boundaries, Splitting on search strings disables the split size check.  
+     * @param Bool   $splitOnSearchString Split on chapter boundaries, Splitting on search strings disables the split size check.
      * @param String $searchString Chapter string to search for can be fixed text, or a regular expression pattern.
-     * 
+     *
      * @return array with 1 or more parts
      */
     function splitChapter($chapter, $splitOnSearchString = false, $searchString = '/^Chapter\\ /i') {
@@ -171,11 +171,10 @@ class EPubChapterSplitter {
 
             // force pretty printing and correct formatting, should not be needed, but it is.
             $xml->loadXML($xml2Doc->saveXML());
-            
+
             $chapterData[$splitOnSearchString ? $chapterNames[$idx] : $idx] = $xml->saveXML();
         }
 
         return $chapterData;
     }
 }
-?>

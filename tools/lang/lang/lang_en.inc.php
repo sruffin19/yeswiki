@@ -14,5 +14,3 @@ $GLOBALS['translations'] = array_merge($GLOBALS['translations'], array(
 
 
 ));
-
-?>

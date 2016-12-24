@@ -27,4 +27,3 @@ if ($this->GetMethod() != 'rss' && $this->GetMethod() != 'xml' && $this->GetMeth
         </a>'."\n";
     return;
 }
-?>

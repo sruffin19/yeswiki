@@ -4,10 +4,10 @@ if (!defined("WIKINI_VERSION")) {
     die ("acc&egrave;s direct interdit");
 }
 
-  
+
 
 $wikiClasses [] = 'lang';
-$wikiClassesContent [] = ' 
+$wikiClassesContent [] = '
 
 function Href($method = "", $tag = "", $params = "", $htmlspchars = true) {
 
@@ -19,12 +19,9 @@ function Href($method = "", $tag = "", $params = "", $htmlspchars = true) {
     if (isset($_GET[\'lang\']) && $_GET[\'lang\']!="") {
         $href .= "&lang='.$GLOBALS["prefered_language"].'";
     }
-    
+
     return $href;
-}    
+}
 
 
-';        
-
-
-?>
+';

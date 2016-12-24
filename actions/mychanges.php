@@ -37,7 +37,7 @@ if ($user = $this->GetUser())
 
     if (($bydate = $this->GetParameter("bydate")))
     {
-        echo "<b>"._t('YOUR_MODIFIED_PAGES_ORDERED_BY_MODIFICATION_DATE').".</b><br /><br />\n";    
+        echo "<b>"._t('YOUR_MODIFIED_PAGES_ORDERED_BY_MODIFICATION_DATE').".</b><br /><br />\n";
 
         if ($pages = $this->LoadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".mysqli_real_escape_string($this->dblink, $this->GetUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY time ASC, tag ASC"))
         {
@@ -64,7 +64,7 @@ if ($user = $this->GetUser())
 
                 $my_edits_count++;
             }
-            
+
             if ($my_edits_count == 0)
             {
                 echo "<i>"._t('YOU_DIDNT_MODIFY_ANY_PAGE').".</i>";
@@ -77,7 +77,7 @@ if ($user = $this->GetUser())
     }
     else
     {
-        echo "<b>"._t('YOUR_MODIFIED_PAGES_ORDERED_BY_NAME').".</b><br /><br />\n";    
+        echo "<b>"._t('YOUR_MODIFIED_PAGES_ORDERED_BY_NAME').".</b><br /><br />\n";
 
         if ($pages = $this->LoadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".mysqli_real_escape_string($this->dblink, $this->GetUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY tag ASC, time DESC"))
         {
@@ -90,20 +90,20 @@ if ($user = $this->GetUser())
                     if (!preg_match("/".WN_UPPER."/", $firstChar)) {
                         $firstChar = "#";
                     }
-        
+
                     if ($firstChar != $curChar) {
                         if ($curChar) echo "<br />\n";
                         echo "<b>$firstChar</b><br />\n";
                         $curChar = $firstChar;
                     }
-    
+
                     // echo entry
                     echo "&nbsp;&nbsp;&nbsp;(",$page["time"],") (",$this->ComposeLinkToPage($page["tag"], "revisions", "history", 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0),"<br />\n";
-    
+
                     $my_edits_count++;
                 }
             }
-            
+
             if ($my_edits_count == 0)
             {
                 echo "<i>"._t('YOU_DIDNT_MODIFY_ANY_PAGE').".</i>";
@@ -119,5 +119,3 @@ else
 {
     echo "<div class=\"alert alert-danger\">"._t('YOU_ARENT_LOGGED_IN')." : "._t('IMPOSSIBLE_TO_SHOW_YOUR_MODIFIED_PAGES').".</div>\n";
 }
-
-?>

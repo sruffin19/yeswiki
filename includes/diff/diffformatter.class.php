@@ -83,11 +83,9 @@ class DiffFormatter
 
     return $xbeg . ($xlen ? ($ylen ? 'c' : 'd') : 'a') . $ybeg;
     }
-    
+
     function _start_block($header) {
     echo $header."\n";
     }
 
 }
-
-?>

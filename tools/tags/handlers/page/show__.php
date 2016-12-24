@@ -43,7 +43,7 @@ if ($GLOBALS["open_comments"][$tag]) {
     {
         // load comments for this page
         $comments = $this->LoadComments($this->tag);
-        
+
         // store comments display in session
         $tag = $this->GetPageTag();
 
@@ -64,7 +64,7 @@ if ($GLOBALS["open_comments"][$tag]) {
         $gestioncommentaire .= afficher_commentaires_recursif($this->getPageTag(), $this);
         $gestioncommentaire .= "</div>\n</div>\n</div>\n</div>\n";
         $output .= $gestioncommentaire;
-    
+
     }
 }
 else //commentaire pas ouverts
@@ -76,7 +76,7 @@ else //commentaire pas ouverts
     }
 }
 
-// on affiche la liste des mots cles disponibles pour cette page 
+// on affiche la liste des mots cles disponibles pour cette page
 if (!CACHER_MOTS_CLES && (!isset($type) || !(isset($type) && $type == 'fiche_bazar')))
 {
     $tabtagsexistants = $this->GetAllTags($this->GetPageTag());
@@ -102,5 +102,3 @@ $plugin_output_new = str_replace('    <script src="tools/tags/libs/tag.js"></scr
 $plugin_output_new = str_replace('</body>', '    <script src="tools/tags/libs/tag.js"></script>'."\n".'</body>', $plugin_output_new);
 
 $plugin_output_new = preg_replace ('/\<hr class=\"hr_clear\" \/\>/', '<hr class="hr_clear" />'."\n".$output, $plugin_output_new);
-
-?>

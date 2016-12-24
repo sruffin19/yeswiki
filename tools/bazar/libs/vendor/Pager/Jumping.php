@@ -145,7 +145,7 @@ class Pager_Jumping extends Pager_Common
      * the method act as it previously did. This hack's only purpose is to
      * mantain backward compatibility.
      *
-     * @param integer $pageID    Optional pageID. If specified, links for that 
+     * @param integer $pageID    Optional pageID. If specified, links for that
      *                           page are provided instead of current one.
      *                           [ADDED IN NEW PAGER VERSION]
      * @param string  $next_html HTML to put inside the next link
@@ -257,4 +257,3 @@ class Pager_Jumping extends Pager_Common
 
     // }}}
 }
-?>

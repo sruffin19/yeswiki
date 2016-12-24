@@ -62,7 +62,7 @@ if ($this->HasAccess("comment") && $this->page && !$this->page['comment_on'])
         $this->SavePage("Comment".$num, $body, $this->tag);
     }
 
-    
+
     // redirect to page
     $this->redirect($this->href());
 }
@@ -72,5 +72,3 @@ else
     echo"<div class=\"page\"><i>Vous n'&ecirc;tes pas autoris&eacute; &agrave; commenter cette page.</i></div>\n";
     echo $this->Footer();
 }
-
-?>

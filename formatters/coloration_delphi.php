@@ -83,4 +83,3 @@ $DH->identStyle = '';
 
 echo "<pre>".$DH->Analyse($text)."</pre>";
 unset($DH);
-?>

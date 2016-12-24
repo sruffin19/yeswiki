@@ -98,4 +98,3 @@ class ActionEditgroups extends WikiniAdminAction
         return $res;
     }
 }
-?>

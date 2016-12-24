@@ -733,4 +733,3 @@ $GLOBALS['languages_list'] = array(
         "nativeName" => "Saɯ cueŋƅ, Saw cuengh"
     )
 )
-?>

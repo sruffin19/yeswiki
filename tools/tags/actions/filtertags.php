@@ -28,7 +28,7 @@ $taglist = _convert($params['tags'], YW_CHARSET, TRUE);
 unset($params['tags']);
 
 // requete avec toutes les pages contenants les mots cles
-$req = "SELECT DISTINCT tag, time, user, owner, body 
+$req = "SELECT DISTINCT tag, time, user, owner, body
 FROM ".$this->config['table_prefix']."pages, ".$this->config['table_prefix']."triples tags
 WHERE latest = 'Y' AND comment_on = '' AND tags.value IN (".$taglist.") AND tags.property = \"http://outils-reseaux.org/_vocabulary/tag\" AND tags.resource = tag AND tag NOT IN (\"".implode('","', $this->GetAllInclusions())."\") ORDER BY tag ASC";
 $pages = $this->LoadAll($req);
@@ -37,15 +37,15 @@ echo '<div class="well well-sm no-dblclick controls">'."\n".'<div class="pull-ri
 foreach ($params as $param) {
       echo '<div class="filter-group '.$param['class'].'" data-type="'.$param['toggle'].'">'."\n".$param['title']."\n".'<div class="btn-group filter-tags">'."\n";
      foreach ($param['arraytags'] as $tagname) {
-         if ($tagname == "alaligne") { 
+         if ($tagname == "alaligne") {
              echo '<br />'."\n";
-         } 
+         }
          else {
              echo '<button type="button" class="btn btn-default filter" data-filter="'.sanitizeEntity(_convert($tagname, YW_CHARSET, TRUE)).'">'.$tagname.'</button>'."\n";
-         }    
+         }
      }
      echo  '</div>'."\n".'</div>'."\n";
-} 
+}
 echo '</div>';
 
 $element = array();
@@ -79,5 +79,3 @@ echo $templateelements->analyser();
 $this->AddJavascriptFile('tools/tags/libs/vendor/imagesloaded.pkgd.min.js');
 $this->AddJavascriptFile('tools/tags/libs/vendor/jquery.wookmark.min.js');
 $this->AddJavascriptFile('tools/tags/libs/filtertags.js');
-
-?>
