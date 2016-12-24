@@ -44,12 +44,11 @@ require_once 'includes/constants.php';
 include_once 'includes/urlutils.inc.php';
 include_once 'includes/i18n.inc.php';
 include_once 'includes/Wiki.class.php';
-include_once 'includes/magicQuotesSuck.func.php';
 
 $t_SQL = 0;
 
 // stupid version check
-if (! isset($_REQUEST)) {
+if (!isset($_REQUEST)) {
     die(_t('NO_REQUEST_FOUND'));
 }
 
