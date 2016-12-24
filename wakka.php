@@ -109,33 +109,6 @@ if ($wakkaConfig['timezone'] != $wakkaDefaultConfig['timezone']) {
     date_default_timezone_set($wakkaDefaultConfig['timezone']);
 }
 
-// check for locking
-if (file_exists('locked')) {
-    // read password from lockfile
-    $lines = file('locked');
-    $lockpw = trim($lines[0]);
-
-    // is authentification given?
-    if (isset($_SERVER['PHP_AUTH_USER'])) {
-        if (!(($_SERVER['PHP_AUTH_USER'] == "admin")
-            and ($_SERVER["PHP_AUTH_PW"] == $lockpw))
-        ) {
-            $ask = 1;
-        }
-    } else {
-        $ask = 1;
-    }
-
-    if ($ask) {
-        header('WWW-Authenticate: Basic realm="'
-            . $wakkaConfig['wakka_name']
-            . ' Install/Upgrade Interface"');
-        header('HTTP/1.0 401 Unauthorized');
-        echo _t('SITE_BEING_UPDATED');
-        exit();
-    }
-}
-
 // compare versions, start installer if necessary
 if ($wakkaConfig['wakka_version']
     and (! $wakkaConfig['wikini_version'])
@@ -146,7 +119,6 @@ if ($wakkaConfig['wakka_version']
 if (($wakkaConfig['wakka_version'] != WAKKA_VERSION)
     or ($wakkaConfig['wikini_version'] != WIKINI_VERSION)
 ) {
-
     // start installer
     if (! isset($_REQUEST['installAction']) or ! $installAction = trim($_REQUEST['installAction'])) {
         $installAction = "default";
@@ -206,6 +178,7 @@ $wiki = new Wiki($wakkaConfig);
 
 // update lang
 loadpreferredI18n($page);
+
 // check for database access
 if (! $wiki->dblink) {
     echo '<p>', _t('DB_CONNECT_FAIL'), '</p>';
@@ -215,12 +188,12 @@ if (! $wiki->dblink) {
 }
 
 // go!
-if (! isset($method)) {
+if (!isset($method)) {
     $method = '';
 }
 
 // Security (quick hack) : Check method syntax
-if (! (preg_match('#^[A-Za-z0-9_]*$#', $method))) {
+if (!(preg_match('#^[A-Za-z0-9_]*$#', $method))) {
     $method = '';
 }
 
