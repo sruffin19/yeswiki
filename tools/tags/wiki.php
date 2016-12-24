@@ -1,5 +1,4 @@
 <?php
-# namespace YesWiki;
 
 // Partie publique
 if (!defined("WIKINI_VERSION")) {

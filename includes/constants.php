@@ -38,3 +38,10 @@ define('WIKINI_VOC_HANDLERS_PREFIX', WIKINI_VOC_PREFIX . 'handler/');
 // standard properties
 define('WIKINI_VOC_ACLS', 'acls');
 define('WIKINI_VOC_ACLS_URI', WIKINI_VOC_PREFIX . WIKINI_VOC_ACLS);
+
+define('WAKKA_VERSION', '0.1.1');
+define('WIKINI_VERSION', '0.5.0');
+define("YESWIKI_VERSION", 'cercopitheque');
+define("YESWIKI_RELEASE", '2016-01-25-1');
+
+define('T_START', microtime(true));

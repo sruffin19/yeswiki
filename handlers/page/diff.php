@@ -53,12 +53,12 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // Vérification de sécurité
 if (!defined("WIKINI_VERSION"))
 {
-	die ("acc&egrave;s direct interdit");
+	die("acc&egrave;s direct interdit");
 }
 
-require_once 'includes/diff/side.class.php';
-require_once 'includes/diff/diff.class.php';
-require_once 'includes/diff/diffformatter.class.php';
+require_once('includes/diff/side.class.php');
+require_once('includes/diff/diff.class.php');
+require_once('includes/diff/diffformatter.class.php');
 
 ob_start();
 ?>
