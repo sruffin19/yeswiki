@@ -233,6 +233,3 @@ function loadpreferredI18n($page = '')
     }
     return;
 }
-
-// default init
-initI18n();

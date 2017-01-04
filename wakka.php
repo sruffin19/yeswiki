@@ -45,6 +45,8 @@ require_once 'includes/urlutils.inc.php';
 require_once 'includes/i18n.inc.php';
 require_once 'includes/Wiki.class.php';
 
+initI18n();
+
 $t_SQL = 0;
 
 // stupid version check
