@@ -8,7 +8,6 @@ class Wiki
     public $parameter = array();
     public $queryLog = array();
     public $interWiki = array();
-    public $VERSION;
     public $CookiePath = '/';
     public $inclusions = array();
 
@@ -44,7 +43,6 @@ class Wiki
             // necessaire pour les versions de mysql qui sont en utf8 par defaut
             mysqli_set_charset($this->dblink, "latin1");
         }
-        $this->VERSION = WAKKA_VERSION;
 
         // determine le chemin pour les cookies
         $a = parse_url($this->GetConfigValue('base_url'));
@@ -172,7 +170,7 @@ class Wiki
 
     public function GetWakkaVersion()
     {
-        return $this->VERSION;
+        return WAKKA_VERSION;
     }
 
     public function GetWikiNiVersion()
