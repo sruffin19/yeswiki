@@ -56,9 +56,9 @@ if (!defined("WIKINI_VERSION"))
     die("acc&egrave;s direct interdit");
 }
 
-require_once('includes/diff/side.class.php');
-require_once('includes/diff/diff.class.php');
-require_once('includes/diff/diffformatter.class.php');
+require_once('vendor/diff/side.class.php');
+require_once('vendor/diff/diff.class.php');
+require_once('vendor/diff/diffformatter.class.php');
 
 ob_start();
 ?>

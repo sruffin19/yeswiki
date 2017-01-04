@@ -4,8 +4,8 @@ if (!function_exists("rssdiff")) {
     function rssdiff($tag, $idfirst, $idlast)
     {
 
-        require_once 'includes/diff/diff.class.php';
-        require_once 'includes/diff/diffformatter.class.php';
+        require_once 'vendior/diff/diff.class.php';
+        require_once 'vendior/diff/diffformatter.class.php';
 
         $output='';
         global $wiki;
