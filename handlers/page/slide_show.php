@@ -106,23 +106,6 @@ if (!$this->HasAccess('read')) {
 
         // On teste toutes les paramétres du handler "slide_show" ; s'il n'y en a pas, c'est le paramètre "slide=1" qui est invoqué par défaut
 
-        /*
-        switch ($_REQUEST["method"])
-        {
-            case "export":
-                export();
-                break;
-            case "show":
-                showSlide();
-                break;
-            default:
-                showSlide();
-                break;
-        }
-        */
-
-        //if ($_REQUEST["export"]) { return; }
-
         if (!$body) {
             return;
         } else {
@@ -167,27 +150,6 @@ if (!$this->HasAccess('read')) {
             // Affiche le corps de la page
             echo
             '<body>'."\n";
-
-            // -- Affichage du sommaire [é compléter] ----------
-            /*
-            if ($_REQUEST["sum"] == "on")
-            {
-                echo "<ul class=\"sum\">\n";
-                if ($major = "1") echo "<li>", $this->format($body[0]), "</li>\n";
-                foreach ($body as $title_sum)
-                {
-                    $i = $i + 1;
-                    $type = gettype($i/2);
-                    // Ne retourne que les 50 premiers caractéres du titre
-                    $title_sum = substr($title_sum, 0, 50);
-                    if ($type == "integer")
-                    {
-                        echo "<li>",$this->format($title_sum),"</li>\n";
-                    }
-                }
-                echo "</ul>\n\n";
-            }
-            */
 
             // -- Affichage du menu de navigation --------------
             echo
