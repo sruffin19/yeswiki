@@ -3,31 +3,23 @@
 class Wiki
 {
     public $dblink;
-
     public $page;
-
     public $tag;
-
     public $parameter = array();
-
     public $queryLog = array();
-
     public $interWiki = array();
-
     public $VERSION;
-
     public $CookiePath = '/';
-
     public $inclusions = array();
 
     /**
      * an array containing all the actions that are implemented by an object
-     *
-     * @access private
      */
     public $actionObjects;
 
-    // LinkTrackink
+    /**
+     * LinkTrackink
+     */
     public $isTrackingLinks = false;
 
     public $linktable = array();
@@ -223,7 +215,12 @@ class Wiki
             $res_op = '=';
         }
 
-        $sql = 'SELECT * FROM ' . $this->GetConfigValue('table_prefix') . 'triples ' . 'WHERE resource ' . $res_op . ' "' . addslashes($resource) . '"';
+        $sql = 'SELECT * FROM '
+            . $this->GetConfigValue('table_prefix')
+            . 'triples WHERE resource '
+            . $res_op
+            . ' "' . addslashes($resource) . '"';
+
         if ($property !== null) {
             $prop_op = strtoupper($prop_op);
             if (! in_array($prop_op, $operators)) {
@@ -253,32 +250,38 @@ class Wiki
      *         ...
      *         )
      */
-    public function GetAllTriplesValues($resource, $property, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
-    {
+    public function GetAllTriplesValues(
+        $resource,
+        $property,
+        $re_prefix = THISWIKI_PREFIX,
+        $prop_prefix = WIKINI_VOC_PREFIX
+    ) {
         $res = $re_prefix . $resource ;
         $prop = $prop_prefix . $property ;
-        if( isset( $this->triplesCacheByResource[$res]) )
-        {
+        if (isset($this->triplesCacheByResource[$res])) {
             // All resource's properties was previously loaded.
             //error_log(__METHOD__.' cache hits ['.$res.']['.$prop.'] '. count($this->triplesCacheByResource));
-            if( isset( $this->triplesCacheByResource[$res][$prop]) )
-            {
+            if (isset($this->triplesCacheByResource[$res][$prop])) {
                 return $this->triplesCacheByResource[$res][$prop] ;
             }
             // LoadAll($sql) return an empty array when no result, do the same.
-               return array();
+            return array();
         }
         //error_log(__METHOD__.' cache miss ['.$res.']['.$prop.'] '. count($this->triplesCacheByResource));
         $this->triplesCacheByResource[$res] = array();
-        $sql = 'SELECT * FROM ' . $this->GetConfigValue('table_prefix') . 'triples ' . 'WHERE resource = "' . addslashes($res) . '"' ;
-        foreach( $this->LoadAll($sql) as $triple )
-        {
-            if( ! isset($this->triplesCacheByResource[$res][ $triple['property'] ]))
-                $this->triplesCacheByResource[$res][ $triple['property'] ] = array();
-            $this->triplesCacheByResource[$res][ $triple['property'] ][] = array( 'id'=>$triple['id'], 'value'=>$triple['value']) ;
+        $sql = 'SELECT * FROM ' . $this->GetConfigValue('table_prefix') . 'triples '
+            . 'WHERE resource = "' . addslashes($res) . '"' ;
+
+        foreach ($this->LoadAll($sql) as $triple) {
+            if (!isset($this->triplesCacheByResource[$res][$triple['property']])) {
+                $this->triplesCacheByResource[$res][$triple['property']] = array();
+            }
+            $this->triplesCacheByResource[$res][ $triple['property'] ][] =
+                array( 'id'=>$triple['id'], 'value'=>$triple['value']) ;
         }
-        if( isset( $this->triplesCacheByResource[$res][$prop]) )
+        if (isset($this->triplesCacheByResource[$res][$prop])) {
             return $this->triplesCacheByResource[$res][$prop] ;
+        }
         return array() ;
     }
 
@@ -322,14 +325,21 @@ class Wiki
      * @param
      *            int The id of the found triple or 0 if there is no such triple.
      */
-    public function TripleExists($resource, $property, $value, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
-    {
-        $sql = 'SELECT id FROM ' . $this->GetConfigValue('table_prefix') . 'triples ' . 'WHERE resource = "' . addslashes($re_prefix . $resource) . '" ' . 'AND property = "' . addslashes($prop_prefix . $property) . '" ' . 'AND value = "' . addslashes($value) . '"';
+    public function TripleExists(
+        $resource,
+        $property,
+        $value,
+        $re_prefix = THISWIKI_PREFIX,
+        $prop_prefix = WIKINI_VOC_PREFIX
+    ) {
+        $sql = 'SELECT id FROM ' . $this->GetConfigValue('table_prefix') . 'triples '
+            . 'WHERE resource = "' . addslashes($re_prefix . $resource) . '" '
+            . 'AND property = "' . addslashes($prop_prefix . $property) . '" '
+            . 'AND value = "' . addslashes($value) . '"';
         $res = $this->LoadSingle($sql);
-        if (! $res) {
+        if (!$res) {
             return 0;
         }
-
         return $res['id'];
     }
 
@@ -348,8 +358,13 @@ class Wiki
      *            The prefix to add to $property (defaults to <tt>WIKINI_VOC_PREFIX</tt>)
      * @return int An error code: 0 (success), 1 (failure) or 3 (already exists)
      */
-    public function InsertTriple($resource, $property, $value, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
-    {
+    public function InsertTriple(
+        $resource,
+        $property,
+        $value,
+        $re_prefix = THISWIKI_PREFIX,
+        $prop_prefix = WIKINI_VOC_PREFIX
+    ) {
         $res = $re_prefix . $resource ;
 
         if ($this->TripleExists($res, $property, $value, '', $prop_prefix)) {
@@ -357,10 +372,15 @@ class Wiki
         }
 
         // invalidate the cache
-        if( isset( $this->triplesCacheByResource[$res]) )
+        if (isset($this->triplesCacheByResource[$res])) {
             unset($this->triplesCacheByResource[$res]);
+        }
 
-        $sql = 'INSERT INTO ' . $this->GetConfigValue('table_prefix') . 'triples (resource, property, value)' . 'VALUES ("' . addslashes($res) . '", "' . addslashes($prop_prefix . $property) . '", "' . addslashes($value) . '")';
+
+        $sql = 'INSERT INTO ' . $this->GetConfigValue('table_prefix')
+            . 'triples (resource, property, value)'
+            . 'VALUES ("' . addslashes($res) . '", "' . addslashes($prop_prefix . $property)
+            . '", "' . addslashes($value) . '")';
         return $this->Query($sql) ? 0 : 1;
     }
 
@@ -423,7 +443,9 @@ class Wiki
     {
         $res = $re_prefix . $resource ;
 
-        $sql = 'DELETE FROM ' . $this->GetConfigValue('table_prefix') . 'triples ' . 'WHERE resource = "' . addslashes($res) . '" ' . 'AND property = "' . addslashes($prop_prefix . $property) . '" ';
+        $sql = 'DELETE FROM ' . $this->GetConfigValue('table_prefix') . 'triples '
+            . 'WHERE resource = "' . addslashes($res) . '" '
+            . 'AND property = "' . addslashes($prop_prefix . $property) . '" ';
         if ($value !== null) {
             $sql .= 'AND value = "' . addslashes($value) . '"';
         }
@@ -549,7 +571,10 @@ class Wiki
      */
     public function GetCachedPage($tag)
     {
-        return (array_key_exists($tag, $this->pageCache) ? $this->pageCache[$tag] : false);
+        return (array_key_exists($tag, $this->pageCache)
+            ? $this->pageCache[$tag]
+            : false
+        );
     }
 
     /**
@@ -558,7 +583,8 @@ class Wiki
      * @param array $page
      *            The page (full) DB line or null if the page does not exists
      * @param string $pageTag
-     *            The tag of the page to cache. Defaults to $page['tag'] but is mendatory when $page === null
+     *            The tag of the page to cache. Defaults to $page['tag'] but is
+     *            mendatory when $page === null
      */
     public function CachePage($page, $pageTag = null)
     {
@@ -604,7 +630,8 @@ class Wiki
 
     public function LoadAllPages()
     {
-        return $this->LoadAll('select * from ' . $this->config['table_prefix'] . "pages where latest = 'Y' order by tag");
+        return $this->LoadAll('select * from ' . $this->config['table_prefix']
+            . "pages where latest = 'Y' order by tag");
     }
 
     public function GetPageCreateTime( $pageTag )
@@ -614,14 +641,17 @@ class Wiki
             .' AND comment_on = ""'
             .' ORDER BY `time` ASC LIMIT 1';
         $page = $this->LoadSingle($sql);
-        if( $page )
+        if ($page) {
             return $page['time'];
+        }
         return null ;
     }
 
     public function FullTextSearch($phrase)
     {
-        return $this->LoadAll('select * from ' . $this->config['table_prefix'] . "pages where latest = 'Y' and match(tag, body) against('" . mysqli_real_escape_string($this->dblink, $phrase) . "')");
+        return $this->LoadAll(
+            'select * from ' . $this->config['table_prefix']
+            . "pages where latest = 'Y' and match(tag, body) against('" . mysqli_real_escape_string($this->dblink, $phrase) . "')");
     }
 
     public function LoadWantedPages()
