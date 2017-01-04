@@ -41,9 +41,9 @@
  */
 
 require_once 'includes/constants.php';
-include_once 'includes/urlutils.inc.php';
-include_once 'includes/i18n.inc.php';
-include_once 'includes/Wiki.class.php';
+require_once 'includes/urlutils.inc.php';
+require_once 'includes/i18n.inc.php';
+require_once 'includes/Wiki.class.php';
 
 $t_SQL = 0;
 
