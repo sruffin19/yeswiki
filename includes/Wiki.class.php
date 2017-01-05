@@ -29,6 +29,13 @@ class Wiki
 
     public $_actionsAclsCache = array();
 
+    /**
+     * A very simple Request level cache for triple resources
+     *
+     * @var array
+     */
+    protected $triplesCacheByResource = array();
+
     // constructor
     public function __construct($config)
     {
@@ -177,13 +184,6 @@ class Wiki
     {
         return WIKINI_VERSION;
     }
-
-    /**
-     * A very simple Request level cache for triple resources
-     *
-     * @var array
-     */
-    protected $triplesCacheByResource = array();
 
     /**
      * Retrieves all the triples that match some criteria.
@@ -851,12 +851,6 @@ class Wiki
     }
 
     // COOKIES
-    public function SetSessionCookie($name, $value)
-    {
-        SetCookie($name, $value, 0, $this->CookiePath);
-        $_COOKIE[$name] = $value;
-    }
-
     public function SetPersistentCookie($name, $value, $remember = 0)
     {
         SetCookie($name, $value, time() + ($remember ? 90 * 24 * 60 * 60 : 60 * 60), $this->CookiePath);
@@ -867,11 +861,6 @@ class Wiki
     {
         SetCookie($name, '', 1, $this->CookiePath);
         $_COOKIE[$name] = '';
-    }
-
-    public function GetCookie($name)
-    {
-        return $_COOKIE[$name];
     }
 
     // HTTP/REQUEST/LINK RELATED
