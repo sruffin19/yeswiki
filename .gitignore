@@ -29,8 +29,6 @@ tools/hashcash/secret/wp-hashcash.key
 !tools/ipblock/*
 !tools/lang
 !tools/lang/*
-!tools/libs
-!tools/libs/*
 !tools/login
 !tools/login/*
 !tools/nospam

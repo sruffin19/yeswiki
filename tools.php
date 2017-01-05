@@ -2,12 +2,12 @@
 // Get configuration
 define("WAKKA_VERSION", "0.1.1");
 define("WIKINI_VERSION", "0.5.0");
-require_once ('tools/libs/class.plugins.php');
-require_once ('tools/libs/lib.compat.php');
-require_once ('tools/libs/lib.form.php');
-require_once ('tools/libs/lib.files.php');
-require_once ('tools/libs/lib.buffer.php');
-require_once ('tools/libs/class.wiki.php');
+require_once ('includes/tools/class.plugins.php');
+require_once ('includes/tools/lib.compat.php');
+require_once ('includes/tools/lib.form.php');
+require_once ('includes/tools/lib.files.php');
+require_once ('includes/tools/lib.buffer.php');
+require_once ('includes/tools/class.wiki.php');
 include 'includes/i18n.inc.php';
 
 function __($str) {
@@ -22,8 +22,8 @@ if (!defined('TOOLS_MANAGER')) {
         define('TOOLS_MANAGER','TOOLS_MANAGER');
 }
 
-require_once ('tools/libs/Auth.php');
-require_once ('tools/libs/Auth/Container.php');
+require_once ('includes/tools/Auth.php');
+require_once ('includes/tools/Auth/Container.php');
 
 class CustomAuthContainer extends Auth_Container
 {

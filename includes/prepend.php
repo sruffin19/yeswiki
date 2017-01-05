@@ -9,7 +9,7 @@ if (! defined('WIKINI_VERSION')) {
 // _Meme nom : avant
 // Meme nom : _apres
 
-require_once('tools/libs/Plugins.class.php');
+require_once('includes/tools/Plugins.class.php');
 
 $plugins_root = 'tools/';
 
