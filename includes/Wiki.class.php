@@ -36,6 +36,14 @@ class Wiki
      */
     protected $triplesCacheByResource = array();
 
+    /**
+     * Caching page ACLs (sql query on yeswiki_acls table).
+     * Filled in LoadAcl().
+     * Updated in SaveAcl().
+     * @var array
+     */
+    protected $aclsCache = array() ;
+
     // constructor
     public function __construct($config)
     {
@@ -1645,14 +1653,6 @@ class Wiki
     }
 
     /**
-     * Caching page ACLs (sql query on yeswiki_acls table).
-     * Filled in LoadAcl().
-     * Updated in SaveAcl().
-     * @var array
-     */
-    protected $aclsCache = array() ;
-
-    /**
      *
      * @param string $tag
      * @param string $privilege
@@ -1661,13 +1661,11 @@ class Wiki
      */
     public function LoadAcl($tag, $privilege, $useDefaults = true )
     {
-        if( isset($this->aclsCache[$tag][$privilege]) )
-        {
+        if (isset($this->aclsCache[$tag][$privilege])) {
             return $this->aclsCache[$tag][$privilege] ;
         }
 
-        if( $useDefaults )
-        {
+        if( $useDefaults ) {
             $this->aclsCache[$tag] = array(
                 'read' => array(
                     'page_tag' => $tag,
@@ -1996,5 +1994,4 @@ class Wiki
             session_unregister('redirects');
         }
     }
-
 }
