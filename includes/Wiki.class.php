@@ -115,12 +115,9 @@ class Wiki extends Actions
 
     public function IncludeBuffered($filename, $notfoundText = '', $vars = '', $path = '')
     {
+        $dirs = array('');
         if ($path) {
             $dirs = explode(':', $path);
-        } else {
-            $dirs = array(
-                ''
-            );
         }
 
         foreach ($dirs as $dir) {
@@ -143,9 +140,8 @@ class Wiki extends Actions
         }
         if ($notfoundText) {
             return $notfoundText;
-        } else {
-            return false;
         }
+        return false;
     }
 
     // VARIABLES
