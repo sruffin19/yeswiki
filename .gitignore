@@ -12,7 +12,6 @@ themes/
 tools/*
 !tools/autoupdate
 !tools/aceditor/*
-!tools/prepend.php
 !tools/aceditor
 !tools/aceditor/*
 !tools/attach
