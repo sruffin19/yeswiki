@@ -161,4 +161,27 @@ abstract class Actions
 
         return $actionObj;
     }
+
+    /**
+     * Retrieves the list of existing actions
+     *
+     * @return array An unordered array of all the available actions.
+     */
+    function GetActionsList()
+    {
+        $action_path = $this->GetConfigValue('action_path');
+        $dirs = explode(":", $action_path);
+        $list = array();
+        foreach ($dirs as $dir) {
+            if ($dh = opendir($dir)) {
+                while (($file = readdir($dh)) !== false) {
+                    if (preg_match('/^([a-zA-Z-0-9]+)(.class)?.php$/', $file, $matches)) {
+                        $list[] = $matches[1];
+                    }
+                }
+            }
+        }
+
+        return array_unique($list);
+    }
 }

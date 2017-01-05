@@ -10,7 +10,6 @@ if (! defined('WIKINI_VERSION')) {
 // Meme nom : _apres
 
 require_once('tools/libs/Plugins.class.php');
-require_once('includes/WikiTools.class.php');
 
 $plugins_root = 'tools/';
 
@@ -19,7 +18,7 @@ $objPlugins->getPlugins(true);
 $plugins_list = $objPlugins->getPluginsList();
 
 $wakkaConfig['formatter_path'] = 'formatters';
-$wikiClasses[] = 'WikiTools';
+$wikiClasses[] = 'Wiki';
 $wikiClassesContent[] = '';
 
 foreach ($plugins_list as $pluginName => $v) {
@@ -51,11 +50,10 @@ foreach ($plugins_list as $pluginName => $v) {
     }
 }
 
-for ($iw = 0; $iw < count($wikiClasses); $iw ++) {
-    if ($wikiClasses[$iw] != 'WikiTools') {
-        $code = 'Class ' . $wikiClasses[$iw] . ' extends ' . $wikiClasses[$iw - 1] . ' { ' . $wikiClassesContent[$iw] . ' }; ';
-        eval($code);
-    }
+for ($iw = 1; $iw < count($wikiClasses); $iw ++) {
+    $code = 'Class ' . $wikiClasses[$iw] . ' extends ' . $wikiClasses[$iw - 1] . ' { ' . $wikiClassesContent[$iw] . ' }; ';
+    eval($code);
+
 }
 
 // $wiki = new WikiTools($wakkaConfig);
