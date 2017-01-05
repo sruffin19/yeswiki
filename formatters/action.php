@@ -40,7 +40,7 @@ if (!function_exists("wakka2callback"))
         if (preg_match("/^\{\{(.*?)\}\}$/s", $thing, $matches))
         {
             if ($matches[1])
-                return $wiki->Action($matches[1]);
+                return $wiki->action($matches[1]);
             else
                 return "{{}}";
         }

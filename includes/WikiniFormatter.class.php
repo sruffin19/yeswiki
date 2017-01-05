@@ -389,7 +389,7 @@ class WikiniFormatter
                 {
                     if ($matches[1]) {
                         $this->br = 0;
-                        return $wiki->Action($matches[1]);
+                        return $wiki->action($matches[1]);
                     }
                     else
                         return "{{}}";

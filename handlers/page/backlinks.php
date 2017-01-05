@@ -22,7 +22,7 @@ if(!defined('WIKINI_VERSION')){
     die ('acc&egrave;s direct interdit');
 }
 
-$res = $this->Action('backlinks');
+$res = $this->action('backlinks');
 echo $this->Header();
 echo "<div class=\"page\" style=\"padding: 1em\">\n";
 echo $res;
