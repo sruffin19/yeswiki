@@ -37,8 +37,12 @@ if ($user = $this->getUser())
     $my_pages_count = 0;
     $curChar = '';
 
-    if ($pages = $this->loadAllPages())
-    {
+    $table = $this->database->prefix . 'pages';
+    $pages = $this->database->loadAll(
+        "SELECT * FROM  $table WHERE latest = 'Y' ORDER BY tag"
+    );
+
+    if ($pages) {
         foreach ($pages as $page)
         {
             if ($this->getUserName() == $page["owner"] && !preg_match("/^Comment/", $page["tag"])) {

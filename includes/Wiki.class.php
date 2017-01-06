@@ -380,14 +380,6 @@ class Wiki extends Actions
         }
     }
 
-    public function loadAllPages()
-    {
-        $table = $this->database->prefix . 'pages';
-        return $this->database->loadAll(
-            "SELECT * FROM  $table WHERE latest = 'Y' ORDER BY tag"
-        );
-    }
-
     public function getPageCreateTime($pageTag)
     {
         $sql = 'SELECT time FROM '.$this->config['table_prefix']
