@@ -396,19 +396,6 @@ class Wiki extends Actions
         return null ;
     }
 
-    public function loadOrphanedPages()
-    {
-        return $this->database->loadAll(
-            'select distinct tag from '
-                . $this->config['table_prefix']
-                . 'pages as p left join '
-                . $this->config['table_prefix']
-                . "links as l on p.tag = l.to_tag "
-                . "where l.to_tag is NULL and p.comment_on = '' "
-                . "and p.latest = 'Y' order by tag"
-        );
-    }
-
     public function isOrphanedPage($tag)
     {
         return $this->database->loadAll(

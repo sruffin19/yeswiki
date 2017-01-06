@@ -20,14 +20,22 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-if ($pages = $this->loadOrphanedPages())
-{
-    foreach ($pages as $page)
-    {
-        echo $this->composeLinkToPage($page["tag"], "", "", 0),"<br />\n" ;
+$pages = $this->database->loadAll(
+    'select distinct tag from '
+        . $this->database->prefix
+        . 'pages as p left join '
+        . $this->database->prefix
+        . "links as l on p.tag = l.to_tag "
+        . "where l.to_tag is NULL and p.comment_on = '' "
+        . "and p.latest = 'Y' order by tag"
+);
+
+$text = "<i>" . _t('NO_ORPHAN_PAGES') . "</i>";
+
+if ($pages) {
+    $text = "";
+    foreach ($pages as $page) {
+        $text .= $this->composeLinkToPage($page["tag"], "", "", 0) . "<br />\n";
     }
 }
-else
-{
-    echo "<i>"._t('NO_ORPHAN_PAGES')."</i>" ;
-}
+echo $text;
