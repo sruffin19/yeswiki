@@ -34,31 +34,15 @@ class Triples
      *            The operator of comparison between the effective property and $property (default: '=')
      * @return array The list of all the triples that match the asked criteria
      */
-    public function getMatchingTriples(
-        $resource,
-        $property = null,
-        $resOp = 'LIKE',
-        $propOp = '='
-    ) {
-         // we might want to add other operators later
-        $operators = array('=', 'LIKE');
-        $resOp = strtoupper($resOp);
-
-        if (! in_array($resOp, $operators)) {
-            $resOp = '=';
-        }
-
+    public function getMatchingTriples($resource, $property = null)
+    {
         $table = $this->database->prefix . 'triples';
         $resource = addslashes($resource);
-        $sql = "SELECT * FROM $table WHERE resource $resOp \"$resource\"";
+        $sql = "SELECT * FROM $table WHERE resource LIKE \"$resource\"";
 
         if ($property !== null) {
-            $propOp = strtoupper($propOp);
-            if (! in_array($propOp, $operators)) {
-                $propOp = '=';
-            }
-
-            $sql .= " AND property $propOp \"" . addslashes($property) . '"';
+            $property = addslashes($property);
+            $sql .= " AND property = \"$property\"";
         }
         return $this->loadAll($sql);
     }
