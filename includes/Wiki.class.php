@@ -12,7 +12,6 @@ class Wiki extends Actions
     public $tag;
     public $parameter = array();
     public $queryLog = array();
-    public $interWiki = array();
     public $CookiePath = '/';
     public $inclusions = array();
 
@@ -735,15 +734,6 @@ class Wiki extends Actions
         $displayText = $text ? $text : $tag;
         $displayText = htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET);
 
-        // is this an interwiki link?
-        if (preg_match('/^' . WN_INTERWIKI_CAPTURE . '$/', $tag, $matches)) {
-            $href = htmlspecialchars($tag, ENT_COMPAT, YW_CHARSET);
-            if ($tagInterWiki = $this->getInterWikiUrl($matches[1], $matches[2])) {
-                $href = htmlspecialchars($tagInterWiki, ENT_COMPAT, YW_CHARSET);
-            }
-            return "<a href=\"$href\">$displayText (interwiki inconnu)</a>";
-
-        }
         // is this a full link? ie, does it contain non alpha-numeric characters?
         // Note : [:alnum:] is equivalent [0-9A-Za-z]
         // [^[:alnum:]] means : some caracters other than [0-9A-Za-z]
@@ -977,32 +967,6 @@ class Wiki extends Actions
     public function formClose()
     {
         return "</form>\n";
-    }
-
-    // INTERWIKI STUFF
-    public function readInterWikiConfig()
-    {
-        if ($lines = file('interwiki.conf')) {
-            foreach ($lines as $line) {
-                if ($line = trim($line)) {
-                    list ($wikiName, $wikiUrl) = explode(' ', trim($line));
-                    $this->addInterWiki($wikiName, $wikiUrl);
-                }
-            }
-        }
-    }
-
-    public function addInterWiki($name, $url)
-    {
-        $this->interWiki[strtolower($name)] = $url;
-    }
-
-    public function getInterWikiUrl($name, $tag)
-    {
-        if (isset($this->interWiki[strtolower($name)])) {
-            return $this->interWiki[strtolower($name)] . $tag;
-        }
-        return false;
     }
 
     // REFERRERS
@@ -1787,8 +1751,6 @@ class Wiki extends Actions
         if (! ($this->getMicroTime() % 9)) {
             $this->maintenance();
         }
-
-        $this->readInterWikiConfig();
 
         // do our stuff!
         if (! $this->method = trim($method)) {
