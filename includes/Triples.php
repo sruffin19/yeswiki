@@ -197,7 +197,7 @@ class Triples
             . 'triples (resource, property, value)'
             . 'VALUES ("' . addslashes($res) . '", "' . addslashes($propPrefix . $property)
             . '", "' . addslashes($value) . '")';
-        return $this->query($sql) ? 0 : 1;
+        return $this->database->query($sql) ? 0 : 1;
     }
 
     /**
@@ -250,12 +250,10 @@ class Triples
             unset($this->triplesCacheByRsrc[$res]);
         }
 
-
-        $sql = 'UPDATE ' . $this->database->prefix . 'triples '
-            . 'SET value = "' . addslashes($newvalue) . '" '
-            . 'WHERE id = ' . $tripleId;
-
-        return $this->query($sql) ? 0 : 1;
+        $table = $this->database->prefix . 'triples';
+        $newvalue = addslashes($newvalue);
+        $sql = "UPDATE $table SET value = '$newvalue' WHERE id = $tripleId";
+        return $this->database->query($sql) ? 0 : 1;
     }
 
     /**
@@ -295,6 +293,6 @@ class Triples
             unset($this->triplesCacheByRsrc[$res]);
         }
 
-        $this->query($sql);
+        $this->database->query($sql);
     }
 }
