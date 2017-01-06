@@ -10,13 +10,13 @@ if ($this->userIsAdmin())
 
     if (isset($_GET['delete_tag']))
     {
-        $sql = 'DELETE FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" and id IN ('.mysqli_real_escape_string($this->dblink, $_GET['delete_tag']).')';
-        $this->query($sql);
+        $sql = 'DELETE FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" and id IN ('.$this->database->escapeString($_GET['delete_tag']).')';
+        $this->database->query($sql);
     }
 
     // on recupere tous les tags existants
     $sql = 'SELECT id, value, resource FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" ORDER BY value ASC, resource ASC';
-    $tab_tous_les_tags = $this->loadAll($sql);
+    $tab_tous_les_tags = $this->database->loadAll($sql);
 
     if (is_array($tab_tous_les_tags) && count($tab_tous_les_tags)>1)
     {

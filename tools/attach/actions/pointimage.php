@@ -88,13 +88,13 @@ if (isset($_POST['title']) && !empty($_POST['title'])
     && isset($_POST['color']) && !empty($_POST['color'])) {
     $pagetag = mysqli_real_escape_string($this->dblink, str_replace($this->config['base_url'], '', $_POST['pagetag']));
     $chaine = "\n\n~~\"\"<!--".$_POST['image_x']."-".$_POST['image_y']."-".$_POST['color']."--><!--title-->".$_POST['title']."<!--/title-->\"\"\n\"\"<!--desc-->\"\"".$_POST['description']."\"\"<!--/desc-->\n\"\"~~";
-    $donneesbody = $this->loadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$pagetag."'and latest = 'Y' limit 1");
+    $donneesbody = $this->database->loadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$pagetag."'and latest = 'Y' limit 1");
     $this->savePage($pagetag, $donneesbody['body'].$chaine, "", true);
     $this->redirect($this->href());
 }
 
 // get the data for the image
-$donneesbody = $this->loadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$datapagetag."'and latest = 'Y' limit 1");
+$donneesbody = $this->database->loadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$datapagetag."'and latest = 'Y' limit 1");
 
 // search for markers info
 preg_match_all('/~~(.*)~~/msU', $donneesbody['body'], $locations);

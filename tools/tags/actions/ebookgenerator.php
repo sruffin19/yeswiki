@@ -154,11 +154,11 @@ if (isset($_POST["page"])) {
 
     $sql .= ' ORDER BY tag ASC';
 
-    $pages = $this->loadAll($sql);
+    $pages = $this->database->loadAll($sql);
 
     // on prend tous les tags
     //$sql = 'SELECT DISTINCT value FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag"';
-    //$tags = $this->loadAll($sql);
+    //$tags = $this->database->loadAll($sql);
 
     if (isset($this->page["metadatas"]["ebook-title"])) {
         $ebookpagename = $this->getPageTag();

@@ -23,7 +23,7 @@ if ($nomwiki) {
         AND tag IN (SELECT DISTINCT resource FROM '.BAZ_PREFIXE.'triples WHERE value = "fiche_bazar"
         AND property = "http://outils-reseaux.org/_vocabulary/type" ORDER BY resource ASC) ORDER BY time DESC';
 
-    $results = $GLOBALS['wiki']->loadAll($requetesql);
+    $results = $GLOBALS['wiki']->database->loadAll($requetesql);
     if (count($results)>0) {
         echo baz_voir_fiche(1, $results[0]["tag"]).'<br /><br />';
     }

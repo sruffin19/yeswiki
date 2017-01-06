@@ -1311,7 +1311,7 @@ function baz_requete_bazar_fiche($valpost)
     $valpost['categorie_fiche'] = $form['bn_type_fiche'];
 
     // on récupérer la date de création si elle existe déjà, on l'initialise sinon
-    $datecreation = $GLOBALS['wiki']->loadSingle(
+    $datecreation = $GLOBALS['wiki']->database->loadSingle(
         'SELECT MIN(time) as firsttime FROM '.BAZ_PREFIXE.
         "pages WHERE tag='".$valpost['id_fiche']."'"
     );
@@ -1498,7 +1498,7 @@ function baz_insertion_fiche($valeur)
         $requeteadmins = 'SELECT value FROM '.$GLOBALS['wiki']
             ->config['table_prefix'].'triples '
         .'WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
-        $ligne = $GLOBALS['wiki']->loadSingle($requeteadmins);
+        $ligne = $GLOBALS['wiki']->database->loadSingle($requeteadmins);
         $tabadmin = explode("\n", $ligne['value']);
         foreach ($tabadmin as $line) {
             $admin = $GLOBALS['wiki']->loadUser(trim($line));
@@ -1551,7 +1551,7 @@ function baz_mise_a_jour_fiche($valeur)
         .
 
         'WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
-        $ligne = $GLOBALS['wiki']->loadSingle($requeteadmins);
+        $ligne = $GLOBALS['wiki']->database->loadSingle($requeteadmins);
         $tabadmin = explode("\n", $ligne['value']);
         foreach ($tabadmin as $line) {
             $admin = $GLOBALS['wiki']->loadUser(trim($line));
@@ -1575,7 +1575,7 @@ function baz_suppression($idfiche)
                 $requete =
                 'DELETE FROM `'.BAZ_PREFIXE.'users` WHERE `name` = "'.
                 $valeur['nomwiki'].'"';
-                $GLOBALS['wiki']->query($requete);
+                $GLOBALS['wiki']->database->query($requete);
             }
 
             //on supprime les pages wiki crees
@@ -1626,7 +1626,7 @@ function publier_fiche($valid)
         }
 
         // ====================Mise a jour de la table '.BAZ_PREFIXE.'fiche====================
-        $resultat = $GLOBALS['wiki']->query($requete);
+        $resultat = $GLOBALS['wiki']->database->query($requete);
 
         unset($resultat);
 
@@ -2094,7 +2094,7 @@ function baz_valeurs_formulaire($idformulaire = '', $category = '')
             if (!empty($category)) {
                 $requete .= ' AND bn_type_fiche="'.$category.'"';
             }
-            $tab_resultat = $GLOBALS['wiki']->loadSingle($requete);
+            $tab_resultat = $GLOBALS['wiki']->database->loadSingle($requete);
             if ($tab_resultat) {
                 foreach ($tab_resultat as $key => $value) {
                     $GLOBALS['_BAZAR_']['form'][$idformulaire][$key] =
@@ -2120,7 +2120,7 @@ function baz_valeurs_formulaire($idformulaire = '', $category = '')
             $requete .= ' WHERE bn_type_fiche="'.$category.'"';
         }
         $requete .= ' ORDER BY bn_label_nature ASC';
-        $tab_resultat = $GLOBALS['wiki']->loadAll($requete);
+        $tab_resultat = $GLOBALS['wiki']->database->loadAll($requete);
         foreach ($tab_resultat as $key => $value) {
             $GLOBALS['_BAZAR_']['form'][$value['bn_id_nature']] =
             baz_valeurs_formulaire($value['bn_id_nature']);
@@ -2235,7 +2235,7 @@ function baz_gestion_formulaire()
         .addslashes(_convert($_POST['bn_condition'], YW_CHARSET, true)).'", "'
         .addslashes(_convert($_POST['bn_label_class'], YW_CHARSET, true)).'", "'
         .addslashes(_convert($_POST['bn_type_fiche'], YW_CHARSET, true)).'")';
-        $resultat = $GLOBALS['wiki']->query($requete);
+        $resultat = $GLOBALS['wiki']->database->query($requete);
 
         $res .=
         '<div class="alert alert-success">'."\n".
@@ -2254,7 +2254,7 @@ function baz_gestion_formulaire()
         .'`bn_label_class`="'.addslashes(_convert($_POST['bn_label_class'], YW_CHARSET, true)).'" ,'
         .'`bn_type_fiche`="'.addslashes(_convert($_POST['bn_type_fiche'], YW_CHARSET, true)).'"'
         .' WHERE `bn_id_nature`='.$_POST['bn_id_nature'];
-        $resultat = $GLOBALS['wiki']->query($requete);
+        $resultat = $GLOBALS['wiki']->database->query($requete);
 
         $res .=
         '<div class="alert alert-success">'."\n".
@@ -2267,7 +2267,7 @@ function baz_gestion_formulaire()
         $requete =
         'DELETE FROM '.BAZ_PREFIXE.'nature WHERE bn_id_nature='.
         $_GET['idformulaire'];
-        $resultat = $GLOBALS['wiki']->query($requete);
+        $resultat = $GLOBALS['wiki']->database->query($requete);
 
         //TODO : suppression des fiches associees au formulaire
 
@@ -2323,7 +2323,7 @@ function baz_gestion_formulaire()
                     // on ajoute le formulaire à la liste des formulaires existants
                     $forms[$value['bn_type_fiche']][$id] = $value;
                 }
-                $resultat = $GLOBALS['wiki']->query($requete);
+                $resultat = $GLOBALS['wiki']->database->query($requete);
             }
             ksort($forms);
             $res .=
@@ -2389,7 +2389,7 @@ function baz_gestion_listes()
         // requete pour obtenir l'id et le label des types d'annonces
         $requete = 'SELECT resource FROM '.$GLOBALS['wiki']->config['table_prefix'].'triples '
           .'WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste" ORDER BY resource';
-        $resultat = $GLOBALS['wiki']->loadAll($requete);
+        $resultat = $GLOBALS['wiki']->database->loadAll($requete);
         $tab_lists = array('lists' => array());
         foreach ($resultat as $ligne) {
             $valeursliste = baz_valeurs_liste($ligne['resource']);
@@ -2532,7 +2532,7 @@ function baz_gestion_listes()
             ->config['table_prefix'].'triples '.'WHERE resource = "'.
         htmlspecialchars($_GET['idliste'], ENT_COMPAT |
             ENT_HTML401, YW_CHARSET).'" ';
-        $GLOBALS['wiki']->query($sql);
+        $GLOBALS['wiki']->database->query($sql);
 
         // Envoie d un mail aux administrateurs
         if (BAZ_ENVOI_MAIL_ADMIN) {
@@ -2555,7 +2555,7 @@ function baz_gestion_listes()
                 ->config['table_prefix'].
 
             'triples WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
-            $ligne = $GLOBALS['wiki']->loadSingle($requeteadmins);
+            $ligne = $GLOBALS['wiki']->database->loadSingle($requeteadmins);
             $tabadmin = explode("\n", $ligne['value']);
             foreach ($tabadmin as $line) {
                 $admin = $GLOBALS['wiki']->loadUser(trim($line));
@@ -2667,7 +2667,7 @@ function baz_valeurs_liste($idliste = '')
         //requete pour obtenir l'id et le label des listes
         $requete = 'SELECT resource FROM '.$GLOBALS['wiki']->config['table_prefix'].'triples '
           .'WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste" ORDER BY resource';
-        $resultat = $GLOBALS['wiki']->loadAll($requete);
+        $resultat = $GLOBALS['wiki']->database->loadAll($requete);
 
         foreach ($resultat as $ligne) {
             $GLOBALS['_BAZAR_']['lists'][$ligne['resource']] = baz_valeurs_liste($ligne['resource']);
@@ -2688,7 +2688,7 @@ function baz_nextId($table, $colonne_identifiant, $bdd)
 {
     $requete = 'SELECT MAX('.$colonne_identifiant.') AS maxi FROM '.
     $table;
-    $ligne = $GLOBALS['wiki']->loadSingle($requete);
+    $ligne = $GLOBALS['wiki']->database->loadSingle($requete);
 
     if (count($ligne['maxi']) > 1) {
         die('<br />La table '.$table.' a un identifiant non unique<br />');
@@ -3412,7 +3412,7 @@ function baz_requete_recherche_fiches(
     //preparation de la requete pour trouver les mots cles
     if (isset($searchstring) && trim($searchstring) != '' && $searchstring !=
         _t('BAZ_MOT_CLE')) {
-        $GLOBALS['wiki']->query("SET sql_mode = 'NO_BACKSLASH_ESCAPES';");
+        $GLOBALS['wiki']->database->query("SET sql_mode = 'NO_BACKSLASH_ESCAPES';");
         $searchstring = str_replace(array('["', '"]'), '', json_encode(array($searchstring)));
         //$searchstring = removeAccents($searchstring);
         //decoupage des mots cles
@@ -3556,7 +3556,7 @@ function baz_requete_recherche_fiches(
     if (!isset($GLOBALS['_BAZAR_'][$reqid])) {
         // debug
         // echo '<hr><code style="width:100%;height:100px;">'.$requete.'</code><hr>';
-        $GLOBALS['_BAZAR_'][$reqid] = $GLOBALS['wiki']->loadAll($requete);
+        $GLOBALS['_BAZAR_'][$reqid] = $GLOBALS['wiki']->database->loadAll($requete);
     }
     return $GLOBALS['_BAZAR_'][$reqid];
 }

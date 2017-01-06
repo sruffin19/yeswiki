@@ -39,7 +39,7 @@ if ($user = $this->getUser())
     {
         echo "<b>"._t('YOUR_MODIFIED_PAGES_ORDERED_BY_MODIFICATION_DATE').".</b><br /><br />\n";
 
-        if ($pages = $this->loadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".mysqli_real_escape_string($this->dblink, $this->getUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY time ASC, tag ASC"))
+        if ($pages = $this->database->loadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".$this->database->escapeString($this->getUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY time ASC, tag ASC"))
         {
             foreach ($pages as $page)
             {
@@ -79,7 +79,7 @@ if ($user = $this->getUser())
     {
         echo "<b>"._t('YOUR_MODIFIED_PAGES_ORDERED_BY_NAME').".</b><br /><br />\n";
 
-        if ($pages = $this->loadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".mysqli_real_escape_string($this->dblink, $this->getUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY tag ASC, time DESC"))
+        if ($pages = $this->database->loadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".$this->database->escapeString($this->getUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY tag ASC, time DESC"))
         {
             foreach ($pages as $page)
             {

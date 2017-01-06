@@ -47,7 +47,7 @@ if ($this->userIsOwner() || $this->userIsAdmin()) {
         }
     } else {
         $msg = "<p><em>Cette page n'est pas orpheline.</em></p>\n";
-        $linkedFrom = $this->loadAll("SELECT DISTINCT from_tag " .
+        $linkedFrom = $this->database->loadAll("SELECT DISTINCT from_tag " .
                                      "FROM ".$this->config["table_prefix"]."links " .
                                      "WHERE to_tag = '".$this->getPageTag()."'");
         $msg .= "<p>Pages ayant un lien vers ".

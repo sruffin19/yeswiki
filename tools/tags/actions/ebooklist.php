@@ -50,7 +50,7 @@ $sql .= ' WHERE property="http://outils-reseaux.org/_vocabulary/metadata"
             AND resource LIKE "'.$ebookpagenamestart.'%" ';
 $sql .= ' ORDER BY resource ASC';
 
-$pages = $this->loadAll($sql);
+$pages = $this->database->loadAll($sql);
 if (count($pages) > 0) {
     $output .= '<ul class="media-list">'."\n";
     foreach($pages as $page) {

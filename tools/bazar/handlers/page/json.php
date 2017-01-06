@@ -282,7 +282,7 @@ if (isset($_REQUEST['demand'])) {
             $sql .= ' WHERE latest="Y" AND comment_on="" AND tag NOT LIKE "LogDesActionsAdministratives%" ';
             $sql .= ' AND tag NOT IN (SELECT resource FROM '.$this->getConfigValue('table_prefix').'triples WHERE property="http://outils-reseaux.org/_vocabulary/type") ';
             $sql .= ' ORDER BY tag ASC';
-            $pages = _convert($this->loadAll($sql), 'ISO-8859-15');
+            $pages = _convert($this->database->loadAll($sql), 'ISO-8859-15');
             $pagesindex = array();
             foreach ($pages as $page) {
                 $pagesindex[$page["tag"]] = $page;

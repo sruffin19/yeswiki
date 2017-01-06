@@ -1000,7 +1000,7 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
 
         if (!$GLOBALS['wiki']->loadUser($nomwiki)) {
             $requeteinsertionuserwikini = 'INSERT INTO ' . $GLOBALS['wiki']->config["table_prefix"] . "users SET " . "signuptime = now(), " . "name = '" . mysqli_real_escape_string($GLOBALS['wiki']->dblink, $nomwiki) . "', " . "email = '" . mysqli_real_escape_string($GLOBALS['wiki']->dblink, $valeurs_fiche[$tableau_template[2]]) . "', " . "password = md5('" . mysqli_real_escape_string($GLOBALS['wiki']->dblink, $valeurs_fiche['mot_de_passe_wikini']) . "')";
-            $resultat = $GLOBALS['wiki']->query($requeteinsertionuserwikini);
+            $resultat = $GLOBALS['wiki']->database->query($requeteinsertionuserwikini);
             if ($sendmail) {
                 //envoi mail nouveau mot de passe : il vaut mieux ne pas envoyer de mots de passe en clair.
                 $lien = str_replace("/wakka.php?wiki=", "", $GLOBALS['wiki']->config["base_url"]);
@@ -1918,7 +1918,7 @@ function titre(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
                     //on récupere le premier chiffre (l'identifiant de la liste)
                     preg_match_all('/[0-9]{1,4}/', $var, $matches);
                     $req = 'SELECT blv_label FROM ' . BAZ_PREFIXE . 'liste_valeurs WHERE blv_ce_liste=' . $matches[0][0] . ' AND blv_valeur=' . $valeurs_fiche[$var] . ' AND blv_ce_i18n="fr-FR"';
-                    $label = $GLOBALS['wiki']->loadSingle($req);
+                    $label = $GLOBALS['wiki']->database->loadSingle($req);
                     $valeurs_fiche['bf_titre'] = str_replace('{{' . $var . '}}', ($label[0] != null) ? $label[0] : '', $valeurs_fiche['bf_titre']);
                 } else {
                     $valeurs_fiche['bf_titre'] = str_replace('{{' . $var . '}}', $valeurs_fiche[$var], $valeurs_fiche['bf_titre']);
@@ -2447,7 +2447,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
     } elseif ($mode == 'formulaire_recherche') {
         if ($tableau_template[9] == 1) {
             $requete = 'SELECT * FROM ' . BAZ_PREFIXE . 'liste_valeurs WHERE blv_ce_liste=' . $tableau_template[1] . ' AND blv_ce_i18n like "' . $GLOBALS['_BAZAR_']['langue'] . '%" ORDER BY blv_label';
-            $resultat = $GLOBALS['wiki']->query($requete);
+            $resultat = $GLOBALS['wiki']->database->query($requete);
 
             require_once 'vendor/HTML/QuickForm/checkbox.php';
             $i = 0;

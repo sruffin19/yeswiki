@@ -40,7 +40,7 @@ if (isset($_POST['submit_export'])) {
 } else {
     echo $this->formOpen('export');
     $requete = "SELECT DISTINCT tag FROM ".$this->config["table_prefix"]."pages WHERE latest = 'Y' and comment_on = '' ORDER BY tag";
-    $tab = $this->loadAll($requete);
+    $tab = $this->database->loadAll($requete);
 
     if (is_array($tab)) {
         foreach ($tab as $nompage) {

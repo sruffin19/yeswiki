@@ -31,7 +31,7 @@ unset($params['tags']);
 $req = "SELECT DISTINCT tag, time, user, owner, body
 FROM ".$this->config['table_prefix']."pages, ".$this->config['table_prefix']."triples tags
 WHERE latest = 'Y' AND comment_on = '' AND tags.value IN (".$taglist.") AND tags.property = \"http://outils-reseaux.org/_vocabulary/tag\" AND tags.resource = tag AND tag NOT IN (\"".implode('","', $this->getAllInclusions())."\") ORDER BY tag ASC";
-$pages = $this->loadAll($req);
+$pages = $this->database->loadAll($req);
 
 echo '<div class="well well-sm no-dblclick controls">'."\n".'<div class="pull-right muted"><span class="nbfilteredelements">'.count($pages).'</span> '._t('TAGS_RESULTS').'</div>';
 foreach ($params as $param) {

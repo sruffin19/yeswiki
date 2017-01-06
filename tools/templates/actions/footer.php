@@ -35,7 +35,7 @@ echo $template_footer;
 if ($this->getConfigValue('debug')=='yes') {
     $debug_log_sql_queries = '';
     $T_SQL=0;
-    foreach ($this->queryLog as $query) {
+    foreach ($this->database->queryLog as $query) {
         $debug_log_sql_queries .= $query['query'].' ('.round($query['time'], 4).")<br />\n";
         $T_SQL = $T_SQL + $query['time'];
     }
@@ -44,7 +44,7 @@ if ($this->getConfigValue('debug')=='yes') {
     $debug_log = "<div class=\"debug\">\n<h4>Query log</h4>\n";
     $debug_log .= "<strong>".round(T_END-T_START, 4)." s total time<br />\n";
     $debug_log .= round($T_SQL, 4)." s total SQL time</strong> (".round((($T_SQL/(T_END-T_START))*100), 2)."% of total time)<br />\n";
-    $debug_log .= "<strong>".count($this->queryLog)." queries :</strong><br />\n";
+    $debug_log .= "<strong>".count($this->database->queryLog)." queries :</strong><br />\n";
     $debug_log .= $debug_log_sql_queries;
     $debug_log .= "</div>\n";
     echo $debug_log;

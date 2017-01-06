@@ -47,13 +47,13 @@ if ($action == 'logout') {
 
     // is user trying to update?
     if ($action == 'update') {
-        $this->query('update '.$this->getUserTablePrefix().'users set '.
-            "email = '".mysqli_real_escape_string($this->dblink, $_POST['email'])."', ".
-            "doubleclickedit = '".mysqli_real_escape_string($this->dblink, $_POST['doubleclickedit'])."', ".
-            "show_comments = '".mysqli_real_escape_string($this->dblink, $_POST['show_comments'])."', ".
-            "revisioncount = '".mysqli_real_escape_string($this->dblink, $_POST['revisioncount'])."', ".
-            "changescount = '".mysqli_real_escape_string($this->dblink, $_POST['changescount'])."', ".
-            "motto = '".mysqli_real_escape_string($this->dblink, $_POST['motto'])."' ".
+        $this->database->query('update '.$this->getUserTablePrefix().'users set '.
+            "email = '".$this->database->escapeString($_POST['email'])."', ".
+            "doubleclickedit = '".$this->database->escapeString($_POST['doubleclickedit'])."', ".
+            "show_comments = '".$this->database->escapeString($_POST['show_comments'])."', ".
+            "revisioncount = '".$this->database->escapeString($_POST['revisioncount'])."', ".
+            "changescount = '".$this->database->escapeString($_POST['changescount'])."', ".
+            "motto = '".$this->database->escapeString($_POST['motto'])."' ".
             "where name = '".$user['name']."' limit 1");
 
         $this->setUser($this->loadUser($user['name']));
@@ -73,7 +73,7 @@ if ($action == 'logout') {
         } elseif ($user['password'] != md5($_POST['oldpass'])) {
             $error = _t('WRONG_PASSWORD').'.';
         } else {
-            $this->query('update '.$this->getUserTablePrefix().'users set '."password = md5('".mysqli_real_escape_string($this->dblink, $password)."') "."where name = '".$user['name']."'");
+            $this->database->query('update '.$this->getUserTablePrefix().'users set '."password = md5('".$this->database->escapeString($password)."') "."where name = '".$user['name']."'");
             $this->setMessage(_t('PASSWORD_CHANGED').' !');
             $user['password'] = md5($password);
             $this->setUser($user);
@@ -191,12 +191,12 @@ if ($action == 'logout') {
             } elseif (strlen($password) < 5) {
                 $error = _t('PASSWORD_TOO_SHORT').'. '._t('PASSWORD_SHOULD_HAVE_5_CHARS_MINIMUM').'.';
             } else {
-                $this->query('insert into '.$this->getUserTablePrefix().'users set '.
+                $this->database->query('insert into '.$this->getUserTablePrefix().'users set '.
                     'signuptime = now(), '.
-                    "name = '".mysqli_real_escape_string($this->dblink, $name)."', ".
-                    "email = '".mysqli_real_escape_string($this->dblink, $email)."', ".
+                    "name = '".$this->database->escapeString($name)."', ".
+                    "email = '".$this->database->escapeString($email)."', ".
                     "motto = '', ".
-                    "password = md5('".mysqli_real_escape_string($this->dblink, $_POST['password'])."')");
+                    "password = md5('".$this->database->escapeString($_POST['password'])."')");
 
                 // log in
                 $this->setUser($this->loadUser($name));

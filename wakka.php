@@ -171,18 +171,17 @@ if (preg_match('`^' . WN_TAG_HANDLER_CAPTURE . '$`', $wiki, $matches)) {
 }
 
 // create wiki object
-$wiki = new Wiki($wakkaConfig);
-
-// update lang
-loadpreferredI18n($page);
-
-// check for database access
-if (! $wiki->dblink) {
+// and check for database access
+try {
+    $wiki = new Wiki($wakkaConfig);
+} catch (Exception $e) {
     echo '<p>', _t('DB_CONNECT_FAIL'), '</p>';
-    // Log error (useful to find the buggy server in a load balancing platform)
     trigger_error(_t('LOG_DB_CONNECT_FAIL'));
     exit();
 }
+
+// update lang
+loadpreferredI18n($page);
 
 // go!
 if (!isset($method)) {

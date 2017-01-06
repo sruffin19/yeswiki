@@ -35,7 +35,7 @@ if ($this->getMethod() != 'xml')
     return;
 }
 
-if ($pages = $this->loadAll("select tag, time, user, owner, LEFT(body,500) as body from ".$this->config["table_prefix"]."pages where latest = 'Y' and comment_on = '' order by time desc limit ".$max  ))  {
+if ($pages = $this->database->loadAll("select tag, time, user, owner, LEFT(body,500) as body from ".$this->config["table_prefix"]."pages where latest = 'Y' and comment_on = '' order by time desc limit ".$max  ))  {
 
     if (!($link = $this->getParameter("link"))) $link=$this->config["root_page"];
 

@@ -165,7 +165,7 @@ if (! $this->userIsAdmin()) {
     }
 
     //Récupération de la liste des pages
-    $liste_pages = $this->query("SELECT * FROM " . $table . "pages WHERE latest='Y' ORDER BY " . $table . "pages.tag ASC");
+    $liste_pages = $this->database->query("SELECT * FROM " . $table . "pages WHERE latest='Y' ORDER BY " . $table . "pages.tag ASC");
 
     $num_page = 0;
     while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {

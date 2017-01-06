@@ -28,7 +28,7 @@ if (empty($nb_taille_tag)) $nb_taille_tag = 6;
 
 // on récupère le nb maximum et le nb minimum d'occurences
 $sql = 'SELECT COUNT(value) AS nb FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" '.$selectiontags.' GROUP BY value';
-$min_max = $this->loadAll($sql);
+$min_max = $this->database->loadAll($sql);
 $min = 100000000;
 $max = 0;
 foreach ($min_max as $tab_min_max)
@@ -48,7 +48,7 @@ if ($mult<1) $mult = 1;
 
 // on récupère tous les tags existants
 $sql = 'SELECT value, resource FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" '.$selectiontags.' ORDER BY value ASC, resource ASC';
-$tab_tous_les_tags = $this->loadAll($sql);
+$tab_tous_les_tags = $this->database->loadAll($sql);
 
 if (is_array($tab_tous_les_tags))
 {

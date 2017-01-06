@@ -72,7 +72,7 @@ if ($this->getConfigValue("debug")=="yes")
 {
     $debug_log = "<span class=\"debug\"><b>Query log :</b><br />\n";
     $T_SQL=0;
-    foreach ($this->queryLog as $query)
+    foreach ($this->database->queryLog as $query)
     {
         $debug_log .= $query["query"]." (".round($query["time"],4).")<br />\n";
         $T_SQL = $T_SQL + $query["time"];

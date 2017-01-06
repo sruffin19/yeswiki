@@ -15,7 +15,7 @@ function DeleteAllTags($page)
 
 function SaveTags($page, $liste_tags)
 {
-    $tags = explode(',', mysqli_real_escape_string($this->dblink, _convert($liste_tags, YW_CHARSET, true)));
+    $tags = explode(',', $this->database->escapeString(_convert($liste_tags, YW_CHARSET, true)));
 
     //on recupere les anciens tags de la page courante
     $tabtagsexistants = $this->getAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
@@ -54,7 +54,7 @@ function GetAllTags($page = '')
     if ($page == '') {
         $sql = 'SELECT DISTINCT value FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag"';
 
-        return $this->loadAll($sql);
+        return $this->database->loadAll($sql);
     } else {
         return $this->getAllTriplesValues($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     }
@@ -68,7 +68,7 @@ function PageList($tags = '', $type = '', $nb = '', $tri = '')
         $tab_tags = explode(',', $tags);
         $nbdetags = count($tab_tags);
         $tags = implode(',', $tab_tags);
-        $tags = '"'.str_replace(',', '","', _convert(mysqli_real_escape_string($this->dblink, addslashes($tags)), YW_CHARSET, true)).'"';
+        $tags = '"'.str_replace(',', '","', _convert($this->database->escapeString(addslashes($tags)), YW_CHARSET, true)).'"';
         $req = ' AND tags.value IN ('.$tags.') ';
         $req .= ' AND tags.property="http://outils-reseaux.org/_vocabulary/tag" AND tags.resource=tag ';
         $req_having = ' HAVING COUNT(tag)='.$nbdetags.' ';
@@ -87,7 +87,7 @@ function PageList($tags = '', $type = '', $nb = '', $tri = '')
 
         $requete = 'SELECT * FROM '.$this->config['table_prefix'].'pages'.$req_from." WHERE latest = 'Y' and comment_on = '' ".$req;
 
-        return $this->loadAll($requete);
+        return $this->database->loadAll($requete);
     } else {
         // recuperation des pages wikis
         $sql = 'SELECT * FROM '.$this->getConfigValue('table_prefix').'pages';
@@ -104,6 +104,6 @@ function PageList($tags = '', $type = '', $nb = '', $tri = '')
 
         $sql .= ' ORDER BY tag ASC';
 
-        return $this->loadAll($sql);
+        return $this->database->loadAll($sql);
     }
 }

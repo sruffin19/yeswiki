@@ -104,7 +104,7 @@ $req = "CREATE TABLE IF NOT EXISTS `" . BAZ_PREFIXE . "nature` (
   `bn_label_class` varchar(255) NOT NULL,
   PRIMARY KEY (`bn_id_nature`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;";
-$resultat = $GLOBALS['wiki']->query($req);
+$resultat = $GLOBALS['wiki']->database->query($req);
 
 // +------------------------------------------------------------------------------------------------------+
 // |                             LES CONSTANTES DES ACTIONS DE BAZAR                                      |

@@ -68,7 +68,7 @@ if ($this->userIsAdmin()) {
               $_POST['from'] . " heure(s)</h2>\n";
         }
         //echo $requete;
-        $pagesFromSpammer = $this->loadAll($requete);
+        $pagesFromSpammer = $this->database->loadAll($requete);
         // Affichage des pages pour validation
         echo "<div class=\"action_erasespam\">\n";
         echo $title;
@@ -76,9 +76,9 @@ if ($this->userIsAdmin()) {
         echo "<table>\n";
         foreach ($pagesFromSpammer as $i => $page) {
             $req = "select * from ".$this->config["table_prefix"]."pages where tag = '"
-                .mysqli_real_escape_string($this->dblink, $page["tag"])
+                .$this->database->escapeString($page["tag"])
                 ."' order by time desc";
-            $revisions = $this->loadAll($req);
+            $revisions = $this->database->loadAll($req);
 
             echo "<tr>\n".
               "<td>".
@@ -151,8 +151,8 @@ if ($this->userIsAdmin()) {
             foreach ($_POST["rev"] as $rev_id) {
                 echo $rev_id."<br>";
                 // Selectionne la revision
-                $revision = $this->loadSingle("select * from ".$this->config["table_prefix"]."pages where id = '"
-                  .mysqli_real_escape_string($this->dblink, $rev_id)."' limit 1");
+                $revision = $this->database->loadSingle("select * from ".$this->config["table_prefix"]."pages where id = '"
+                  .$this->database->escapeString($rev_id)."' limit 1");
 
 
                 // Fait de la derniere version de cette revision
@@ -163,17 +163,17 @@ if ($this->userIsAdmin()) {
                   "where latest = 'Y' " .
                   "and tag = '" . $revision["tag"] . "' " .
                   "limit 1";
-                $this->query($requeteUpdate);
+                $this->database->query($requeteUpdate);
                 $restoredPages .= $revision["tag"] . ", ";
 
                  // add new revision
-                $this->query("insert into ".$this->config["table_prefix"]."pages set ".
-                 "tag = '".mysqli_real_escape_string($this->dblink, $revision['tag'])."', ".
+                $this->database->query("insert into ".$this->config["table_prefix"]."pages set ".
+                 "tag = '".$this->database->escapeString($revision['tag'])."', ".
                  "time = now(), ".
-                 "owner = '".mysqli_real_escape_string($this->dblink, $revision['owner'])."', ".
-                 "user = '".mysqli_real_escape_string($this->dblink, "despam")."', ".
+                 "owner = '".$this->database->escapeString($revision['owner'])."', ".
+                 "user = '".$this->database->escapeString("despam")."', ".
                  "latest = 'Y', ".
-                 "body = '".mysqli_real_escape_string($this->dblink, chop($revision['body']))."'");
+                 "body = '".$this->database->escapeString(chop($revision['body']))."'");
             }
         }
         $restoredPages = trim($restoredPages, ", ");

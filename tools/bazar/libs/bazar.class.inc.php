@@ -9,8 +9,8 @@ public function loadPage($tag, $time = "", $cache = 1)
         $page = $cachedPage;
     } else {
         // load page
-        $sql = 'SELECT * FROM ' . $this->config['table_prefix'] . 'pages' . " WHERE tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "' AND " . ($time ? "time = '" . mysqli_real_escape_string($this->dblink, $time) . "'" : "latest = 'Y'") . " LIMIT 1";
-        $page = $this->loadSingle($sql);
+        $sql = 'SELECT * FROM ' . $this->config['table_prefix'] . 'pages' . " WHERE tag = '" . $this->database->escapeString($tag) . "' AND " . ($time ? "time = '" . $this->database->escapeString($time) . "'" : "latest = 'Y'") . " LIMIT 1";
+        $page = $this->database->loadSingle($sql);
         // si la page existe, on charge les meta-donnees
         if ($page) {
             $page["metadatas"] = $this->GetMetaDatas($tag);

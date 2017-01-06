@@ -40,7 +40,7 @@ $sql = "SELECT id, tag, time, user, owner
     FROM $pageTableName
     WHERE comment_on = '' ORDER BY time desc limit $max";
 
-$pages = $this->loadAll($sql);
+$pages = $this->database->loadAll($sql);
 if (!$pages) {
     return;
 }

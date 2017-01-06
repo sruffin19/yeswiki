@@ -28,7 +28,7 @@ if (!defined("WIKINI_VERSION")) {
 
 if ($this->userIsOwner() || $this->userIsAdmin()) {
     if (isset($_GET['eraselink']) && $_GET['eraselink'] == 'oui') {
-        $this->query("DELETE FROM " . $this->config["table_prefix"] . "links WHERE to_tag = '"
+        $this->database->query("DELETE FROM " . $this->config["table_prefix"] . "links WHERE to_tag = '"
           . $this->getPageTag() . "'");
     }
 
@@ -46,14 +46,14 @@ if ($this->userIsOwner() || $this->userIsAdmin()) {
             $msg.= "</form></span>\n";
         } else {
             $this->deleteOrphanedPage($tag);
-            $this->query("DELETE FROM " . $this->config["table_prefix"] . "triples "
+            $this->database->query("DELETE FROM " . $this->config["table_prefix"] . "triples "
               ."WHERE resource = '" . $this->getPageTag() . "'");
             $this->logAdministrativeAction($this->getUserName(), "Suppression de la page ->\"\"" . $tag . "\"\"");
             $msg = "La page ${tag} a d&eacute;finitivement &eacute;t&eacute; supprim&eacute;e";
         }
     } else {
         $msg = "<p><em>Cette page n'est pas orpheline.</em></p>\n";
-        $linkedFrom = $this->loadAll("SELECT DISTINCT from_tag " . "FROM " . $this->config["table_prefix"] . "links "
+        $linkedFrom = $this->database->loadAll("SELECT DISTINCT from_tag " . "FROM " . $this->config["table_prefix"] . "links "
           . "WHERE to_tag = '" . $this->getPageTag() . "'");
         $msg.= "<p>Pages ayant un lien vers " . $this->composeLinkToPage($this->tag, "", "", 0) . " :</p>\n";
         $msg.= "<ul>\n";

@@ -1,6 +1,9 @@
 <?php
 
 require_once('includes/Action.php');
+require_once('includes/Database.php');
+
+use YesWiki\Database;
 
 class Wiki extends Actions
 {
@@ -41,20 +44,14 @@ class Wiki extends Actions
     public function __construct($config)
     {
         $this->config = $config;
-        // some host do not allow mysql_pconnect
-        $this->dblink = @mysqli_connect(
-            $this->config['mysql_host'],
-            $this->config['mysql_user'],
-            $this->config['mysql_password']
+
+        $this->database = new Database(
+            $this->getConfigValue('mysql_host'),
+            $this->getConfigValue('mysql_user'),
+            $this->getConfigValue('mysql_password'),
+            $this->getConfigValue('mysql_database'),
+            $this->getConfigValue('table_prefix')
         );
-        if ($this->dblink) {
-            if (! @mysqli_select_db($this->dblink, $this->config['mysql_database'])) {
-                @mysqli_close($this->dblink);
-                $this->dblink = false;
-            }
-            // necessaire pour les versions de mysql qui sont en utf8 par defaut
-            mysqli_set_charset($this->dblink, "latin1");
-        }
 
         // determine le chemin pour les cookies
         $parsedUrl = parse_url($this->getConfigValue('base_url'));
@@ -65,54 +62,6 @@ class Wiki extends Actions
         if ($this->CookiePath != '/') {
             $this->CookiePath .= '/';
         }
-    }
-
-    // DATABASE
-    public function query($query)
-    {
-        if ($this->getConfigValue('debug')) {
-            $start = $this->getMicroTime();
-        }
-
-        if (! $result = mysqli_query($this->dblink, $query)) {
-            ob_end_clean();
-            throw new Exception(
-                "Query failed: $query (" . mysqli_error($this->dblink) . ')',
-                1
-            );
-        }
-
-        if ($this->getConfigValue('debug')) {
-            $time = $this->getMicroTime() - $start;
-            $this->queryLog[] = array(
-                'query' => $query,
-                'time' => $time
-            );
-        }
-
-        return $result;
-    }
-
-    public function loadSingle($query)
-    {
-        if ($data = $this->loadAll($query)) {
-            return $data[0];
-        }
-
-        return null;
-    }
-
-    public function loadAll($query)
-    {
-        $data = array();
-        if ($results = $this->query($query)) {
-            while ($row = mysqli_fetch_assoc($results)) {
-                $data[] = $row;
-            }
-
-            mysqli_free_result($results);
-        }
-        return $data;
     }
 
     // MISC
@@ -289,7 +238,7 @@ class Wiki extends Actions
 
             $sql .= ' AND property ' . $propOp . ' "' . addslashes($property) . '"';
         }
-        return $this->loadAll($sql);
+        return $this->database->loadAll($sql);
     }
 
     /**
@@ -332,7 +281,7 @@ class Wiki extends Actions
         $sql = 'SELECT * FROM ' . $this->getConfigValue('table_prefix') . 'triples '
             . 'WHERE resource = "' . addslashes($res) . '"' ;
 
-        foreach ($this->loadAll($sql) as $triple) {
+        foreach ($this->database->loadAll($sql) as $triple) {
             if (!isset($this->triplesCacheByRsrc[$res][$triple['property']])) {
                 $this->triplesCacheByRsrc[$res][$triple['property']] = array();
             }
@@ -400,7 +349,7 @@ class Wiki extends Actions
             . 'WHERE resource = "' . addslashes($rePrefix . $resource) . '" '
             . 'AND property = "' . addslashes($propPrefix . $property) . '" '
             . 'AND value = "' . addslashes($value) . '"';
-        $res = $this->loadSingle($sql);
+        $res = $this->database->loadSingle($sql);
         if (!$res) {
             return 0;
         }
@@ -445,7 +394,7 @@ class Wiki extends Actions
             . 'triples (resource, property, value)'
             . 'VALUES ("' . addslashes($res) . '", "' . addslashes($propPrefix . $property)
             . '", "' . addslashes($value) . '")';
-        return $this->query($sql) ? 0 : 1;
+        return $this->database->query($sql) ? 0 : 1;
     }
 
     /**
@@ -503,7 +452,7 @@ class Wiki extends Actions
             . 'SET value = "' . addslashes($newvalue) . '" '
             . 'WHERE id = ' . $tripleId;
 
-        return $this->query($sql) ? 0 : 1;
+        return $this->database->query($sql) ? 0 : 1;
     }
 
     /**
@@ -543,7 +492,7 @@ class Wiki extends Actions
             unset($this->triplesCacheByRsrc[$res]);
         }
 
-        $this->query($sql);
+        $this->database->query($sql);
     }
 
     // inclusions
@@ -623,12 +572,12 @@ class Wiki extends Actions
         } else { // load page
 
             $prefix = $this->config['table_prefix'];
-            $tag = mysqli_real_escape_string($this->dblink, $tag);
+            $tag = $this->database->escapeString($tag);
             $strTime = $time
-                ? "time = '" . mysqli_real_escape_string($this->dblink, $time) . "'"
+                ? "time = '" . $this->database->escapeString($time) . "'"
                 : "latest = 'Y'";
             $sql = "SELECT * FROM ${prefix}pages WHERE tag = '$tag' AND $strTime LIMIT 1";
-            $page = $this->loadSingle($sql);
+            $page = $this->database->loadSingle($sql);
 
             // the database is in ISO-8859-15, it must be converted
             if (isset($page['body'])) {
@@ -690,33 +639,33 @@ class Wiki extends Actions
 
     public function loadPageById($pageId)
     {
-        return $this->loadSingle(
+        return $this->database->loadSingle(
             'select * from '
                 . $this->config['table_prefix']
                 . "pages where id = '"
-                . mysqli_real_escape_string($this->dblink, $pageId)
+                . $this->database->escapeString($pageId)
                 . "' limit 1"
         );
     }
 
     public function loadRevisions($page)
     {
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select * from '
                 . $this->config['table_prefix']
                 . "pages where tag = '"
-                . mysqli_real_escape_string($this->dblink, $page)
+                . $this->database->escapeString($page)
                 . "' order by time desc"
         );
     }
 
     public function loadPagesLinkingTo($tag)
     {
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select from_tag as tag from '
                 . $this->config['table_prefix']
                 . "links where to_tag = '"
-                . mysqli_real_escape_string($this->dblink, $tag)
+                . $this->database->escapeString($tag)
                 . "' order by tag"
         );
     }
@@ -724,7 +673,7 @@ class Wiki extends Actions
     public function loadRecentlyChanged($limit = 50)
     {
         $limit = (int) $limit;
-        if ($pages = $this->loadAll(
+        if ($pages = $this->database->loadAll(
             'select id, tag, time, user, owner from '
                 . $this->config['table_prefix']
                 . "pages where latest = 'Y' "
@@ -743,11 +692,11 @@ class Wiki extends Actions
         $sql = 'SELECT time FROM '.$this->config['table_prefix']
             . 'pages'
             .' WHERE tag = "'
-            . mysqli_real_escape_string($this->dblink, $pageTag)
+            . $this->database->escapeString($pageTag)
             . '"'
             .' AND comment_on = ""'
             .' ORDER BY `time` ASC LIMIT 1';
-        $page = $this->loadSingle($sql);
+        $page = $this->database->loadSingle($sql);
         if ($page) {
             return $page['time'];
         }
@@ -756,11 +705,11 @@ class Wiki extends Actions
 
     public function fullTextSearch($phrase)
     {
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select * from '
                 . $this->config['table_prefix']
                 . "pages where latest = 'Y' and match(tag, body) against('"
-                . mysqli_real_escape_string($this->dblink, $phrase)
+                . $this->database->escapeString($phrase)
                 . "')"
         );
     }
@@ -775,12 +724,12 @@ class Wiki extends Actions
             . "WHERE " . $prefix . "pages.tag IS NULL "
             . "GROUP BY " . $prefix . "links.to_tag "
             . "ORDER BY count DESC, tag ASC";
-        return $this->loadAll($sql);
+        return $this->database->loadAll($sql);
     }
 
     public function loadOrphanedPages()
     {
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select distinct tag from '
                 . $this->config['table_prefix']
                 . 'pages as p left join '
@@ -793,43 +742,43 @@ class Wiki extends Actions
 
     public function isOrphanedPage($tag)
     {
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select distinct tag from '
                 . $this->config['table_prefix']
                 . 'pages as p left join '
                 . $this->config['table_prefix']
                 . "links as l on p.tag = l.to_tag "
                 . "where l.to_tag is NULL and p.latest = 'Y' and tag = '"
-                . mysqli_real_escape_string($this->dblink, $tag) . "'"
+                . $this->database->escapeString($tag) . "'"
         );
     }
 
     public function deleteOrphanedPage($tag)
     {
         $prefix = $this->config['table_prefix'];
-        $this->query(
+        $this->database->query(
             "DELETE FROM " . $prefix . "pages WHERE tag='"
-                . mysqli_real_escape_string($this->dblink, $tag)
+                . $this->database->escapeString($tag)
                 . "' OR comment_on='"
-                . mysqli_real_escape_string($this->dblink, $tag)
+                . $this->database->escapeString($tag)
                 . "'"
         );
 
-        $this->query(
+        $this->database->query(
             "DELETE FROM " . $prefix . "links WHERE from_tag='"
-            . mysqli_real_escape_string($this->dblink, $tag)
+            . $this->database->escapeString($tag)
             . "' "
         );
 
-        $this->query(
+        $this->database->query(
             "DELETE FROM " . $prefix . "acls WHERE page_tag='"
-            . mysqli_real_escape_string($this->dblink, $tag)
+            . $this->database->escapeString($tag)
             . "' "
         );
 
-        $this->query(
+        $this->database->query(
             "DELETE FROM " . $prefix . "referrers WHERE page_tag='"
-                . mysqli_real_escape_string($this->dblink, $tag)
+                . $this->database->escapeString($tag)
                 . "' "
         );
     }
@@ -886,23 +835,23 @@ class Wiki extends Actions
             }
 
             // set all other revisions to old
-            $this->query(
+            $this->database->query(
                 'update ' . $this->config['table_prefix']
                     . "pages set latest = 'N' where tag = '"
-                    . mysqli_real_escape_string($this->dblink, $tag) . "'"
+                    . $this->database->escapeString($tag) . "'"
             );
 
             // add new revision
-            $this->query(
+            $this->database->query(
                 'insert into ' . $this->config['table_prefix'] . 'pages set '
-                . "tag = '" . mysqli_real_escape_string($this->dblink, $tag)
+                . "tag = '" . $this->database->escapeString($tag)
                 . "', " . ($commentOn ? "comment_on = '"
-                . mysqli_real_escape_string($this->dblink, $commentOn)
+                . $this->database->escapeString($commentOn)
                 . "', " : "") . "time = now(), " . "owner = '"
-                . mysqli_real_escape_string($this->dblink, $owner) . "', "
-                . "user = '" . mysqli_real_escape_string($this->dblink, $user)
+                . $this->database->escapeString($owner) . "', "
+                . "user = '" . $this->database->escapeString($user)
                 . "', " . "latest = 'Y', " . "body = '"
-                . mysqli_real_escape_string($this->dblink, chop($body)) . "', "
+                . $this->database->escapeString(chop($body)) . "', "
                 . "body_r = ''"
             );
 
@@ -1007,7 +956,7 @@ class Wiki extends Actions
                 . 'AND b.time < date_sub(now(), INTERVAL \''
                 . addslashes($days) . '\' DAY)';
 
-            $ids = $this->loadAll($sql);
+            $ids = $this->database->loadAll($sql);
 
             if (count($ids)) {
                 // there are some versions to remove from DB
@@ -1020,7 +969,7 @@ class Wiki extends Actions
                 $sql .= ')';
 
                 // ... and send it !
-                $this->query($sql);
+                $this->database->query($sql);
             }
         }
     }
@@ -1266,25 +1215,25 @@ class Wiki extends Actions
     public function writeLinkTable()
     {
         // delete old link table
-        $this->query(
+        $this->database->query(
             'delete from '
                 . $this->config['table_prefix']
                 . "links where from_tag = '"
-                . mysqli_real_escape_string($this->dblink, $this->getPageTag())
+                . $this->database->escapeString($this->getPageTag())
                 . "'"
         );
 
         if ($linktable = $this->getLinkTable()) {
-            $fromTag = mysqli_real_escape_string($this->dblink, $this->getPageTag());
+            $fromTag = $this->database->escapeString($this->getPageTag());
             foreach ($linktable as $toTag) {
                 $lowerToTag = strtolower($toTag);
                 if (! isset($written[$lowerToTag])) {
-                    $this->query(
+                    $this->database->query(
                         'insert into '
                             . $this->config['table_prefix']
                             . "links set from_tag = '"
                             . $fromTag . "', to_tag = '"
-                            . mysqli_real_escape_string($this->dblink, $toTag)
+                            . $this->database->escapeString($toTag)
                             . "'"
                     );
                     $written[$lowerToTag] = 1;
@@ -1389,14 +1338,14 @@ class Wiki extends Actions
                 return;
             }
 
-            $this->query(
+            $this->database->query(
                 'insert into '
                     . $this->config['table_prefix']
                     . 'referrers set '
                     . "page_tag = '"
-                    . mysqli_real_escape_string($this->dblink, $tag)
+                    . $this->database->escapeString($tag)
                     . "', " . "referrer = '"
-                    . mysqli_real_escape_string($this->dblink, $referrer)
+                    . $this->database->escapeString($referrer)
                     . "', "
                     . "time = now()"
             );
@@ -1405,12 +1354,12 @@ class Wiki extends Actions
 
     public function loadReferrers($tag = "")
     {
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select referrer, count(referrer) as num from '
                 . $this->config['table_prefix']
                 . 'referrers '
                 . ($tag = trim($tag)
-                    ? "where page_tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "'"
+                    ? "where page_tag = '" . $this->database->escapeString($tag) . "'"
                     : "")
                 . " group by referrer order by num desc"
         );
@@ -1420,11 +1369,11 @@ class Wiki extends Actions
     public function purgeReferrers()
     {
         if ($days = $this->getConfigValue("referrers_purge_time")) {
-            $this->query(
+            $this->database->query(
                 'delete from '
                     . $this->config['table_prefix']
                     . "referrers where time < date_sub(now(), interval '"
-                    . mysqli_real_escape_string($this->dblink, $days)
+                    . $this->database->escapeString($days)
                     . "' day)"
             );
         }
@@ -1483,15 +1432,15 @@ class Wiki extends Actions
     // USERS
     public function loadUser($name, $password = 0)
     {
-        return $this->loadSingle(
+        return $this->database->loadSingle(
             'select * from '
                 . $this->config['table_prefix']
                 . "users where name = '"
-                . mysqli_real_escape_string($this->dblink, $name)
+                . $this->database->escapeString($name)
                 . "' "
                 . ($password === 0
                     ? ""
-                    : "and password = '" . mysqli_real_escape_string($this->dblink, $password) . "'"
+                    : "and password = '" . $this->database->escapeString($password) . "'"
                 )
                 . ' limit 1'
         );
@@ -1499,7 +1448,7 @@ class Wiki extends Actions
 
     public function loadUsers()
     {
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select * from '
                 . $this->config['table_prefix']
                 . 'users order by name'
@@ -1550,12 +1499,12 @@ class Wiki extends Actions
      */
     public function loadComments($tag)
     {
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select * from '
                 . $this->config['table_prefix']
                 . 'pages '
                 . "where comment_on = '"
-                . mysqli_real_escape_string($this->dblink, $tag)
+                . $this->database->escapeString($tag)
                 . "' "
                 . "and latest = 'Y' "
                 . "order by substring(tag, 8) + 0"
@@ -1581,7 +1530,7 @@ class Wiki extends Actions
             $lim = ' limit ' . $limit;
         }
         // Query
-        return $this->loadAll(
+        return $this->database->loadAll(
             'select * from '
                 . $this->config['table_prefix']
                 . 'pages where comment_on != "" '
@@ -1605,12 +1554,12 @@ class Wiki extends Actions
         $sql = "select min(id) as id from ${prefix}pages "
             . "where comment_on != \"\" group by tag order by id desc";
 
-        if ($pages = $this->loadAll($sql)) {
+        if ($pages = $this->database->loadAll($sql)) {
             // load complete comments
             $num = 0;
             foreach ($pages as $page) {
                 $pageId = $pageId['id'];
-                $comment = $this->loadSingle(
+                $comment = $this->database->loadSingle(
                     "select * from ${prefix}pages where id = '$pageId' limit 1"
                 );
                 if (!isset($comments[$comment['comment_on']])
@@ -1806,7 +1755,12 @@ class Wiki extends Actions
         }
 
         // updated latest revision with new owner
-        $this->query('update ' . $this->config['table_prefix'] . "pages set owner = '" . mysqli_real_escape_string($this->dblink, $user) . "' where tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "' and latest = 'Y' limit 1");
+        $table = $this->config['table_prefix'] . 'pages';
+        $user = $this->database->escapeString($user);
+        $tag = $this->database->escapeString($tag);
+        $this->database->query(
+            "update $table set owner = '$user' where tag = '$tag' and latest = 'Y' limit 1"
+        );
     }
 
     /**
@@ -1844,8 +1798,8 @@ class Wiki extends Actions
         }
 
         $table = $this->config['table_prefix'] . 'acls';
-        $tag = mysqli_real_escape_string($this->dblink, $tag);
-        $res = $this->loadAll(
+        $tag = $this->database->escapeString($tag);
+        $res = $this->database->loadAll(
             "SELECT * FROM $table WHERE page_tag = \"$tag\""
         );
 
@@ -1876,18 +1830,15 @@ class Wiki extends Actions
 
 
         $table = $this->config['table_prefix'] . 'acls';
-        $tag = mysqli_real_escape_string($this->dblink, $tag);
-        $privilege = mysqli_real_escape_string($this->dblink, $privilege);
-        $list = mysqli_real_escape_string(
-            $this->dblink,
-            trim(str_replace("\r", '', $list))
-        );
+        $tag = $this->database->escapeString($tag);
+        $privilege = $this->database->escapeString($privilege);
+        $list = $this->database->escapeString(trim(str_replace("\r", '', $list)));
 
         $sql = "insert into $table set list = '$list', page_tag = '$tag', privilege = '$privilege'";
         if ($acl) {
             $sql = "update $table set list = '$list' where page_tag = '$tag' and privilege = '$privilege'";
         }
-        $this->query($sql);
+        $this->database->query($sql);
 
         // update the acls cache
         $this->aclsCache[$tag][$privilege] = array(
@@ -1912,14 +1863,14 @@ class Wiki extends Actions
         // add '"' at begin and end of each escaped privileges elements.
         // TODO utiliser array_walk
         for ($i=0; $i<count($privileges); $i++) {
-            $privileges[$i] = '"' . mysqli_real_escape_string($this->dblink, $privileges[$i]) . '"';
+            $privileges[$i] = '"' . $this->database->escapeString($privileges[$i]) . '"';
         }
 
         // construct a CSV string with privileges elements
         $privileges = implode(',', $privileges);
-        $strTag = mysqli_real_escape_string($this->dblink, $tag);
+        $strTag = $this->database->escapeString($tag);
         $table = $this->config['table_prefix'] . 'acls';
-        $this->query("DELETE FROM $table"
+        $this->database->query("DELETE FROM $table"
             ." WHERE page_tag = \"$tag\""
             ." AND privilege IN ($privileges)");
 

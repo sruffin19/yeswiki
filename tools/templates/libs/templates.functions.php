@@ -447,7 +447,7 @@ function show_form_theme_selector($mode = 'selector', $formclass = 'form-horizon
                                 </div>
                             </div>'."\n";
 
-        $tablistWikinames = $GLOBALS['wiki']->loadAll('SELECT DISTINCT tag FROM '. $GLOBALS['wiki']->getConfigValue('table_prefix') .'pages WHERE latest="Y"');
+        $tablistWikinames = $GLOBALS['wiki']->database->loadAll('SELECT DISTINCT tag FROM '. $GLOBALS['wiki']->getConfigValue('table_prefix') .'pages WHERE latest="Y"');
         foreach ($tablistWikinames as $tag) {
             $listWikinames[] = $tag['tag'];
         }

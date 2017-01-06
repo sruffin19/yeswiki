@@ -49,7 +49,7 @@ function AddJavascriptFile($file)
 function loadRecentlyChanged($limit = 50)
 {
     $limit= (int) $limit;
-    if ($pages = $this->loadAll("select id, tag, time, user, owner from ".$this->config["table_prefix"]."pages where latest = 'Y' and comment_on =  '' order by time desc limit $limit")) {
+    if ($pages = $this->database->loadAll("select id, tag, time, user, owner from ".$this->config["table_prefix"]."pages where latest = 'Y' and comment_on =  '' order by time desc limit $limit")) {
         return $pages;
     }
 }

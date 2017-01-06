@@ -57,7 +57,7 @@ $selectiontags = ' AND value IN ("'.implode(",",$tab_selected_tags).'")';
 
 // on recupere tous les tags existants
 $sql = 'SELECT DISTINCT value FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" ORDER BY value ASC';
-$tab_tous_les_tags = $this->loadAll($sql);
+$tab_tous_les_tags = $this->database->loadAll($sql);
 
 if (is_array($tab_tous_les_tags)) {    
     foreach ($tab_tous_les_tags as $tag) {

@@ -132,7 +132,7 @@ error_log( var_export($_POST,true));
     }
 
     //Récupération de la liste des pages
-    $liste_pages = $this->query('SELECT * FROM '.$table."pages WHERE latest='Y' ORDER BY "
+    $liste_pages = $this->database->query('SELECT * FROM '.$table."pages WHERE latest='Y' ORDER BY "
         .$table.'pages.tag ASC');
 
     echo '<form method="post" action="'.$this->href().'" class="form-inline">';

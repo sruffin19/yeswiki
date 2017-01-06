@@ -7,7 +7,7 @@ if ($this->userIsAdmin()) {
     $sql = 'SELECT tag,time,owner FROM '.$this->getConfigValue('table_prefix').'pages '.
            'WHERE latest="Y" AND comment_on="" AND tag NOT LIKE "LogDesActionsAdministratives%"'.
            'ORDER BY tag';
-    $pages = $this->loadAll($sql);
+    $pages = $this->database->loadAll($sql);
 
     include_once 'includes/tools/squelettephp.class.php';
     $template_pages = new SquelettePhp('tools/templates/presentation/templates/pages_table.tpl.html');

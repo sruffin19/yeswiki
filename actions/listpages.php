@@ -133,7 +133,7 @@ if ($tree)
     if ($sort != 'tag')
     {
         $sql .= ' WHERE a.tag = "' . AddSlashes($tree) . '" AND a.latest = "Y" LIMIT 1';
-        if (!$rootData = $this->loadSingle($sql))
+        if (!$rootData = $this->database->loadSingle($sql))
         {
             echo '<div class="alert alert-danger"><strong>'._t('ERROR').' '._t('ACTION').' ListPages</strong> : '._('THE_PAGE').' ' . htmlspecialchars($tree, ENT_COMPAT, YW_CHARSET) . ' '._t('DOESNT_EXIST').' !</div>';
             return;
@@ -231,7 +231,7 @@ if ($tree)
                 break;
         } // switch
 
-        if ($pages = $this->loadAll($sql))
+        if ($pages = $this->database->loadAll($sql))
         {
             $from = '';
             $newworkingon = array();
@@ -443,7 +443,7 @@ else
     }
 
     // retrieving the pages
-    $pages = $this->loadAll($sql);
+    $pages = $this->database->loadAll($sql);
 
     // Display
     // Header

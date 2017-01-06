@@ -28,10 +28,10 @@ $output = '';
 
 if ($this->userIsInGroup('admins')) {
     $req = 'SHOW TABLES FROM '.$this->config['mysql_database'].' LIKE "'.BAZ_PREFIXE.'liste%"';
-    $tabnature = $this->loadAll($req);
+    $tabnature = $this->database->loadAll($req);
     if (is_array($tabnature)) {
         $sql = 'SELECT bl_label_liste, blv_valeur, blv_label  FROM '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste=bl_id_liste AND blv_label!="Choisir..." ORDER BY blv_ce_liste, blv_valeur';
-        $tab = $this->loadAll($sql);
+        $tab = $this->database->loadAll($sql);
         $anciennomliste ='';$valeur = NULL;
         foreach ($tab as $ligne) {
             if ($ligne['bl_label_liste']!=$anciennomliste) {
@@ -56,7 +56,7 @@ if ($this->userIsInGroup('admins')) {
         if ($output != '') $output = '<div class="info_box">Ces pages suivantes ont étés rajoutées:</div><div style="overflow:auto;width:100%;height:200px;">'.$output.'</div>'."\n";
 
         //on efface les tables qui servent plus
-        $this->query('DROP TABLE '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs');
+        $this->database->query('DROP TABLE '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs');
     }
     $repertoire = 'tools/bazar/install/formulaire/';
     $dir = opendir($repertoire); $tab_formulaire = array();

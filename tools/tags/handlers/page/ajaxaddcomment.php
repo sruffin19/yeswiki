@@ -44,7 +44,7 @@ if (isset($_GET['jsonp_callback']))
         $sql = 'SELECT MAX(SUBSTRING(tag, 8) + 0) AS comment_id'
             . ' FROM ' . $this->getConfigValue('table_prefix') . 'pages'
             . ' WHERE comment_on != ""';
-        if ($lastComment = $this->loadSingle($sql))
+        if ($lastComment = $this->database->loadSingle($sql))
         {
             $num = $lastComment['comment_id'] + 1;
         }
