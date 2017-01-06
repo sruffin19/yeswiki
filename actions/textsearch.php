@@ -67,8 +67,15 @@ if (!$paramPhrase)
 if ($phrase)
 {
     // on cherche sur le mot avec entités html, le mot encodé par le wiki, ou le mot encodé par bazar en json
-    $search = $phrase.','.utf8_decode($phrase).','.substr(json_encode($phrase),1,-1);
-    $results = $this->FullTextSearch($search);
+    $search = $phrase . ',' . utf8_decode($phrase) . ',' . substr(json_encode($phrase),1,-1);
+
+    $table = $this->database->prefix . 'pages';
+    $slashedPhrase = $this->database->escapeString($phrase);
+
+    $results = $this->database->loadAll(
+        "SELECT * from $table WHERE latest = 'Y' and match(tag, body) against('$slashedPhrase')"
+    );
+
     if ($results)
     {
         if ($separator)

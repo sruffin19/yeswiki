@@ -404,17 +404,6 @@ class Wiki extends Actions
         return null ;
     }
 
-    public function fullTextSearch($phrase)
-    {
-        return $this->database->loadAll(
-            'select * from '
-                . $this->config['table_prefix']
-                . "pages where latest = 'Y' and match(tag, body) against('"
-                . $this->database->escapeString($phrase)
-                . "')"
-        );
-    }
-
     public function loadWantedPages()
     {
         $prefix = $this->config['table_prefix'];
