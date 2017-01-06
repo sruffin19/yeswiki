@@ -77,7 +77,7 @@ if (empty($point_size)) {
 $readonly = $this->getParameter('readonly');
 
 // get an unique pagename based on the image filename, without extension
-$datapagetag = mysqli_real_escape_string($this->dblink, $this->getPageTag().'PI'.preg_replace("/[^A-Za-z0-9 ]/", '', str_replace('.'.$ext, '', $file)));
+$datapagetag =  $this->database->escapeString($this->getPageTag().'PI'.preg_replace("/[^A-Za-z0-9 ]/", '', str_replace('.'.$ext, '', $file)));
 
 // save the posted data
 if (isset($_POST['title']) && !empty($_POST['title'])
@@ -86,15 +86,15 @@ if (isset($_POST['title']) && !empty($_POST['title'])
     && isset($_POST['image_x']) && !empty($_POST['image_x'])
     && isset($_POST['image_y']) && !empty($_POST['image_y'])
     && isset($_POST['color']) && !empty($_POST['color'])) {
-    $pagetag = mysqli_real_escape_string($this->dblink, str_replace($this->config['base_url'], '', $_POST['pagetag']));
+    $pagetag = $this->database->escapeString(str_replace($this->config['base_url'], '', $_POST['pagetag']));
     $chaine = "\n\n~~\"\"<!--".$_POST['image_x']."-".$_POST['image_y']."-".$_POST['color']."--><!--title-->".$_POST['title']."<!--/title-->\"\"\n\"\"<!--desc-->\"\"".$_POST['description']."\"\"<!--/desc-->\n\"\"~~";
-    $donneesbody = $this->database->loadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$pagetag."'and latest = 'Y' limit 1");
+    $donneesbody = $this->database->loadSingle("SELECT * FROM ".$this->database->prefix."pages WHERE tag = '".$pagetag."'and latest = 'Y' limit 1");
     $this->savePage($pagetag, $donneesbody['body'].$chaine, "", true);
     $this->redirect($this->href());
 }
 
 // get the data for the image
-$donneesbody = $this->database->loadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$datapagetag."'and latest = 'Y' limit 1");
+$donneesbody = $this->database->loadSingle("SELECT * FROM ".$this->database->prefix."pages WHERE tag = '".$datapagetag."'and latest = 'Y' limit 1");
 
 // search for markers info
 preg_match_all('/~~(.*)~~/msU', $donneesbody['body'], $locations);

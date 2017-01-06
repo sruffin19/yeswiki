@@ -37,7 +37,7 @@ if ($user = $this->getUser())
     $my_pages_count = 0;
     $curChar = '';
 
-    if ($pages = $this->database->loadAllPages())
+    if ($pages = $this->loadAllPages())
     {
         foreach ($pages as $page)
         {
