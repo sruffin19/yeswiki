@@ -29,7 +29,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-if ($pages = $this->loadWantedPages())
+
+$prefix = $this->config['table_prefix'];
+$sql = "SELECT " . $prefix . "links.to_tag AS tag, "
+    . "COUNT(" . $prefix . "links.from_tag) AS count "
+    . "FROM " . $prefix . "links LEFT JOIN " . $prefix . "pages "
+    . "ON " . $prefix . "links.to_tag = " . $prefix . "pages.tag "
+    . "WHERE " . $prefix . "pages.tag IS NULL "
+    . "GROUP BY " . $prefix . "links.to_tag "
+    . "ORDER BY count DESC, tag ASC";
+$pages = $this->database->loadAll($sql);
+
+if ($pages)
 {
     echo "<ul>\n";
     foreach ($pages as $page)

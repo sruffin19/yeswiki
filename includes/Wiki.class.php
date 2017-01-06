@@ -404,19 +404,6 @@ class Wiki extends Actions
         return null ;
     }
 
-    public function loadWantedPages()
-    {
-        $prefix = $this->config['table_prefix'];
-        $sql = "SELECT " . $prefix . "links.to_tag AS tag, "
-            . "COUNT(" . $prefix . "links.from_tag) AS count "
-            . "FROM " . $prefix . "links LEFT JOIN " . $prefix . "pages "
-            . "ON " . $prefix . "links.to_tag = " . $prefix . "pages.tag "
-            . "WHERE " . $prefix . "pages.tag IS NULL "
-            . "GROUP BY " . $prefix . "links.to_tag "
-            . "ORDER BY count DESC, tag ASC";
-        return $this->database->loadAll($sql);
-    }
-
     public function loadOrphanedPages()
     {
         return $this->database->loadAll(
