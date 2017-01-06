@@ -8,7 +8,7 @@ if (!defined("WIKINI_VERSION"))
 // Affichage uniquement du contenu correspondant à la langue en cours
 $translation_found=false;
 
-$includedpage=$this->LoadPage(trim($this->GetParameter('page')));
+$includedpage=$this->loadPage(trim($this->getParameter('page')));
 
 if (count($chunks=preg_split("/({{lang=\"[a-zA-Z][a-zA-Z]*\"}})/ms",$includedpage["body"],-1,PREG_SPLIT_DELIM_CAPTURE))>1) {
 
@@ -31,7 +31,7 @@ if (count($chunks=preg_split("/({{lang=\"[a-zA-Z][a-zA-Z]*\"}})/ms",$includedpag
     }
 
 // Hack : mise a jour du cache avec la nouvelle version. 
-    $this->CachePage($includedpage);
+    $this->cachePage($includedpage);
     
 }
 ?>

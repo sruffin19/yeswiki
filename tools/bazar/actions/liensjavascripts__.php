@@ -5,6 +5,6 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 // cette action n'est plus appelée, c'est présent pour les vieux themes de yeswiki anacoluthe 
-if ($this->GetMethod() == "show" || $this->GetMethod() == "iframe" || $this->GetMethod() == "edit") {
+if ($this->getMethod() == "show" || $this->getMethod() == "iframe" || $this->getMethod() == "edit") {
     $this->AddJavascriptFile('tools/bazar/libs/bazar.js');
 }

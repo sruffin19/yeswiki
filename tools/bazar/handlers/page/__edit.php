@@ -31,21 +31,21 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-if ($this->HasAccess('write')) {
-    $type = $this->GetTripleValue($this->GetPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
+if ($this->hasAccess('write')) {
+    $type = $this->getTripleValue($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
 
     if ($type == 'fiche_bazar') {
         // dans le cas ou on vient de modifier dans le formulaire une fiche bazar, on enregistre les modifications
         if (isset($_POST['bf_titre'])) {
             baz_formulaire(BAZ_ACTION_MODIFIER_V, $this->href(), $_POST);
         } else {
-            $fiche = baz_valeurs_fiche($this->GetPageTag());
+            $fiche = baz_valeurs_fiche($this->getPageTag());
             $pageeditionfiche = baz_formulaire(BAZ_ACTION_MODIFIER, $this->href('edit'), $fiche);
             // on peut tout de suite afficher le resultat a l'ecran
-            $plugin_output_new  = $this->Header();
-            $plugin_output_new .= $pageeditionfiche;
-            $plugin_output_new .= $this->Footer();
-            die($plugin_output_new);
+            $pluginOutputNew  = $this->header();
+            $pluginOutputNew .= $pageeditionfiche;
+            $pluginOutputNew .= $this->footer();
+            die($pluginOutputNew);
         }
     }
 }

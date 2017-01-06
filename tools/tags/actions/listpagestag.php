@@ -23,14 +23,14 @@ if (!defined('WIKINI_VERSION')) {
 
 include_once 'tools/tags/libs/tags.functions.php';
 $nbcartrunc = 200;
-$tags = $this->GetParameter('tags');
-$type = $this->GetParameter('type');
+$tags = $this->getParameter('tags');
+$type = $this->getParameter('type');
 // recuperation de tous les parametres
 $lienedit = '';
-$class = $this->GetParameter('class');
-$nb = $this->GetParameter('nb');
-$tri = $this->GetParameter('tri');
-$template = $this->GetParameter('template');
+$class = $this->getParameter('class');
+$nb = $this->getParameter('nb');
+$tri = $this->getParameter('tri');
+$template = $this->getParameter('template');
 if (empty($template)) {
     $template = 'pages_list.tpl.html';
 }
@@ -53,8 +53,8 @@ if ($resultat) {
             $element[$page['tag']]['time'] = $page['time'];
             $element[$page['tag']]['title'] = get_title_from_body($page);
             $element[$page['tag']]['image'] = get_image_from_body($page);
-            //$element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->Format($page['body'])), $nbcartrunc);
-            $pagetags = $this->GetAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+            //$element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->format($page['body'])), $nbcartrunc);
+            $pagetags = $this->getAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
             foreach ($pagetags as $tag) {
                 $element[$page['tag']]['tagnames'] .= sanitizeEntity($tag['value']).' ';
                 $element[$page['tag']]['tagbadges'] .= '<span class="label label-info">'.$tag['value'].'</span>&nbsp;';
@@ -69,7 +69,7 @@ if ($resultat) {
     $nb_total = 0;
 }
 
-$shownumberinfo = $this->GetParameter('shownumberinfo');
+$shownumberinfo = $this->getParameter('shownumberinfo');
 if (!empty($shownumberinfo) && $shownumberinfo == 1) {
     $info = '<div class="alert alert-info">'."\n";
     if ($nb_total > 1) {
@@ -80,7 +80,7 @@ if (!empty($shownumberinfo) && $shownumberinfo == 1) {
         $info .= 'Aucune page trouv&eacute;e';
     }
     $info .= (!empty($tags) ? ' avec le mot cl&eacute; <span class="label label-info">'.$tags.'</span>' : '').'.';
-    $info .= $this->Format('{{rss tags="'.$tags.'" class="pull-right"}}')."\n".'</div>'."\n";
+    $info .= $this->format('{{rss tags="'.$tags.'" class="pull-right"}}')."\n".'</div>'."\n";
     $output = $info.$output;
 }
 

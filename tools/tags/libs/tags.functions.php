@@ -12,7 +12,7 @@
  */
 function afficher_image_attach($idfiche, $nom_image, $label, $class, $largeur_vignette, $hauteur_vignette)
 {
-    $oldpage = $GLOBALS['wiki']->GetPageTag();
+    $oldpage = $GLOBALS['wiki']->getPageTag();
     $GLOBALS['wiki']->tag = $idfiche;
     $GLOBALS['wiki']->page['time'] = date('YmdHis');
     $GLOBALS['wiki']->setParameter('desc', $label);
@@ -60,7 +60,7 @@ function tokenTruncate($string, $your_desired_width)
 
 function get_filtertags_parameters_recursive($nb = 1, $tab = array())
 {
-    $filter = $GLOBALS['wiki']->GetParameter('filter'.$nb);
+    $filter = $GLOBALS['wiki']->getParameter('filter'.$nb);
 
     if (empty($filter) && $nb == 1) {
         return '<div class="alert alert-danger"><strong>'._t('TAGS_ACTION_FILTERTAGS').'</strong> : '._t('TAGS_NO_FILTERS').'</div>'."\n";
@@ -84,13 +84,13 @@ function get_filtertags_parameters_recursive($nb = 1, $tab = array())
             $tab[$nb]['title'] = '';
             $tab[$nb]['arraytags'] = explode(',', $explodelabel[0]);
         }
-        $toggle = $GLOBALS['wiki']->GetParameter('select'.$nb);
+        $toggle = $GLOBALS['wiki']->getParameter('select'.$nb);
         if (!empty($toggle) && $toggle == 'checkbox') {
             $tab[$nb]['toggle'] = $toggle;
         } else {
             $tab[$nb]['toggle'] = 'radio';
         }
-        $class = $GLOBALS['wiki']->GetParameter('class'.$nb);
+        $class = $GLOBALS['wiki']->getParameter('class'.$nb);
         if (!empty($class)) {
             $tab[$nb]['class'] = $class;
         } else {
@@ -107,7 +107,7 @@ function get_filtertags_parameters_recursive($nb = 1, $tab = array())
 function afficher_commentaires_recursif($page, $wiki, $premier = true)
 {
     $output = '';
-    $comments = $wiki->LoadComments($page);
+    $comments = $wiki->loadComments($page);
     $valcomment['tag'] = $page;
     $valcomment['commentaires'] = array();
     // display comments themselves
@@ -116,16 +116,16 @@ function afficher_commentaires_recursif($page, $wiki, $premier = true)
         $i = 0;
         foreach ($comments as $comment) {
             $valcomment['commentaires'][$i]['tag'] = $comment['tag'];
-            $valcomment['commentaires'][$i]['body'] = $wiki->Format($comment['body']);
-            $valcomment['commentaires'][$i]['infos'] = 'de '.$wiki->Format($comment['user']).', '.date("\l\e d.m.Y &\a\g\\r\av\e; H:i:s", strtotime($comment['time']));
+            $valcomment['commentaires'][$i]['body'] = $wiki->format($comment['body']);
+            $valcomment['commentaires'][$i]['infos'] = 'de '.$wiki->format($comment['user']).', '.date("\l\e d.m.Y &\a\g\\r\av\e; H:i:s", strtotime($comment['time']));
             $valcomment['commentaires'][$i]['actions'] = '';
-            if ($wiki->HasAccess('comment', $comment['tag'])) {
+            if ($wiki->hasAccess('comment', $comment['tag'])) {
                 $valcomment['commentaires'][$i]['actions'] .= '<a href="'.$wiki->href('', $comment['tag']).'" class="repondre_commentaire">R&eacute;pondre</a> ';
             }
-            if ($wiki->HasAccess('write', $comment['tag']) || $wiki->UserIsOwner($comment['tag']) || $wiki->UserIsAdmin($comment['tag'])) {
+            if ($wiki->hasAccess('write', $comment['tag']) || $wiki->userIsOwner($comment['tag']) || $wiki->userIsAdmin($comment['tag'])) {
                 $valcomment['commentaires'][$i]['actions'] .= '<a href="'.$wiki->href('edit', $comment['tag']).'" class="editer_commentaire">Editer</a> ';
             }
-            if ($wiki->UserIsOwner($comment['tag']) || $wiki->UserIsAdmin()) {
+            if ($wiki->userIsOwner($comment['tag']) || $wiki->userIsAdmin()) {
                 $valcomment['commentaires'][$i]['actions'] .= '<a href="'.$wiki->href('deletepage', $comment['tag']).'" class="supprimer_commentaire">Supprimer</a>'."\n";
             }
             $valcomment['commentaires'][$i]['reponses'] = afficher_commentaires_recursif($comment['tag'], $wiki, false);
@@ -135,11 +135,11 @@ function afficher_commentaires_recursif($page, $wiki, $premier = true)
 
     // formulaire d'ajout de commentaire
     $valcomment['commentform'] = '';
-    if ($premier && $wiki->HasAccess('comment', $page)) {
+    if ($premier && $wiki->hasAccess('comment', $page)) {
         $valcomment['commentform'] .= "<div class=\"microblog-comment-form\">\n";
-        $valcomment['commentform'] .= $wiki->FormOpen('addcomment', $page).'
+        $valcomment['commentform'] .= $wiki->formOpen('addcomment', $page).'
         <textarea name="body" class="comment-microblog" rows="3" placeholder="Ecrire votre commentaire ici..."></textarea>
-        <button class="btn btn-primary btn-microblog" name="action" value="addcomment">Ajouter votre commentaire</button>'.$wiki->FormClose();
+        <button class="btn btn-primary btn-microblog" name="action" value="addcomment">Ajouter votre commentaire</button>'.$wiki->formClose();
         $valcomment['commentform'] .= "<div class=\"clear\"></div></div>\n";
     }
 
@@ -192,11 +192,11 @@ function get_title_from_body($page)
     } else {
         preg_match_all("/\={6}(.*)\={6}/U", $page['body'], $titles);
         if (is_array($titles[1]) && isset($titles[1][0]) && $titles[1][0] != '') {
-            $title = $GLOBALS['wiki']->Format(_convert(trim($titles[1][0]), 'ISO-8859-15'));
+            $title = $GLOBALS['wiki']->format(_convert(trim($titles[1][0]), 'ISO-8859-15'));
         } else {
             preg_match_all('/={5}(.*)={5}/U', $page['body'], $titles);
             if (is_array($titles[1]) && isset($titles[1][0]) && $titles[1][0] != '') {
-                $title = $GLOBALS['wiki']->Format(_convert(trim($titles[1][0]), 'ISO-8859-15'));
+                $title = $GLOBALS['wiki']->format(_convert(trim($titles[1][0]), 'ISO-8859-15'));
             } else {
                 $title = $page['tag'];
             }
@@ -232,11 +232,11 @@ function get_image_from_body($page)
         } else {
             preg_match_all("/\[\[(http.*\.(?i)(jpg|png|gif|bmp)) .*\]\]/U", $page['body'], $image);
             if (is_array($image[1]) && isset($image[1][0]) && $image[1][0] != '') {
-                $image = $GLOBALS['wiki']->Format('""<img alt="image" class="img-responsive" src="'.trim(str_replace('\\', '', $image[1][0])).'" />""');
+                $image = $GLOBALS['wiki']->format('""<img alt="image" class="img-responsive" src="'.trim(str_replace('\\', '', $image[1][0])).'" />""');
             } else {
                 preg_match_all("/\<img.*src=\"(.*)\"/U", $page['body'], $image);
                 if (is_array($image[1]) && isset($image[1][0]) && $image[1][0] != '') {
-                    $image = $GLOBALS['wiki']->Format('""<img alt="image" class="img-responsive" src="'.trim($image[1][0]).'" />""');
+                    $image = $GLOBALS['wiki']->format('""<img alt="image" class="img-responsive" src="'.trim($image[1][0]).'" />""');
                 } else {
                     $image = '';
                 }
@@ -290,7 +290,7 @@ function generatePageName($nom, $occurence = 1)
     }
 
     // on verifie que la page n'existe pas deja : si c'est le cas on le retourne
-    if (!is_array($GLOBALS['wiki']->LoadPage($nom))) {
+    if (!is_array($GLOBALS['wiki']->loadPage($nom))) {
         return $nom;
     } else {
         // sinon, on rappele recursivement la fonction jusqu'a ce que le nom aille bien

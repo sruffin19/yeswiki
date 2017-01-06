@@ -19,20 +19,20 @@ class Wiki extends Actions
     public $isTrackingLinks = false;
     public $linktable = array();
     public $pageCache = array();
-    public $_groupsCache = array();
-    public $_actionsAclsCache = array();
+    public $groupsCache = array();
+    public $actionsAclsCache = array();
 
     /**
      * A very simple Request level cache for triple resources
      *
      * @var array
      */
-    protected $triplesCacheByResource = array();
+    protected $triplesCacheByRsrc = array();
 
     /**
      * Caching page ACLs (sql query on yeswiki_acls table).
-     * Filled in LoadAcl().
-     * Updated in SaveAcl().
+     * Filled in loadAcl().
+     * Updated in saveAcl().
      * @var array
      */
     protected $aclsCache = array() ;
@@ -42,7 +42,11 @@ class Wiki extends Actions
     {
         $this->config = $config;
         // some host do not allow mysql_pconnect
-        $this->dblink = @mysqli_connect($this->config['mysql_host'], $this->config['mysql_user'], $this->config['mysql_password']);
+        $this->dblink = @mysqli_connect(
+            $this->config['mysql_host'],
+            $this->config['mysql_user'],
+            $this->config['mysql_password']
+        );
         if ($this->dblink) {
             if (! @mysqli_select_db($this->dblink, $this->config['mysql_database'])) {
                 @mysqli_close($this->dblink);
@@ -53,8 +57,8 @@ class Wiki extends Actions
         }
 
         // determine le chemin pour les cookies
-        $a = parse_url($this->GetConfigValue('base_url'));
-        $this->CookiePath = dirname($a['path']);
+        $parsedUrl = parse_url($this->getConfigValue('base_url'));
+        $this->CookiePath = dirname($parsedUrl['path']);
         // Fixe la gestion des cookie sous les OS utilisant le \ comme separateur de chemin
         $this->CookiePath = str_replace('\\', '/', $this->CookiePath);
         // ajoute un '/' terminal sauf si on est a la racine web
@@ -64,56 +68,61 @@ class Wiki extends Actions
     }
 
     // DATABASE
-    public function Query($query)
+    public function query($query)
     {
-        if ($this->GetConfigValue('debug')) {
-            $start = $this->GetMicroTime();
+        if ($this->getConfigValue('debug')) {
+            $start = $this->getMicroTime();
         }
 
         if (! $result = mysqli_query($this->dblink, $query)) {
             ob_end_clean();
-            die('Query failed: ' . $query . ' (' . mysqli_error($this->dblink) . ')');
+            throw new Exception(
+                "Query failed: $query (" . mysqli_error($this->dblink) . ')',
+                1
+            );
         }
-        if ($this->GetConfigValue('debug')) {
-            $time = $this->GetMicroTime() - $start;
+
+        if ($this->getConfigValue('debug')) {
+            $time = $this->getMicroTime() - $start;
             $this->queryLog[] = array(
                 'query' => $query,
                 'time' => $time
             );
         }
+
         return $result;
     }
 
-    public function LoadSingle($query)
+    public function loadSingle($query)
     {
-        if ($data = $this->LoadAll($query)) {
+        if ($data = $this->loadAll($query)) {
             return $data[0];
         }
 
         return null;
     }
 
-    public function LoadAll($query)
+    public function loadAll($query)
     {
         $data = array();
-        if ($r = $this->Query($query)) {
-            while ($row = mysqli_fetch_assoc($r)) {
+        if ($results = $this->query($query)) {
+            while ($row = mysqli_fetch_assoc($results)) {
                 $data[] = $row;
             }
 
-            mysqli_free_result($r);
+            mysqli_free_result($results);
         }
         return $data;
     }
 
     // MISC
-    public function GetMicroTime()
+    public function getMicroTime()
     {
         list ($usec, $sec) = explode(" ", microtime());
         return ((float) $usec + (float) $sec);
     }
 
-    function IncludeBuffered($filename, $notfoundText = '', $vars = '', $path = '')
+    public function includeBuffered($filename, $notfoundText = '', $vars = '', $path = '')
     {
         $dirs = array('');
         if ($path) {
@@ -125,14 +134,16 @@ class Wiki extends Actions
         $included['after'] = array();
 
         foreach ($dirs as $dir) {
-            if ($dir)
+            if ($dir) {
                 $dir .= '/';
+            }
+
             $fullfilename = $dir . $filename;
+
+            $beforefullfilename = $dir . '__' . $filename;
             if (strstr($filename, 'page/')) {
                 list ($file, $extension) = explode('page/', $filename);
                 $beforefullfilename = $dir . $file . 'page/__' . $extension;
-            } else {
-                $beforefullfilename = $dir . '__' . $filename;
             }
 
             list ($file, $extension) = explode('.', $filename);
@@ -151,25 +162,26 @@ class Wiki extends Actions
             }
         }
 
-        $plugin_output_new = '';
+        $pluginOutputNew = '';
         $found = 0;
 
-        if (is_array($vars))
+        if (is_array($vars)) {
             extract($vars);
+        }
 
         foreach ($included['before'] as $before) {
             $found = 1;
             ob_start();
-            include ($before);
-            $plugin_output_new .= ob_get_contents();
+            include($before);
+            $pluginOutputNew .= ob_get_contents();
             ob_end_clean();
         }
 
         foreach ($included['new'] as $new) {
             $found = 1;
             ob_start();
-            require ($new);
-            $plugin_output_new = ob_get_contents();
+            require($new);
+            $pluginOutputNew = ob_get_contents();
             ob_end_clean();
             break;
         }
@@ -177,52 +189,56 @@ class Wiki extends Actions
         foreach ($included['after'] as $after) {
             $found = 1;
             ob_start();
-            include ($after);
-            $plugin_output_new .= ob_get_contents();
+            include($after);
+            $pluginOutputNew .= ob_get_contents();
             ob_end_clean();
         }
-        if ($found)
-            return $plugin_output_new;
-        if ($notfoundText)
+
+        if ($found) {
+            return $pluginOutputNew;
+        }
+
+        if ($notfoundText) {
             return $notfoundText;
-        else
-            return false;
+        }
+
+        return false;
     }
 
     // VARIABLES
-    public function GetPageTag()
+    public function getPageTag()
     {
         return $this->tag;
     }
 
-    public function GetPageTime()
+    public function getPageTime()
     {
         return $this->page['time'];
     }
 
-    public function GetMethod()
+    public function getMethod()
     {
         return $this->method;
     }
 
-    public function GetConfigValue($name, $default=null)
+    public function getConfigValue($name, $default = null)
     {
         return isset($this->config[$name])
             ? trim($this->config[$name])
             : ($default != null ? $default : '') ;
     }
 
-    public function GetWakkaName()
+    public function getWakkaName()
     {
-        return $this->GetConfigValue('wakka_name');
+        return $this->getConfigValue('wakka_name');
     }
 
-    public function GetWakkaVersion()
+    public function getWakkaVersion()
     {
         return WAKKA_VERSION;
     }
 
-    public function GetWikiNiVersion()
+    public function getWikiNiVersion()
     {
         return WIKINI_VERSION;
     }
@@ -232,44 +248,48 @@ class Wiki extends Actions
      * This allows to search triples by their approximate resource or property names.
      * The allowed operators are the sql "LIKE" and the sql "=".
      *
-     * Does not use the cache $this->triplesCacheByResource.
+     * Does not use the cache $this->triplesCacheByRsrc.
      *
      * @param string $resource
      *            The resource of the triples
      * @param string $property
      *            The property of the triple to retrieve or null
-     * @param string $res_op
+     * @param string $resOp
      *            The operator of comparison between the effective resource and $resource (default: 'LIKE')
-     * @param string $prop_op
+     * @param string $propOp
      *            The operator of comparison between the effective property and $property (default: '=')
      * @return array The list of all the triples that match the asked criteria
      */
-    public function GetMatchingTriples($resource, $property = null, $res_op = 'LIKE', $prop_op = '=')
-    {
+    public function getMatchingTriples(
+        $resource,
+        $property = null,
+        $resOp = 'LIKE',
+        $propOp = '='
+    ) {
         static $operators = array(
             '=',
             'LIKE'
         ); // we might want to add other operators later
-        $res_op = strtoupper($res_op);
-        if (! in_array($res_op, $operators)) {
-            $res_op = '=';
+        $resOp = strtoupper($resOp);
+        if (! in_array($resOp, $operators)) {
+            $resOp = '=';
         }
 
         $sql = 'SELECT * FROM '
-            . $this->GetConfigValue('table_prefix')
+            . $this->getConfigValue('table_prefix')
             . 'triples WHERE resource '
-            . $res_op
+            . $resOp
             . ' "' . addslashes($resource) . '"';
 
         if ($property !== null) {
-            $prop_op = strtoupper($prop_op);
-            if (! in_array($prop_op, $operators)) {
-                $prop_op = '=';
+            $propOp = strtoupper($propOp);
+            if (! in_array($propOp, $operators)) {
+                $propOp = '=';
             }
 
-            $sql .= ' AND property ' . $prop_op . ' "' . addslashes($property) . '"';
+            $sql .= ' AND property ' . $propOp . ' "' . addslashes($property) . '"';
         }
-        return $this->LoadAll($sql);
+        return $this->loadAll($sql);
     }
 
     /**
@@ -279,9 +299,9 @@ class Wiki extends Actions
      *            The resource of the triples
      * @param string $property
      *            The property of the triple to retrieve
-     * @param string $re_prefix
+     * @param string $rePrefix
      *            The prefix to add to $resource (defaults to THISWIKI_PREFIX)
-     * @param string $prop_prefix
+     * @param string $propPrefix
      *            The prefix to add to $property (defaults to WIKINI_VOC_PREFIX)
      * @return array An array of the retrieved values, in the form
      *         array(
@@ -290,37 +310,37 @@ class Wiki extends Actions
      *         ...
      *         )
      */
-    public function GetAllTriplesValues(
+    public function getAllTriplesValues(
         $resource,
         $property,
-        $re_prefix = THISWIKI_PREFIX,
-        $prop_prefix = WIKINI_VOC_PREFIX
+        $rePrefix = THISWIKI_PREFIX,
+        $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $res = $re_prefix . $resource ;
-        $prop = $prop_prefix . $property ;
-        if (isset($this->triplesCacheByResource[$res])) {
+        $res = $rePrefix . $resource ;
+        $prop = $propPrefix . $property ;
+        if (isset($this->triplesCacheByRsrc[$res])) {
             // All resource's properties was previously loaded.
-            //error_log(__METHOD__.' cache hits ['.$res.']['.$prop.'] '. count($this->triplesCacheByResource));
-            if (isset($this->triplesCacheByResource[$res][$prop])) {
-                return $this->triplesCacheByResource[$res][$prop] ;
+            //error_log(__METHOD__.' cache hits ['.$res.']['.$prop.'] '. count($this->triplesCacheByRsrc));
+            if (isset($this->triplesCacheByRsrc[$res][$prop])) {
+                return $this->triplesCacheByRsrc[$res][$prop] ;
             }
             // LoadAll($sql) return an empty array when no result, do the same.
             return array();
         }
-        //error_log(__METHOD__.' cache miss ['.$res.']['.$prop.'] '. count($this->triplesCacheByResource));
-        $this->triplesCacheByResource[$res] = array();
-        $sql = 'SELECT * FROM ' . $this->GetConfigValue('table_prefix') . 'triples '
+        //error_log(__METHOD__.' cache miss ['.$res.']['.$prop.'] '. count($this->triplesCacheByRsrc));
+        $this->triplesCacheByRsrc[$res] = array();
+        $sql = 'SELECT * FROM ' . $this->getConfigValue('table_prefix') . 'triples '
             . 'WHERE resource = "' . addslashes($res) . '"' ;
 
-        foreach ($this->LoadAll($sql) as $triple) {
-            if (!isset($this->triplesCacheByResource[$res][$triple['property']])) {
-                $this->triplesCacheByResource[$res][$triple['property']] = array();
+        foreach ($this->loadAll($sql) as $triple) {
+            if (!isset($this->triplesCacheByRsrc[$res][$triple['property']])) {
+                $this->triplesCacheByRsrc[$res][$triple['property']] = array();
             }
-            $this->triplesCacheByResource[$res][ $triple['property'] ][] =
+            $this->triplesCacheByRsrc[$res][ $triple['property'] ][] =
                 array( 'id'=>$triple['id'], 'value'=>$triple['value']) ;
         }
-        if (isset($this->triplesCacheByResource[$res][$prop])) {
-            return $this->triplesCacheByResource[$res][$prop] ;
+        if (isset($this->triplesCacheByRsrc[$res][$prop])) {
+            return $this->triplesCacheByRsrc[$res][$prop] ;
         }
         return array() ;
     }
@@ -332,16 +352,20 @@ class Wiki extends Actions
      *            The resource of the triples
      * @param string $property
      *            The property of the triple to retrieve
-     * @param string $re_prefix
+     * @param string $rePrefix
      *            The prefix to add to $resource (defaults to <tt>THISWIKI_PREFIX</tt>)
-     * @param string $prop_prefix
+     * @param string $propPrefix
      *            The prefix to add to $property (defaults to <tt>WIKINI_VOC_PREFIX</tt>)
      * @return string The value corresponding to ($resource, $property) or null if
      *         there is no such couple in the triples table.
      */
-    public function GetTripleValue($resource, $property, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
-    {
-        $res = $this->GetAllTriplesValues($resource, $property, $re_prefix, $prop_prefix);
+    public function getTripleValue(
+        $resource,
+        $property,
+        $rePrefix = THISWIKI_PREFIX,
+        $propPrefix = WIKINI_VOC_PREFIX
+    ) {
+        $res = $this->getAllTriplesValues($resource, $property, $rePrefix, $propPrefix);
         if ($res) {
             return $res[0]['value'];
         }
@@ -358,25 +382,25 @@ class Wiki extends Actions
      *            The property of the triple to find
      * @param string $value
      *            The value of the triple to find
-     * @param string $re_prefix
+     * @param string $rePrefix
      *            The prefix to add to $resource (defaults to <tt>THISWIKI_PREFIX</tt>)
-     * @param string $prop_prefix
+     * @param string $propPrefix
      *            The prefix to add to $property (defaults to <tt>WIKINI_VOC_PREFIX</tt>)
      * @param
      *            int The id of the found triple or 0 if there is no such triple.
      */
-    public function TripleExists(
+    public function tripleExists(
         $resource,
         $property,
         $value,
-        $re_prefix = THISWIKI_PREFIX,
-        $prop_prefix = WIKINI_VOC_PREFIX
+        $rePrefix = THISWIKI_PREFIX,
+        $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $sql = 'SELECT id FROM ' . $this->GetConfigValue('table_prefix') . 'triples '
-            . 'WHERE resource = "' . addslashes($re_prefix . $resource) . '" '
-            . 'AND property = "' . addslashes($prop_prefix . $property) . '" '
+        $sql = 'SELECT id FROM ' . $this->getConfigValue('table_prefix') . 'triples '
+            . 'WHERE resource = "' . addslashes($rePrefix . $resource) . '" '
+            . 'AND property = "' . addslashes($propPrefix . $property) . '" '
             . 'AND value = "' . addslashes($value) . '"';
-        $res = $this->LoadSingle($sql);
+        $res = $this->loadSingle($sql);
         if (!$res) {
             return 0;
         }
@@ -392,36 +416,36 @@ class Wiki extends Actions
      *            The property of the triple to insert
      * @param string $value
      *            The value of the triple to insert
-     * @param string $re_prefix
+     * @param string $rePrefix
      *            The prefix to add to $resource (defaults to <tt>THISWIKI_PREFIX</tt>)
-     * @param string $prop_prefix
+     * @param string $propPrefix
      *            The prefix to add to $property (defaults to <tt>WIKINI_VOC_PREFIX</tt>)
      * @return int An error code: 0 (success), 1 (failure) or 3 (already exists)
      */
-    public function InsertTriple(
+    public function insertTriple(
         $resource,
         $property,
         $value,
-        $re_prefix = THISWIKI_PREFIX,
-        $prop_prefix = WIKINI_VOC_PREFIX
+        $rePrefix = THISWIKI_PREFIX,
+        $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $res = $re_prefix . $resource ;
+        $res = $rePrefix . $resource ;
 
-        if ($this->TripleExists($res, $property, $value, '', $prop_prefix)) {
+        if ($this->tripleExists($res, $property, $value, '', $propPrefix)) {
             return 3;
         }
 
         // invalidate the cache
-        if (isset($this->triplesCacheByResource[$res])) {
-            unset($this->triplesCacheByResource[$res]);
+        if (isset($this->triplesCacheByRsrc[$res])) {
+            unset($this->triplesCacheByRsrc[$res]);
         }
 
 
-        $sql = 'INSERT INTO ' . $this->GetConfigValue('table_prefix')
+        $sql = 'INSERT INTO ' . $this->getConfigValue('table_prefix')
             . 'triples (resource, property, value)'
-            . 'VALUES ("' . addslashes($res) . '", "' . addslashes($prop_prefix . $property)
+            . 'VALUES ("' . addslashes($res) . '", "' . addslashes($propPrefix . $property)
             . '", "' . addslashes($value) . '")';
-        return $this->Query($sql) ? 0 : 1;
+        return $this->query($sql) ? 0 : 1;
     }
 
     /**
@@ -435,33 +459,51 @@ class Wiki extends Actions
      *            The old value of the triple to update
      * @param string $newvalue
      *            The new value of the triple to update
-     * @param string $re_prefix
+     * @param string $rePrefix
      *            The prefix to add to $resource (defaults to <tt>THISWIKI_PREFIX</tt>)
-     * @param string $prop_prefix
+     * @param string $propPrefix
      *            The prefix to add to $property (defaults to <tt>WIKINI_VOC_PREFIX</tt>)
      * @return int An error code: 0 (succ?s), 1 (?chec),
      *         2 ($resource, $property, $oldvalue does not exist)
      *         or 3 ($resource, $property, $newvalue already exists)
      */
-    public function UpdateTriple($resource, $property, $oldvalue, $newvalue, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
-    {
-        $res = $re_prefix . $resource ;
+    public function updateTriple(
+        $resource,
+        $property,
+        $oldvalue,
+        $newvalue,
+        $rePrefix = THISWIKI_PREFIX,
+        $propPrefix = WIKINI_VOC_PREFIX
+    ) {
+        $res = $rePrefix . $resource ;
 
-        $id = $this->TripleExists($res, $property, $oldvalue, '', $prop_prefix);
-        if (! $id) {
+        $tripleId = $this->tripleExists(
+            $res,
+            $property,
+            $oldvalue,
+            '',
+            $propPrefix
+        );
+
+        if (! $tripleId) {
             return 2;
         }
 
-        if ($this->TripleExists($res, $property, $newvalue, '', $prop_prefix)) {
+        if ($this->tripleExists($res, $property, $newvalue, '', $propPrefix)) {
             return 3;
         }
 
         // invalidate the cache
-        if( isset( $this->triplesCacheByResource[$res]) )
-            unset($this->triplesCacheByResource[$res]);
+        if (isset($this->triplesCacheByRsrc[$res])) {
+            unset($this->triplesCacheByRsrc[$res]);
+        }
 
-        $sql = 'UPDATE ' . $this->GetConfigValue('table_prefix') . 'triples ' . 'SET value = "' . addslashes($newvalue) . '" ' . 'WHERE id = ' . $id;
-        return $this->Query($sql) ? 0 : 1;
+
+        $sql = 'UPDATE ' . $this->getConfigValue('table_prefix') . 'triples '
+            . 'SET value = "' . addslashes($newvalue) . '" '
+            . 'WHERE id = ' . $tripleId;
+
+        return $this->query($sql) ? 0 : 1;
     }
 
     /**
@@ -473,28 +515,35 @@ class Wiki extends Actions
      *            The property of the triple to delete
      * @param string $value
      *            The value of the triple to delete. If set to <tt>null</tt>,
-     *            deletes all the triples corresponding to ($resource, $property). (defaults to <tt>null</tt>)
-     * @param string $re_prefix
+     *            deletes all the triples corresponding to ($resource, $property).
+     *            (defaults to <tt>null</tt>)
+     * @param string $rePrefix
      *            The prefix to add to $resource (defaults to <tt>THISWIKI_PREFIX</tt>)
-     * @param string $prop_prefix
+     * @param string $propPrefix
      *            The prefix to add to $property (defaults to <tt>WIKINI_VOC_PREFIX</tt>)
      */
-    public function DeleteTriple($resource, $property, $value = null, $re_prefix = THISWIKI_PREFIX, $prop_prefix = WIKINI_VOC_PREFIX)
-    {
-        $res = $re_prefix . $resource ;
+    public function deleteTriple(
+        $resource,
+        $property,
+        $value = null,
+        $rePrefix = THISWIKI_PREFIX,
+        $propPrefix = WIKINI_VOC_PREFIX
+    ) {
+        $res = $rePrefix . $resource ;
 
-        $sql = 'DELETE FROM ' . $this->GetConfigValue('table_prefix') . 'triples '
+        $sql = 'DELETE FROM ' . $this->getConfigValue('table_prefix') . 'triples '
             . 'WHERE resource = "' . addslashes($res) . '" '
-            . 'AND property = "' . addslashes($prop_prefix . $property) . '" ';
+            . 'AND property = "' . addslashes($propPrefix . $property) . '" ';
         if ($value !== null) {
             $sql .= 'AND value = "' . addslashes($value) . '"';
         }
 
         // invalidate the cache
-        if( isset( $this->triplesCacheByResource[$res]) )
-            unset($this->triplesCacheByResource[$res]);
+        if (isset($this->triplesCacheByRsrc[$res])) {
+            unset($this->triplesCacheByRsrc[$res]);
+        }
 
-        $this->Query($sql);
+        $this->query($sql);
     }
 
     // inclusions
@@ -505,7 +554,7 @@ class Wiki extends Actions
      *            Le nom de la page qui va etre inclue
      * @return int Le nombre d'elements dans la pile
      */
-    public function RegisterInclusion($pageTag)
+    public function registerInclusion($pageTag)
     {
         return array_unshift($this->inclusions, strtolower(trim($pageTag)));
     }
@@ -516,33 +565,21 @@ class Wiki extends Actions
      * @return string Le nom de la page dont l'inclusion devrait se terminer.
      *         null s'il n'y a plus d'inclusion dans la pile.
      */
-    public function UnregisterLastInclusion()
+    public function unregisterLastInclusion()
     {
         return array_shift($this->inclusions);
     }
 
     /**
-     * Renvoie le nom de la page en cours d'inclusion.
-     *
-     * @example // dans le cas d'une action comme l'ActionEcrivezMoi
-     *          if($inc = $this->CurrentInclusion() && strtolower($this->GetPageTag()) != $inc)
-     *          echo 'Cette action ne peut etre appelee depuis une page inclue';
-     * @return string Le nom (tag) de la page (en minuscules)
-     *         false si la pile est vide.
-     */
-    public function GetCurrentInclusion()
-    {
-        return isset($this->inclusions[0]) ? $this->inclusions[0] : false;
-    }
-
-    /**
-     * Verifie si on est a l'interieur d'une inclusion par $pageTag (sans tenir compte de la casse)
+     * Verifie si on est a l'interieur d'une inclusion par $pageTag (sans tenir
+     * compte de la casse)
      *
      * @param string $pageTag
      *            Le nom de la page a verifier
-     * @return bool True si on est a l'interieur d'une inclusion par $pageTag (false sinon)
+     * @return bool True si on est a l'interieur d'une inclusion par $pageTag
+     * (false sinon)
      */
-    public function IsIncludedBy($pageTag)
+    public function isIncludedBy($pageTag)
     {
         return in_array(strtolower($pageTag), $this->inclusions);
     }
@@ -550,9 +587,10 @@ class Wiki extends Actions
     /**
      *
      * @return array La pile d'inclusions
-     *         L'element 0 sera la derniere inclusion, l'element 1 sera son parent et ainsi de suite.
+     *         L'element 0 sera la derniere inclusion, l'element 1 sera son
+     *         parent et ainsi de suite.
      */
-    public function GetAllInclusions()
+    public function getAllInclusions()
     {
         return $this->inclusions;
     }
@@ -566,7 +604,7 @@ class Wiki extends Actions
      *            L'element 0 doit representer la derniere inclusion, l'element 1 son parent et ainsi de suite.
      * @return array L'ancienne pile d'inclusions, avec les noms des pages en minuscules.
      */
-    public function SetInclusions($pile = array())
+    public function setInclusions($pile = array())
     {
         $temp = $this->inclusions;
         $this->inclusions = $pile;
@@ -574,15 +612,23 @@ class Wiki extends Actions
     }
 
     // PAGES
-    public function LoadPage($tag, $time = "", $cache = 1)
+    public function loadPage($tag, $time = "", $cache = 1)
     {
         // retrieve from cache
-        if (! $time && $cache && (($cachedPage = $this->GetCachedPage($tag)) !== false)) {
+        if (empty($time)
+            and $cache
+            and (($cachedPage = $this->getCachedPage($tag)) !== false)
+        ) {
             $page = $cachedPage;
         } else { // load page
 
-            $sql = 'SELECT * FROM ' . $this->config['table_prefix'] . 'pages' . " WHERE tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "' AND " . ($time ? "time = '" . mysqli_real_escape_string($this->dblink, $time) . "'" : "latest = 'Y'") . " LIMIT 1";
-            $page = $this->LoadSingle($sql);
+            $prefix = $this->config['table_prefix'];
+            $tag = mysqli_real_escape_string($this->dblink, $tag);
+            $strTime = $time
+                ? "time = '" . mysqli_real_escape_string($this->dblink, $time) . "'"
+                : "latest = 'Y'";
+            $sql = "SELECT * FROM ${prefix}pages WHERE tag = '$tag' AND $strTime LIMIT 1";
+            $page = $this->loadSingle($sql);
 
             // the database is in ISO-8859-15, it must be converted
             if (isset($page['body'])) {
@@ -591,7 +637,7 @@ class Wiki extends Actions
 
             // cache result
             if (! $time) {
-                $this->CachePage($page, $tag);
+                $this->cachePage($page, $tag);
             }
         }
         return $page;
@@ -601,7 +647,7 @@ class Wiki extends Actions
      * Retrieves the cached version of a page.
      *
      * Notice that this method null or false, use
-     * $this->GetCachedPage($tag) === false
+     * $this->getCachedPage($tag) === false
      * to check if a page is not in the cache.
      *
      * @return mixed The cached version of a page:
@@ -609,12 +655,12 @@ class Wiki extends Actions
      *         - null if the cache knows that the page does not exists
      *         - false is the cache does not know the page
      */
-    public function GetCachedPage($tag)
+    public function getCachedPage($tag)
     {
-        return (array_key_exists($tag, $this->pageCache)
-            ? $this->pageCache[$tag]
-            : false
-        );
+        if (array_key_exists($tag, $this->pageCache)) {
+            return $this->pageCache[$tag];
+        }
+        return false;
     }
 
     /**
@@ -626,7 +672,7 @@ class Wiki extends Actions
      *            The tag of the page to cache. Defaults to $page['tag'] but is
      *            mendatory when $page === null
      */
-    public function CachePage($page, $pageTag = null)
+    public function cachePage($page, $pageTag = null)
     {
         if ($pageTag === null) {
             $pageTag = $page['tag'];
@@ -634,7 +680,7 @@ class Wiki extends Actions
         $this->pageCache[$pageTag] = $page;
     }
 
-    public function SetPage($page)
+    public function setPage($page)
     {
         $this->page = $page;
         if ($this->page['tag']) {
@@ -642,203 +688,283 @@ class Wiki extends Actions
         }
     }
 
-    public function LoadPageById($id)
+    public function loadPageById($pageId)
     {
-        return $this->LoadSingle('select * from ' . $this->config['table_prefix'] . "pages where id = '" . mysqli_real_escape_string($this->dblink, $id) . "' limit 1");
+        return $this->loadSingle(
+            'select * from '
+                . $this->config['table_prefix']
+                . "pages where id = '"
+                . mysqli_real_escape_string($this->dblink, $pageId)
+                . "' limit 1"
+        );
     }
 
-    public function LoadRevisions($page)
+    public function loadRevisions($page)
     {
-        return $this->LoadAll('select * from ' . $this->config['table_prefix'] . "pages where tag = '" . mysqli_real_escape_string($this->dblink, $page) . "' order by time desc");
+        return $this->loadAll(
+            'select * from '
+                . $this->config['table_prefix']
+                . "pages where tag = '"
+                . mysqli_real_escape_string($this->dblink, $page)
+                . "' order by time desc"
+        );
     }
 
-    public function LoadPagesLinkingTo($tag)
+    public function loadPagesLinkingTo($tag)
     {
-        return $this->LoadAll('select from_tag as tag from ' . $this->config['table_prefix'] . "links where to_tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "' order by tag");
+        return $this->loadAll(
+            'select from_tag as tag from '
+                . $this->config['table_prefix']
+                . "links where to_tag = '"
+                . mysqli_real_escape_string($this->dblink, $tag)
+                . "' order by tag"
+        );
     }
 
-    public function LoadRecentlyChanged($limit = 50)
+    public function loadRecentlyChanged($limit = 50)
     {
         $limit = (int) $limit;
-        if ($pages = $this->LoadAll('select id, tag, time, user, owner from ' . $this->config['table_prefix'] . "pages where latest = 'Y' and comment_on = '' order by time desc limit $limit")) {
+        if ($pages = $this->loadAll(
+            'select id, tag, time, user, owner from '
+                . $this->config['table_prefix']
+                . "pages where latest = 'Y' "
+                . "and comment_on = '' order by time desc limit $limit"
+        )) {
             foreach ($pages as $page) {
-                $this->CachePage($page);
+                $this->cachePage($page);
             }
+
             return $pages;
         }
     }
 
-    public function LoadAllPages()
+    public function getPageCreateTime($pageTag)
     {
-        return $this->LoadAll('select * from ' . $this->config['table_prefix']
-            . "pages where latest = 'Y' order by tag");
-    }
-
-    public function GetPageCreateTime( $pageTag )
-    {
-        $sql = 'SELECT time FROM '.$this->config['table_prefix'].'pages'
-            .' WHERE tag = "'.mysqli_real_escape_string($this->dblink, $pageTag).'"'
+        $sql = 'SELECT time FROM '.$this->config['table_prefix']
+            . 'pages'
+            .' WHERE tag = "'
+            . mysqli_real_escape_string($this->dblink, $pageTag)
+            . '"'
             .' AND comment_on = ""'
             .' ORDER BY `time` ASC LIMIT 1';
-        $page = $this->LoadSingle($sql);
+        $page = $this->loadSingle($sql);
         if ($page) {
             return $page['time'];
         }
         return null ;
     }
 
-    public function FullTextSearch($phrase)
+    public function fullTextSearch($phrase)
     {
-        return $this->LoadAll(
-            'select * from ' . $this->config['table_prefix']
-            . "pages where latest = 'Y' and match(tag, body) against('" . mysqli_real_escape_string($this->dblink, $phrase) . "')");
+        return $this->loadAll(
+            'select * from '
+                . $this->config['table_prefix']
+                . "pages where latest = 'Y' and match(tag, body) against('"
+                . mysqli_real_escape_string($this->dblink, $phrase)
+                . "')"
+        );
     }
 
-    public function LoadWantedPages()
+    public function loadWantedPages()
     {
-        $p = $this->config['table_prefix'];
-        $r = "SELECT ${p}links.to_tag AS tag, COUNT(${p}links.from_tag) AS count " . "FROM ${p}links LEFT JOIN ${p}pages ON ${p}links.to_tag = ${p}pages.tag " . "WHERE ${p}pages.tag IS NULL GROUP BY ${p}links.to_tag ORDER BY count DESC, tag ASC";
-        return $this->LoadAll($r);
+        $prefix = $this->config['table_prefix'];
+        $sql = "SELECT " . $prefix . "links.to_tag AS tag, "
+            . "COUNT(" . $prefix . "links.from_tag) AS count "
+            . "FROM " . $prefix . "links LEFT JOIN " . $prefix . "pages "
+            . "ON " . $prefix . "links.to_tag = " . $prefix . "pages.tag "
+            . "WHERE " . $prefix . "pages.tag IS NULL "
+            . "GROUP BY " . $prefix . "links.to_tag "
+            . "ORDER BY count DESC, tag ASC";
+        return $this->loadAll($sql);
     }
 
-    public function LoadOrphanedPages()
+    public function loadOrphanedPages()
     {
-        return $this->LoadAll('select distinct tag from ' . $this->config['table_prefix'] . 'pages as p left join ' . $this->config['table_prefix'] . "links as l on p.tag = l.to_tag where l.to_tag is NULL and p.comment_on = '' and p.latest = 'Y' order by tag");
+        return $this->loadAll(
+            'select distinct tag from '
+                . $this->config['table_prefix']
+                . 'pages as p left join '
+                . $this->config['table_prefix']
+                . "links as l on p.tag = l.to_tag "
+                . "where l.to_tag is NULL and p.comment_on = '' "
+                . "and p.latest = 'Y' order by tag"
+        );
     }
 
-    public function IsOrphanedPage($tag)
+    public function isOrphanedPage($tag)
     {
-        return $this->LoadAll('select distinct tag from ' . $this->config['table_prefix'] . 'pages as p left join ' . $this->config['table_prefix'] . "links as l on p.tag = l.to_tag where l.to_tag is NULL and p.latest = 'Y' and tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "'");
+        return $this->loadAll(
+            'select distinct tag from '
+                . $this->config['table_prefix']
+                . 'pages as p left join '
+                . $this->config['table_prefix']
+                . "links as l on p.tag = l.to_tag "
+                . "where l.to_tag is NULL and p.latest = 'Y' and tag = '"
+                . mysqli_real_escape_string($this->dblink, $tag) . "'"
+        );
     }
 
-    public function DeleteOrphanedPage($tag)
+    public function deleteOrphanedPage($tag)
     {
-        $p = $this->config['table_prefix'];
-        $this->Query("DELETE FROM ${p}pages WHERE tag='" . mysqli_real_escape_string($this->dblink, $tag) . "' OR comment_on='" . mysqli_real_escape_string($this->dblink, $tag) . "'");
-        $this->Query("DELETE FROM ${p}links WHERE from_tag='" . mysqli_real_escape_string($this->dblink, $tag) . "' ");
-        $this->Query("DELETE FROM ${p}acls WHERE page_tag='" . mysqli_real_escape_string($this->dblink, $tag) . "' ");
-        $this->Query("DELETE FROM ${p}referrers WHERE page_tag='" . mysqli_real_escape_string($this->dblink, $tag) . "' ");
+        $prefix = $this->config['table_prefix'];
+        $this->query(
+            "DELETE FROM " . $prefix . "pages WHERE tag='"
+                . mysqli_real_escape_string($this->dblink, $tag)
+                . "' OR comment_on='"
+                . mysqli_real_escape_string($this->dblink, $tag)
+                . "'"
+        );
+
+        $this->query(
+            "DELETE FROM " . $prefix . "links WHERE from_tag='"
+            . mysqli_real_escape_string($this->dblink, $tag)
+            . "' "
+        );
+
+        $this->query(
+            "DELETE FROM " . $prefix . "acls WHERE page_tag='"
+            . mysqli_real_escape_string($this->dblink, $tag)
+            . "' "
+        );
+
+        $this->query(
+            "DELETE FROM " . $prefix . "referrers WHERE page_tag='"
+                . mysqli_real_escape_string($this->dblink, $tag)
+                . "' "
+        );
     }
 
     /**
-     * SavePage
+     * savePage
      * Sauvegarde un contenu dans une page donnee
      *
      * @param string $body
      *            Contenu a sauvegarder dans la page
      * @param string $tag
      *            Nom de la page
-     * @param string $comment_on
+     * @param string $commentOn
      *            Indication si c'est un commentaire
-     * @param boolean $bypass_acls
+     * @param boolean $bypassAcls
      *            Indication si on bypasse les droits d'ecriture
      * @return int Code d'erreur : 0 (succes), 1 (l'utilisateur n'a pas les droits)
+     *
      */
-    public function SavePage($tag, $body, $comment_on = "", $bypass_acls = false)
+    public function savePage($tag, $body, $commentOn = "", $bypassAcls = false)
     {
         // get current user
-        $user = $this->GetUserName();
+        $user = $this->getUserName();
 
         // check bypass of rights or write privilege
-        $rights = $bypass_acls || ($comment_on ? $this->HasAccess('comment', $comment_on) : $this->HasAccess('write', $tag));
+        $rights = $bypassAcls
+            || ($commentOn ? $this->hasAccess('comment', $commentOn) : $this->hasAccess('write', $tag));
 
         if ($rights) {
             // is page new?
-            if (! $oldPage = $this->LoadPage($tag)) {
+            if (! $oldPage = $this->loadPage($tag)) {
                 // create default write acl. store empty write ACL for comments.
-                $this->SaveAcl($tag, 'write', ($comment_on ? $user : $this->GetConfigValue('default_write_acl')));
+                $this->saveAcl($tag, 'write', ($commentOn ? $user : $this->getConfigValue('default_write_acl')));
 
                 // create default read acl
-                $this->SaveAcl($tag, 'read', $this->GetConfigValue('default_read_acl'));
+                $this->saveAcl($tag, 'read', $this->getConfigValue('default_read_acl'));
 
                 // create default comment acl.
-                $this->SaveAcl($tag, 'comment', ($comment_on ? '' : $this->GetConfigValue('default_comment_acl')));
+                $this->saveAcl($tag, 'comment', ($commentOn ? '' : $this->getConfigValue('default_comment_acl')));
 
                 // current user is owner; if user is logged in! otherwise, no owner.
-                if ($this->GetUser()) {
+                $owner = '';
+                if ($this->getUser()) {
                     $owner = $user;
-                } else {
-                    $owner = '';
                 }
             } else {
                 // aha! page isn't new. keep owner!
                 $owner = $oldPage['owner'];
 
                 // ...and comment_on, eventualy?
-                if ($comment_on == '') {
-                    $comment_on = $oldPage['comment_on'];
+                if ($commentOn == '') {
+                    $commentOn = $oldPage['comment_on'];
                 }
             }
 
             // set all other revisions to old
-            $this->Query('update ' . $this->config['table_prefix'] . "pages set latest = 'N' where tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "'");
+            $this->query(
+                'update ' . $this->config['table_prefix']
+                    . "pages set latest = 'N' where tag = '"
+                    . mysqli_real_escape_string($this->dblink, $tag) . "'"
+            );
 
             // add new revision
-            $this->Query('insert into ' . $this->config['table_prefix'] . 'pages set ' . "tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "', " . ($comment_on ? "comment_on = '" . mysqli_real_escape_string($this->dblink, $comment_on) . "', " : "") . "time = now(), " . "owner = '" . mysqli_real_escape_string($this->dblink, $owner) . "', " . "user = '" . mysqli_real_escape_string($this->dblink, $user) . "', " . "latest = 'Y', " . "body = '" . mysqli_real_escape_string($this->dblink, chop($body)) . "', " . "body_r = ''");
+            $this->query(
+                'insert into ' . $this->config['table_prefix'] . 'pages set '
+                . "tag = '" . mysqli_real_escape_string($this->dblink, $tag)
+                . "', " . ($commentOn ? "comment_on = '"
+                . mysqli_real_escape_string($this->dblink, $commentOn)
+                . "', " : "") . "time = now(), " . "owner = '"
+                . mysqli_real_escape_string($this->dblink, $owner) . "', "
+                . "user = '" . mysqli_real_escape_string($this->dblink, $user)
+                . "', " . "latest = 'Y', " . "body = '"
+                . mysqli_real_escape_string($this->dblink, chop($body)) . "', "
+                . "body_r = ''"
+            );
+
             unset($this->pageCache[$tag]);
             return 0;
-        } else {
-            return 1;
         }
+
+        return 1;
     }
 
     /**
-     * AppendContentToPage
+     * appendContentToPage
      * Ajoute du contenu a la fin d'une page
      *
      * @param string $content
      *            Contenu a ajouter a la page
      * @param string $page
      *            Nom de la page
-     * @param boolean $bypass_acls
+     * @param boolean $bypassAcls
      *            Bouleen pour savoir s'il faut bypasser les ACLs
      * @return int Code d'erreur : 0 (succes), 1 (pas de contenu specifie)
+     *
+     * TODO : ne sert que dans la fonction logAdministrativeAction, semble
+     * inutilement compliqué. a vérifier sans compter le booléen passé en paramêtre
      */
-    public function AppendContentToPage($content, $page, $bypass_acls = false)
+    public function appendContentToPage($content, $page)
     {
-        // Si un contenu est specifie
-        if (isset($content)) {
-            // -- Determine quelle est la page :
-            // -- passee en parametre (que se passe-t'il si elle n'existe pas ?)
-            // -- ou la page en cours par defaut
-            $page = isset($page) ? $page : $this->GetPageTag();
+        // -- Determine quelle est la page :
+        // -- passee en parametre (que se passe-t'il si elle n'existe pas ?)
+        // -- ou la page en cours par defaut
+        $page = isset($page) ? $page : $this->getPageTag();
 
-            // -- Chargement de la page
-            $result = $this->LoadPage($page);
-            $body = $result['body'];
-            // -- Ajout du contenu a la fin de la page
-            $body .= $content;
+        // -- Chargement de la page
+        $result = $this->loadPage($page);
+        $body = $result['body'];
+        // -- Ajout du contenu a la fin de la page
+        $body .= $content;
 
-            // -- Sauvegarde de la page
-            // TODO : que se passe-t-il si la page est pleine ou si l'utilisateur n'a pas les droits ?
-            $this->SavePage($page, $body, '', $bypass_acls);
+        // -- Sauvegarde de la page
+        // TODO : que se passe-t-il si la page est pleine ou si l'utilisateur n'a pas les droits ?
+        $this->savePage($page, $body, '', true);
 
-            // now we render it internally so we can write the updated link table.
-            $this->ClearLinkTable();
-            $this->StartLinkTracking();
-            $temp = $this->SetInclusions();
-            $this->RegisterInclusion($this->GetPageTag()); // on simule totalement un affichage normal
-            $this->Format($body);
-            $this->SetInclusions($temp);
-            if ($user = $this->GetUser()) {
-                $this->TrackLinkTo($user['name']);
-            }
-            if ($owner = $this->GetPageOwner()) {
-                $this->TrackLinkTo($owner);
-            }
-            $this->StopLinkTracking();
-            $this->WriteLinkTable();
-            $this->ClearLinkTable(); /* */
-
-            // Retourne 0 seulement si tout c'est bien passe
-            return 0;
-        } else {
-            return 1;
+        // now we render it internally so we can write the updated link table.
+        $this->clearLinkTable();
+        $this->startLinkTracking();
+        $temp = $this->setInclusions();
+        $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
+        $this->format($body);
+        $this->setInclusions($temp);
+        if ($user = $this->getUser()) {
+            $this->trackLinkTo($user['name']);
         }
+        if ($owner = $this->getPageOwner()) {
+            $this->trackLinkTo($owner);
+        }
+        $this->stopLinkTracking();
+        $this->writeLinkTable();
+        $this->clearLinkTable();
     }
 
     /**
-     * LogAdministrativeAction($user, $content, $page = "")
+     * logAdministrativeAction($user, $content, $page = "")
      *
      * @param string $user
      *            Utilisateur
@@ -849,87 +975,99 @@ class Wiki extends Actions
      *
      * @return int Code d'erreur : 0 (succes), 1 (pas de contenu specifie)
      */
-    public function LogAdministrativeAction($user, $content, $page = '')
+    public function logAdministrativeAction($user, $content, $page = '')
     {
-        $order = array(
-            "\r\n",
-            "\n",
-            "\r"
-        );
+        $order = array("\r\n", "\n", "\r");
         $replace = '\\n';
         $content = str_replace($order, $replace, $content);
-        $contentToAppend = "\n" . date('Y-m-d H:i:s') . ' . . . . ' . $user . ' . . . . ' . $content . "\n";
+        $contentToAppend = "\n" . date('Y-m-d H:i:s')
+            . " . . . . $user"
+            . " . . . . $content\n";
         $page = $page ? $page : 'LogDesActionsAdministratives' . date('Ymd');
-        return $this->AppendContentToPage($contentToAppend, $page, true);
+        return $this->appendContentToPage($contentToAppend, $page);
     }
 
     /**
-     * Make the purge of page versions that are older than the last version older than 3 "pages_purge_time"
-     * This method permits to allways keep a version that is older than that period.
+     * Make the purge of page versions that are older than the last version
+     * older than 3 "pages_purge_time" This method permits to allways keep a
+     * version that is older than that period.
      */
-    public function PurgePages()
+    public function purgePages()
     {
-        if ($days = $this->GetConfigValue('pages_purge_time')) {
+        if ($days = $this->getConfigValue('pages_purge_time')) {
             // is purge active ?
             // let's search which pages versions we have to remove
-            // this is necessary beacause even MySQL does not handel multi-tables deletes before version 4.0
-            $wnPages = $this->GetConfigValue('table_prefix') . 'pages';
-            $sql = 'SELECT DISTINCT a.id FROM ' . $wnPages . ' a,' . $wnPages . ' b WHERE a.latest = \'N\' AND a.time < date_sub(now(), INTERVAL \'' . addslashes($days) . '\' DAY) AND a.tag = b.tag AND a.time < b.time AND b.time < date_sub(now(), INTERVAL \'' . addslashes($days) . '\' DAY)';
-            $ids = $this->LoadAll($sql);
+            // this is necessary beacause even MySQL does not handel multi-tables
+            // deletes before version 4.0
+            $wnPages = $this->getConfigValue('table_prefix') . 'pages';
+            $sql = "SELECT DISTINCT a.id FROM $wnPages a, $wnPages b"
+                . 'WHERE a.latest = \'N\' AND a.time < date_sub(now(), INTERVAL \''
+                . addslashes($days) . '\' DAY) AND a.tag = b.tag '
+                . 'AND a.time < b.time '
+                . 'AND b.time < date_sub(now(), INTERVAL \''
+                . addslashes($days) . '\' DAY)';
+
+            $ids = $this->loadAll($sql);
 
             if (count($ids)) {
                 // there are some versions to remove from DB
                 // let's build one big request, that's better...
                 $sql = 'DELETE FROM ' . $wnPages . ' WHERE id IN (';
                 foreach ($ids as $key => $line) {
-                    $sql .= ($key ? ', ' : '') . $line['id']; // NB.: id is an int, no need of quotes
+                    // NB.: id is an int, no need of quotes
+                    $sql .= ($key ? ', ' : '') . $line['id'];
                 }
                 $sql .= ')';
 
                 // ... and send it !
-                $this->Query($sql);
+                $this->query($sql);
             }
         }
     }
 
     // COOKIES
-    public function SetPersistentCookie($name, $value, $remember = 0)
+    // TODO Vérifier si c'est vraiment utile cette gestion des cookies...
+    public function setPersistentCookie($name, $value, $remember = 0)
     {
-        SetCookie($name, $value, time() + ($remember ? 90 * 24 * 60 * 60 : 60 * 60), $this->CookiePath);
-        $_COOKIE[$name] = $value;
+        $expire = time() + ($remember ? 90 * 24 * 60 * 60 : 60 * 60);
+        setcookie($name, $value, $expire, $this->CookiePath);
     }
 
-    public function DeleteCookie($name)
+    public function deleteCookie($name)
     {
-        SetCookie($name, '', 1, $this->CookiePath);
-        $_COOKIE[$name] = '';
+        setcookie($name, '', 1, $this->CookiePath);
     }
 
     // HTTP/REQUEST/LINK RELATED
-    public function SetMessage($message)
+    public function setMessage($message)
     {
         $_SESSION['message'] = $message;
     }
 
-    public function GetMessage()
+
+    /**
+     * retourne et efface le message.
+     * @return [type] [description]
+     */
+    public function getMessage()
     {
+        $message = '';
         if (isset($_SESSION['message'])) {
             $message = $_SESSION['message'];
-        } else {
-            $message = '';
         }
 
         $_SESSION['message'] = '';
         return $message;
     }
 
-    public function Redirect($url)
+    public function redirect($url)
     {
         header("Location: $url");
         exit();
     }
+
     // returns just PageName[/method].
-    public function MiniHref($method = '', $tag = '')
+    public function miniHref($method = '', $tag = '')
     {
         if (! $tag = trim($tag)) {
             $tag = $this->tag;
@@ -937,78 +1075,107 @@ class Wiki extends Actions
 
         return $tag . ($method ? '/' . $method : '');
     }
+
     // returns the full url to a page/method.
-    public function Href($method = '', $tag = '', $params = '', $htmlspchars = true)
+    public function href($method = '', $tag = '', $params = '', $htmlspchars = true)
     {
-        $href = $this->config["base_url"] . $this->MiniHref($method, $tag);
+        $href = $this->config["base_url"] . $this->miniHref($method, $tag);
         if ($params) {
             $href .= ($this->config['rewrite_mode'] ? '?' : ($htmlspchars ? '&amp;' : '&')) . $params;
         }
         return $href;
     }
 
-    public function Link($tag, $method = "", $text = "", $track = 1)
+    // TODO à réécrire. trop complexe et pas lisible.
+    public function link($tag, $method = "", $text = "", $track = 1)
     {
         $displayText = $text ? $text : $tag;
+        $displayText = htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET);
+
         // is this an interwiki link?
         if (preg_match('/^' . WN_INTERWIKI_CAPTURE . '$/', $tag, $matches)) {
-            if ($tagInterWiki = $this->GetInterWikiUrl($matches[1], $matches[2])) {
-                return '<a href="' . htmlspecialchars($tagInterWiki, ENT_COMPAT, YW_CHARSET) . '">' . htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET) . ' (interwiki)</a>';
-            } else {
-                return '<a href="' . htmlspecialchars($tag, ENT_COMPAT, YW_CHARSET) . '">' . htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET) . ' (interwiki inconnu)</a>';
+            $href = htmlspecialchars($tag, ENT_COMPAT, YW_CHARSET);
+            if ($tagInterWiki = $this->getInterWikiUrl($matches[1], $matches[2])) {
+                $href = htmlspecialchars($tagInterWiki, ENT_COMPAT, YW_CHARSET);
             }
-        }  // is this a full link? ie, does it contain non alpha-numeric characters?
-          // Note : [:alnum:] is equivalent [0-9A-Za-z]
-          // [^[:alnum:]] means : some caracters other than [0-9A-Za-z]
-          // For example : "www.adress.com", "mailto:adress@domain.com", "http://www.adress.com"
-        else
-            if (preg_match('/[^[:alnum:]]/', $tag)) {
-                // check for various modifications to perform on $tag
-                if (preg_match("/^[\w.-]+\@[\w.-]+$/", $tag)) {
-                    // email addresses
-                    $tag = 'mailto:' . $tag;
-                } else  // Note : in Perl regexp, (?: ... ) is a non-catching cluster
-                    if (preg_match('/^[[:alnum:]][[:alnum:].-]*(?:\/|$)/', $tag)) {
-                        // protocol-less URLs
-                        $tag = 'http://' . $tag;
-                    }  // Finally, block script schemes (see RFC 3986 about
-                      // schemes) and allow relative link & protocol-full URLs
-                    else
-                        if (preg_match('/^[a-z0-9.+-]*script[a-z0-9.+-]*:/i', $tag) || ! (preg_match('/^\.?\.?\//', $tag) || preg_match('/^[a-z0-9.+-]+:\/\//i', $tag))) {
-                            // If does't fit, we can't qualify $tag as an URL.
-                            // There is a high risk that $tag is just XSS (bad
-                            // javascript: code) or anything nasty. So we must not
-                            // produce any link at all.
-                            return htmlspecialchars($tag . ($text ? ' ' . $text : ''), ENT_COMPAT, YW_CHARSET);
-                        }
-                // Important: Here, we know that $tag is not something bad
-                // and that we must produce a link with it
+            return "<a href=\"$href\">$displayText (interwiki inconnu)</a>";
 
-                // An inline image? (text!=tag and url ends by png,gif,jpeg)
-                if ($text and preg_match("/\.(gif|jpeg|png|jpg)$/i", $tag)) {
-                    return '<img src="' . htmlspecialchars($tag, ENT_COMPAT, YW_CHARSET) . '" alt="' . htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET) . '"/>';
-                } else {
-                    // Even if we know $tag is harmless, we MUST encode it
-                    // in HTML with htmlspecialchars() before echoing it.
-                    // This is not about being paranoiac. This is about
-                    // being compliant to the HTML standard.
-                    return '<a href="' . htmlspecialchars($tag, ENT_COMPAT, YW_CHARSET) . '">' . htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET) . '</a>';
-                }
-            } else {
-                // it's a Wiki link!
-                if (! empty($track)) {
-                    $this->TrackLinkTo($tag);
-                }
+        }
+        // is this a full link? ie, does it contain non alpha-numeric characters?
+        // Note : [:alnum:] is equivalent [0-9A-Za-z]
+        // [^[:alnum:]] means : some caracters other than [0-9A-Za-z]
+        // For example : "www.adress.com", "mailto:adress@domain.com", "http://www.adress.com"
 
-                if ($this->LoadPage($tag)) {
-                    return '<a href="' . htmlspecialchars($this->href($method, $tag), ENT_COMPAT, YW_CHARSET) . '">' . htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET) . '</a>';
-                } else {
-                    return '<span class="missingpage">' . htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET) . '</span><a href="' . htmlspecialchars($this->href("edit", $tag), ENT_COMPAT, YW_CHARSET) . '">?</a>';
+        // TODO utiliser filter_var plutot que ces regex bizarre
+        if (preg_match('/[^[:alnum:]]/', $tag)) {
+            // check for various modifications to perform on $tag
+            if (!preg_match("/^[\w.-]+\@[\w.-]+$/", $tag)) {
+                // Note : in Perl regexp, (?: ... ) is a non-catching cluster
+                // Finally, block script schemes (see RFC 3986 about
+                // schemes) and allow relative link & protocol-full URLs
+                if (!preg_match('/^[[:alnum:]][[:alnum:].-]*(?:\/|$)/', $tag)) {
+                    if (preg_match('/^[a-z0-9.+-]*script[a-z0-9.+-]*:/i', $tag)
+                        or !(
+                            preg_match('/^\.?\.?\//', $tag)
+                            or preg_match('/^[a-z0-9.+-]+:\/\//i', $tag)
+                        )
+                    ) {
+                        // If does't fit, we can't qualify $tag as an URL.
+                        // There is a high risk that $tag is just XSS (bad
+                        // javascript: code) or anything nasty. So we must not
+                        // produce any link at all.
+                        return htmlspecialchars(
+                            $tag . ($text ? ' ' . $text : ''),
+                            ENT_COMPAT,
+                            YW_CHARSET
+                        );
+                    }
                 }
+                // protocol-less URLs
+                $tag = 'http://' . $tag;
             }
+            // email addresses
+            $tag = 'mailto:' . $tag;
+            // Important: Here, we know that $tag is not something bad
+            // and that we must produce a link with it
+
+            // An inline image? (text!=tag and url ends by png,gif,jpeg)
+            if ($text and preg_match("/\.(gif|jpeg|png|jpg)$/i", $tag)) {
+                $tag = htmlspecialchars($tag, ENT_COMPAT, YW_CHARSET);
+                return "<img src=\"$tag\" alt=\"$displayText\"/>";
+            }
+            // Even if we know $tag is harmless, we MUST encode it
+            // in HTML with htmlspecialchars() before echoing it.
+            // This is not about being paranoiac. This is about
+            // being compliant to the HTML standard.
+            $tag = htmlspecialchars($tag, ENT_COMPAT, YW_CHARSET);
+            return "<a href=\"$tag\">$displayText</a>";
+        }
+
+        // it's a Wiki link!
+        if (!empty($track)) {
+            $this->trackLinkTo($tag);
+        }
+
+        if ($this->loadPage($tag)) {
+            $href = htmlspecialchars(
+                $this->href($method, $tag),
+                ENT_COMPAT,
+                YW_CHARSET
+            );
+            return "<a href=\"$href\">$displayText</a>";
+        }
+        $href = htmlspecialchars(
+            $this->href("edit", $tag),
+            ENT_COMPAT,
+            YW_CHARSET
+        );
+        return "<span class=\"missingpage\">$displayText</span>"
+            . "<a href=\"$href\">?</a>";
     }
 
-    public function ComposeLinkToPage($tag, $method = "", $text = "", $track = 1)
+    //TODO : voir le parametre $track visiblement un booléen et c'est mal
+    public function composeLinkToPage($tag, $method = "", $text = "", $track = 1)
     {
         if (! $text) {
             $text = $tag;
@@ -1016,13 +1183,13 @@ class Wiki extends Actions
 
         $text = htmlspecialchars($text, ENT_COMPAT, YW_CHARSET);
         if ($track) {
-            $this->TrackLinkTo($tag);
+            $this->trackLinkTo($tag);
         }
 
         return '<a href="' . $this->href($method, $tag) . '">' . $text . '</a>';
     }
 
-    public function IsWikiName($text)
+    public function isWikiName($text)
     {
         return preg_match('/^' . WN_CAMEL_CASE . '$/', $text);
     }
@@ -1034,9 +1201,9 @@ class Wiki extends Actions
      * @param string $tag
      *            The tag (name) of the page to track a link to.
      */
-    public function TrackLinkTo($tag)
+    public function trackLinkTo($tag)
     {
-        if ($this->LinkTracking()) {
+        if ($this->linkTracking()) {
             $this->linktable[] = $tag;
         }
     }
@@ -1044,8 +1211,9 @@ class Wiki extends Actions
     /**
      *
      * @return array The current link tracking table
+     * TODO Utilisé qu'une fois... vraiment utile ??
      */
-    public function GetLinkTable()
+    public function getLinkTable()
     {
         return $this->linktable;
     }
@@ -1053,7 +1221,7 @@ class Wiki extends Actions
     /**
      * Clears the link tracking table
      */
-    public function ClearLinkTable()
+    public function clearLinkTable()
     {
         $this->linktable = array();
     }
@@ -1063,9 +1231,9 @@ class Wiki extends Actions
      *
      * @return bool The previous state of the link tracking
      */
-    public function StartLinkTracking()
+    public function startLinkTracking()
     {
-        return $this->LinkTracking(true);
+        return $this->linkTracking(true);
     }
 
     /**
@@ -1073,9 +1241,9 @@ class Wiki extends Actions
      *
      * @return bool The previous state of the link tracking
      */
-    public function StopLinkTracking()
+    public function stopLinkTracking()
     {
-        return $this->LinkTracking(false);
+        return $this->linkTracking(false);
     }
 
     /**
@@ -1086,27 +1254,40 @@ class Wiki extends Actions
      *            (defaults to <tt>null</tt> which lets it unchanged)
      * @return bool The previous state of the link tracking
      */
-    public function LinkTracking($newStatus = null)
+    public function linkTracking($newStatus = null)
     {
         $old = $this->isTrackingLinks;
         if ($newStatus !== null) {
             $this->isTrackingLinks = $newStatus;
         }
-
         return $old;
     }
 
-    public function WriteLinkTable()
+    public function writeLinkTable()
     {
         // delete old link table
-        $this->Query('delete from ' . $this->config['table_prefix'] . "links where from_tag = '" . mysqli_real_escape_string($this->dblink, $this->GetPageTag()) . "'");
-        if ($linktable = $this->GetLinkTable()) {
-            $from_tag = mysqli_real_escape_string($this->dblink, $this->GetPageTag());
-            foreach ($linktable as $to_tag) {
-                $lower_to_tag = strtolower($to_tag);
-                if (! isset($written[$lower_to_tag])) {
-                    $this->Query('insert into ' . $this->config['table_prefix'] . "links set from_tag = '" . $from_tag . "', to_tag = '" . mysqli_real_escape_string($this->dblink, $to_tag) . "'");
-                    $written[$lower_to_tag] = 1;
+        $this->query(
+            'delete from '
+                . $this->config['table_prefix']
+                . "links where from_tag = '"
+                . mysqli_real_escape_string($this->dblink, $this->getPageTag())
+                . "'"
+        );
+
+        if ($linktable = $this->getLinkTable()) {
+            $fromTag = mysqli_real_escape_string($this->dblink, $this->getPageTag());
+            foreach ($linktable as $toTag) {
+                $lowerToTag = strtolower($toTag);
+                if (! isset($written[$lowerToTag])) {
+                    $this->query(
+                        'insert into '
+                            . $this->config['table_prefix']
+                            . "links set from_tag = '"
+                            . $fromTag . "', to_tag = '"
+                            . mysqli_real_escape_string($this->dblink, $toTag)
+                            . "'"
+                    );
+                    $written[$lowerToTag] = 1;
                 }
             }
         }
@@ -1116,10 +1297,10 @@ class Wiki extends Actions
      * Call header action
      * TODO ugly
      */
-    public function Header()
+    public function header()
     {
-        $action = $this->GetConfigValue('header_action');
-        if (($actionObj = $this->getActionObject($action)) && is_object($actionObj)) {
+        $action = $this->getConfigValue('header_action');
+        if (($actionObj = $this->getActionObject($action)) and is_object($actionObj)) {
             return $actionObj->GenerateHeader();
         }
         return $this->action($action, 1);
@@ -1128,66 +1309,66 @@ class Wiki extends Actions
     /**
      * call Footer action
      */
-    public function Footer()
+    public function footer()
     {
-        $action = $this->GetConfigValue('footer_action');
-        if (($actionObj = $this->getActionObject($action)) && is_object($actionObj)) {
+        $action = $this->getConfigValue('footer_action');
+        if (($actionObj = $this->getActionObject($action)) and is_object($actionObj)) {
             return $actionObj->GenerateFooter();
         }
         return $this->action($action, 1);
     }
 
     // FORMS
-    public function FormOpen($method = '', $tag = '', $formMethod = 'post', $class = '')
+    public function formOpen($method = '', $tag = '', $formMethod = 'post', $class = '')
     {
         $result = "<form action=\"" . $this->href($method, $tag) . "\" method=\"" . $formMethod . "\"";
         $result .= ((! empty($class)) ? " class=\"" . $class . "\"" : "");
         $result .= ">\n";
         if (! $this->config['rewrite_mode']) {
-            $result .= "<input type=\"hidden\" name=\"wiki\" value=\"" . $this->MiniHref($method, $tag) . "\" />\n";
+            $result .= "<input type=\"hidden\" name=\"wiki\" value=\"" . $this->miniHref($method, $tag) . "\" />\n";
         }
 
         return $result;
     }
 
-    public function FormClose()
+    public function formClose()
     {
         return "</form>\n";
     }
 
     // INTERWIKI STUFF
-    public function ReadInterWikiConfig()
+    public function readInterWikiConfig()
     {
         if ($lines = file('interwiki.conf')) {
             foreach ($lines as $line) {
                 if ($line = trim($line)) {
                     list ($wikiName, $wikiUrl) = explode(' ', trim($line));
-                    $this->AddInterWiki($wikiName, $wikiUrl);
+                    $this->addInterWiki($wikiName, $wikiUrl);
                 }
             }
         }
     }
 
-    public function AddInterWiki($name, $url)
+    public function addInterWiki($name, $url)
     {
         $this->interWiki[strtolower($name)] = $url;
     }
 
-    public function GetInterWikiUrl($name, $tag)
+    public function getInterWikiUrl($name, $tag)
     {
         if (isset($this->interWiki[strtolower($name)])) {
             return $this->interWiki[strtolower($name)] . $tag;
-        } else {
-            return false;
         }
+        return false;
     }
 
     // REFERRERS
-    public function LogReferrer($tag = "", $referrer = "")
+    // TODO : Appeler une seule fois et sans parametres... supprimer les parametres.
+    public function logReferrer($tag = "", $referrer = "")
     {
         // fill values
         if (! $tag = trim($tag)) {
-            $tag = $this->GetPageTag();
+            $tag = $this->getPageTag();
         }
 
         if (! $referrer = trim($referrer) and isset($_SERVER['HTTP_REFERER'])) {
@@ -1195,7 +1376,12 @@ class Wiki extends Actions
         }
 
         // check if it's coming from another site
-        if ($referrer && ! preg_match('/^' . preg_quote($this->GetConfigValue('base_url'), '/') . '/', $referrer)) {
+        if ($referrer
+            and !preg_match(
+                '/^' . preg_quote($this->getConfigValue('base_url'), '/') . '/',
+                $referrer
+            )
+        ) {
             // avoid XSS (with urls like "javascript:alert()" and co)
             // by forcing http/https prefix
             // NB.: this does NOT exempt to htmlspecialchars() the collected URIs !
@@ -1203,33 +1389,58 @@ class Wiki extends Actions
                 return;
             }
 
-            $this->Query('insert into ' . $this->config['table_prefix'] . 'referrers set ' . "page_tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "', " . "referrer = '" . mysqli_real_escape_string($this->dblink, $referrer) . "', " . "time = now()");
+            $this->query(
+                'insert into '
+                    . $this->config['table_prefix']
+                    . 'referrers set '
+                    . "page_tag = '"
+                    . mysqli_real_escape_string($this->dblink, $tag)
+                    . "', " . "referrer = '"
+                    . mysqli_real_escape_string($this->dblink, $referrer)
+                    . "', "
+                    . "time = now()"
+            );
         }
     }
 
-    public function LoadReferrers($tag = "")
+    public function loadReferrers($tag = "")
     {
-        return $this->LoadAll('select referrer, count(referrer) as num from ' . $this->config['table_prefix'] . 'referrers ' . ($tag = trim($tag) ? "where page_tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "'" : "") . " group by referrer order by num desc");
+        return $this->loadAll(
+            'select referrer, count(referrer) as num from '
+                . $this->config['table_prefix']
+                . 'referrers '
+                . ($tag = trim($tag)
+                    ? "where page_tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "'"
+                    : "")
+                . " group by referrer order by num desc"
+        );
     }
 
-    public function PurgeReferrers()
+    //TODO appelé qu'une seule fois... necessaires ?
+    public function purgeReferrers()
     {
-        if ($days = $this->GetConfigValue("referrers_purge_time")) {
-            $this->Query('delete from ' . $this->config['table_prefix'] . "referrers where time < date_sub(now(), interval '" . mysqli_real_escape_string($this->dblink, $days) . "' day)");
+        if ($days = $this->getConfigValue("referrers_purge_time")) {
+            $this->query(
+                'delete from '
+                    . $this->config['table_prefix']
+                    . "referrers where time < date_sub(now(), interval '"
+                    . mysqli_real_escape_string($this->dblink, $days)
+                    . "' day)"
+            );
         }
     }
-
-
 
     /**
      * Retrieves the list of existing handlers
      *
      * @return array An unordered array of all the available handlers.
+     *
+     * TODO appeler une seule fois par une action..
      */
-    function GetHandlersList()
+    public function getHandlersList()
     {
-        $handler_path = $this->GetConfigValue('handler_path');
-        $dirs = explode(":", $handler_path);
+        $handlerPath = $this->getConfigValue('handler_path');
+        $dirs = explode(":", $handlerPath);
         $list = array();
         foreach ($dirs as $dir) {
             $dir .= '/page';
@@ -1244,71 +1455,86 @@ class Wiki extends Actions
         return array_unique($list);
     }
 
-    public function Method($method)
+    public function method($method)
     {
         if (! $handler = $this->page['handler']) {
             $handler = 'page';
         }
 
         $methodLocation = $handler . '/' . $method . '.php';
-        return $this->IncludeBuffered($methodLocation, '<i>' . _t('UNKNOWN_METHOD') . " \"$methodLocation\"</i>", "", $this->config['handler_path']);
+        return $this->includeBuffered(
+            $methodLocation,
+            '<i>' . _t('UNKNOWN_METHOD') . " \"$methodLocation\"</i>",
+            "",
+            $this->config['handler_path']
+        );
     }
 
-    function Format($text, $formatter = 'wakka')
+    function format($text, $formatter = 'wakka')
     {
-        return $this->IncludeBuffered($formatter . '.php', "<i>Impossible de trouver le formateur \"$formatter\"</i>", compact("text"), $this->config['formatter_path']);
+        return $this->includeBuffered(
+            $formatter . '.php',
+            "<i>Impossible de trouver le formateur \"$formatter\"</i>",
+            compact("text"),
+            $this->config['formatter_path']
+        );
     }
 
     // USERS
-    public function LoadUser($name, $password = 0)
+    public function loadUser($name, $password = 0)
     {
-        return $this->LoadSingle('select * from ' . $this->config['table_prefix'] . "users where name = '" . mysqli_real_escape_string($this->dblink, $name) . "' " . ($password === 0 ? "" : "and password = '" . mysqli_real_escape_string($this->dblink, $password) . "'") . ' limit 1');
+        return $this->loadSingle(
+            'select * from '
+                . $this->config['table_prefix']
+                . "users where name = '"
+                . mysqli_real_escape_string($this->dblink, $name)
+                . "' "
+                . ($password === 0
+                    ? ""
+                    : "and password = '" . mysqli_real_escape_string($this->dblink, $password) . "'"
+                )
+                . ' limit 1'
+        );
     }
 
-    public function LoadUsers()
+    public function loadUsers()
     {
-        return $this->LoadAll('select * from ' . $this->config['table_prefix'] . 'users order by name');
+        return $this->loadAll(
+            'select * from '
+                . $this->config['table_prefix']
+                . 'users order by name'
+        );
     }
 
-    public function GetUserName()
+    public function getUserName()
     {
-        if ($user = $this->GetUser()) {
-            $name = $user["name"];
-        } else {
-            $name = $_SERVER["REMOTE_ADDR"];
+        if ($user = $this->getUser()) {
+            return $user["name"];
         }
-        return $name;
+        return $_SERVER["REMOTE_ADDR"];
     }
 
-    public function GetUser()
+    public function getUser()
     {
         return (isset($_SESSION['user']) ? $_SESSION['user'] : '');
     }
 
-    public function SetUser($user, $remember = 0)
+    public function setUser($user, $remember = 0)
     {
         $_SESSION['user'] = $user;
-        $this->SetPersistentCookie('name', $user['name'], $remember);
-        $this->SetPersistentCookie('password', $user['password'], $remember);
-        $this->SetPersistentCookie('remember', $remember, $remember);
+        $this->setPersistentCookie('name', $user['name'], $remember);
+        $this->setPersistentCookie('password', $user['password'], $remember);
+        $this->setPersistentCookie('remember', $remember, $remember);
     }
 
-    public function LogoutUser()
+    public function logoutUser()
     {
         $_SESSION['user'] = '';
-        $this->DeleteCookie('name');
-        $this->DeleteCookie('password');
+        $this->deleteCookie('name');
+        $this->deleteCookie('password');
     }
 
-    public function UserWantsComments()
-    {
-        if (! $user = $this->GetUser()) {
-            return false;
-        }
-        return ($user['show_comments'] == 'Y');
-    }
-
-    public function GetParameter($parameter, $default = '')
+    public function getParameter($parameter, $default = '')
     {
         return (isset($this->parameter[$parameter]) ? $this->parameter[$parameter] : $default);
     }
@@ -1322,9 +1548,18 @@ class Wiki extends Actions
      * @return array Tableau contenant tous les commentaires et leurs
      *         proprietes correspondantes.
      */
-    public function LoadComments($tag)
+    public function loadComments($tag)
     {
-        return $this->LoadAll('select * from ' . $this->config['table_prefix'] . 'pages ' . "where comment_on = '" . mysqli_real_escape_string($this->dblink, $tag) . "' " . "and latest = 'Y' " . "order by substring(tag, 8) + 0");
+        return $this->loadAll(
+            'select * from '
+                . $this->config['table_prefix']
+                . 'pages '
+                . "where comment_on = '"
+                . mysqli_real_escape_string($this->dblink, $tag)
+                . "' "
+                . "and latest = 'Y' "
+                . "order by substring(tag, 8) + 0"
+        );
     }
 
     /**
@@ -1336,35 +1571,51 @@ class Wiki extends Actions
      * @return array Tableau contenant chaque commentaire et ses
      *         proprietes associees.
      * @todo Ajouter le parametre $start pour permettre une pagination
-     *       des commentaires : ->LoadRecentComments(10, 10)
+     *       des commentaires : ->loadRecentComments(10, 10)
      */
-    public function LoadRecentComments($limit = 0)
+    public function loadRecentComments($limit = 0)
     {
         // The part of the query which limit the number of comments
-        if (is_numeric($limit) && $limit > 0) {
+        $lim = '';
+        if (is_numeric($limit) and $limit > 0) {
             $lim = ' limit ' . $limit;
-        } else {
-            $lim = '';
         }
-
         // Query
-        return $this->LoadAll('select * from ' . $this->config['table_prefix'] . 'pages ' . 'where comment_on != "" ' . "and latest = 'Y' " . "order by time desc " . $lim);
+        return $this->loadAll(
+            'select * from '
+                . $this->config['table_prefix']
+                . 'pages where comment_on != "" '
+                . "and latest = 'Y' "
+                . "order by time desc "
+                . $lim
+        );
     }
 
-    public function LoadRecentlyCommented($limit = 50)
+    public function loadRecentlyCommented($limit = 50)
     {
         $pages = array();
 
-        // NOTE: this is really stupid. Maybe my SQL-Fu is too weak, but apparently there is no easier way to simply select
+        // NOTE: this is really stupid. Maybe my SQL-Fu is too weak, but
+        // apparently there is no easier way to simply select
         // all comment pages sorted by their first revision's (!) time. ugh!
 
         // load ids of the first revisions of latest comments. err, huh?
-        if ($ids = $this->LoadAll('select min(id) as id from ' . $this->config['table_prefix'] . 'pages where comment_on != "" group by tag order by id desc')) {
+
+        $prefix = $this->config['table_prefix'];
+        $sql = "select min(id) as id from ${prefix}pages "
+            . "where comment_on != \"\" group by tag order by id desc";
+
+        if ($pages = $this->loadAll($sql)) {
             // load complete comments
             $num = 0;
-            foreach ($ids as $id) {
-                $comment = $this->LoadSingle('select * from ' . $this->config['table_prefix'] . "pages where id = '" . $id['id'] . "' limit 1");
-                if (! isset($comments[$comment['comment_on']]) && $num < $limit) {
+            foreach ($pages as $page) {
+                $pageId = $pageId['id'];
+                $comment = $this->loadSingle(
+                    "select * from ${prefix}pages where id = '$pageId' limit 1"
+                );
+                if (!isset($comments[$comment['comment_on']])
+                    and $num < $limit
+                ) {
                     $comments[$comment['comment_on']] = $comment;
                     $num ++;
                 }
@@ -1374,7 +1625,7 @@ class Wiki extends Actions
             if ($comments) {
                 // now using these ids, load the actual pages
                 foreach ($comments as $comment) {
-                    $page = $this->LoadPage($comment['comment_on']);
+                    $page = $this->loadPage($comment['comment_on']);
                     $page['comment_user'] = $comment['user'];
                     $page['comment_time'] = $comment['time'];
                     $page['comment_tag'] = $comment['tag'];
@@ -1382,27 +1633,23 @@ class Wiki extends Actions
                 }
             }
         }
-        // load tags of pages
-        // return $this->LoadAll("select comment_on as tag, max(time) as time, tag as comment_tag, user from ".$this->config['table_prefix']."pages where comment_on != '' group by comment_on order by time desc");
         return $pages;
     }
 
     // ACCESS CONTROL
     // returns true if logged in user is owner of current page, or page specified in $tag
-    public function UserIsOwner($tag = "")
+    public function userIsOwner($tag = "")
     {
         // check if user is logged in
         if (! $this->GetUser()) {
             return false;
         }
-
         // set default tag
-        if (! $tag = trim($tag)) {
+        if (!$tag = trim($tag)) {
             $tag = $this->GetPageTag();
         }
-
         // check if user is owner
-        if ($this->GetPageOwner($tag) == $this->GetUserName()) {
+        if ($this->getPageOwner($tag) == $this->GetUserName()) {
             return true;
         }
     }
@@ -1412,14 +1659,15 @@ class Wiki extends Actions
      * @param string $group
      *            The name of a group
      * @return string the ACL associated with the group $gname
-     * @see UserIsInGroup to check if a user belongs to some group
+     * @see userIsInGroup to check if a user belongs to some group
      */
-    public function GetGroupACL($group)
+    public function getGroupACL($group)
     {
-        if (array_key_exists($group, $this->_groupsCache)) {
-            return $this->_groupsCache[$group];
+        if (array_key_exists($group, $this->groupsCache)) {
+            return $this->groupsCache[$group];
         }
-        return $this->_groupsCache[$group] = $this->GetTripleValue($group, WIKINI_VOC_ACLS, GROUP_PREFIX);
+        return $this->groupsCache[$group] =
+            $this->getTripleValue($group, WIKINI_VOC_ACLS, GROUP_PREFIX);
     }
 
     /**
@@ -1432,7 +1680,7 @@ class Wiki extends Actions
      *            The new acl for that group
      * @return boolean True iff the new acl defines the group recursively
      */
-    public function MakesGroupRecursive($gname, $acl, $origin = null, $checked = array())
+    public function makesGroupRecursive($gname, $acl, $origin = null, $checked = array())
     {
         $gname = strtolower($gname);
         if ($origin === null) {
@@ -1440,22 +1688,29 @@ class Wiki extends Actions
         } elseif ($gname === $origin) {
             return true;
         }
+
         foreach (explode("\n", $acl) as $line) {
-            if (! $line) {
+            if (!$line) {
                 continue;
             }
 
             if ($line[0] == '!') {
                 $line = substr($line, 1);
             }
-            if (! $line) {
+
+            if (!$line) {
                 continue;
             }
 
             if ($line[0] == '@') {
                 $line = substr($line, 1);
                 if (! in_array($line, $checked)) {
-                    if ($this->MakesGroupRecursive($line, $this->GetGroupACL($line), $origin, $checked)) {
+                    if ($this->makesGroupRecursive(
+                        $line,
+                        $this->getGroupACL($line),
+                        $origin,
+                        $checked
+                    )) {
                         return true;
                     }
                 }
@@ -1475,38 +1730,37 @@ class Wiki extends Actions
      * @return int 0 if successful, a triple error code or a specific error code:
      *         1000 if the new value would define the group recursively
      *         1001 if $gname is not named with alphanumeric chars
-     * @see GetGroupACL
+     * @see getGroupACL
      */
-    public function SetGroupACL($gname, $acl)
+    public function setGroupACL($gname, $acl)
     {
         if (preg_match('/[^A-Za-z0-9]/', $gname)) {
             return 1001;
         }
-        $old = $this->GetGroupACL($gname);
-        if ($this->MakesGroupRecursive($gname, $acl)) {
+        $old = $this->getGroupACL($gname);
+        if ($this->makesGroupRecursive($gname, $acl)) {
             return 1000;
         }
-        $this->_groupsCache[$gname] = $acl;
+        $this->groupsCache[$gname] = $acl;
         if ($old === null) {
-            return $this->InsertTriple($gname, WIKINI_VOC_ACLS, $acl, GROUP_PREFIX);
+            return $this->insertTriple($gname, WIKINI_VOC_ACLS, $acl, GROUP_PREFIX);
         } elseif ($old === $acl) {
             return 0; // nothing has changed
-        } else {
-            return $this->UpdateTriple($gname, WIKINI_VOC_ACLS, $old, $acl, GROUP_PREFIX);
         }
+        return $this->updateTriple($gname, WIKINI_VOC_ACLS, $old, $acl, GROUP_PREFIX);
     }
 
     /**
      *
      * @return array The list of all group names
      */
-    public function GetGroupsList()
+    public function getGroupsList()
     {
-        $res = $this->GetMatchingTriples(GROUP_PREFIX . '%', WIKINI_VOC_ACLS_URI);
-        $prefix_len = strlen(GROUP_PREFIX);
+        $res = $this->getMatchingTriples(GROUP_PREFIX . '%', WIKINI_VOC_ACLS_URI);
+        $prefixLen = strlen(GROUP_PREFIX);
         $list = array();
         foreach ($res as $line) {
-            $list[] = substr($line['resource'], $prefix_len);
+            $list[] = substr($line['resource'], $prefixLen);
         }
         return $list;
     }
@@ -1517,9 +1771,9 @@ class Wiki extends Actions
      *            The name of a group
      * @return boolean true iff the user is in the given $group
      */
-    public function UserIsInGroup($group, $user = null, $admincheck = true)
+    public function userIsInGroup($group, $user = null, $admincheck = true)
     {
-        return $this->CheckACL($this->GetGroupACL($group), $user, $admincheck);
+        return $this->checkACL($this->getGroupACL($group), $user, $admincheck);
     }
 
     /**
@@ -1529,30 +1783,30 @@ class Wiki extends Actions
      *            The name of the user (defaults to the current user if not given)
      * @return boolean true iff the user is an administrator
      */
-    public function UserIsAdmin($user = null)
+    public function userIsAdmin($user = null)
     {
-        return $this->UserIsInGroup(ADMIN_GROUP, $user, false);
+        return $this->userIsInGroup(ADMIN_GROUP, $user, false);
     }
 
-    public function GetPageOwner($tag = "", $time = "")
+    public function getPageOwner($tag = "", $time = "")
     {
         if (! $tag = trim($tag)) {
-            $tag = $this->GetPageTag();
+            $tag = $this->getPageTag();
         }
-        if ($page = $this->LoadPage($tag, $time)) {
+        if ($page = $this->loadPage($tag, $time)) {
             return isset($page["owner"]) ? $page["owner"] : null;
         }
     }
 
-    public function SetPageOwner($tag, $user)
+    public function setPageOwner($tag, $user)
     {
         // check if user exists
-        if (! $this->LoadUser($user)) {
+        if (! $this->loadUser($user)) {
             return;
         }
 
         // updated latest revision with new owner
-        $this->Query('update ' . $this->config['table_prefix'] . "pages set owner = '" . mysqli_real_escape_string($this->dblink, $user) . "' where tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "' and latest = 'Y' limit 1");
+        $this->query('update ' . $this->config['table_prefix'] . "pages set owner = '" . mysqli_real_escape_string($this->dblink, $user) . "' where tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "' and latest = 'Y' limit 1");
     }
 
     /**
@@ -1562,48 +1816,48 @@ class Wiki extends Actions
      * @param boolean $useDefaults
      * @return array [page_tag, privilege, list]
      */
-    public function LoadAcl($tag, $privilege, $useDefaults = true )
+    public function loadAcl($tag, $privilege, $useDefaults = true )
     {
         if (isset($this->aclsCache[$tag][$privilege])) {
             return $this->aclsCache[$tag][$privilege] ;
         }
 
-        if( $useDefaults ) {
+        $this->aclsCache[$tag] = array();
+        if ($useDefaults) {
             $this->aclsCache[$tag] = array(
                 'read' => array(
                     'page_tag' => $tag,
                     'privilege' => 'read',
-                    'list' => $this->GetConfigValue('default_read_acl')
+                    'list' => $this->getConfigValue('default_read_acl')
                 ),
                 'write' => array(
                     'page_tag' => $tag,
                     'privilege' => 'write',
-                    'list' => $this->GetConfigValue('default_write_acl')
+                    'list' => $this->getConfigValue('default_write_acl')
                 ),
                 'comment' => array(
                     'page_tag' => $tag,
                     'privilege' => 'comment',
-                    'list' => $this->GetConfigValue('default_comment_acl')
+                    'list' => $this->getConfigValue('default_comment_acl')
                 )
             );
         }
-        else
-        {
-            $this->aclsCache[$tag] = array();
-        }
 
-        $res = $this->LoadAll('SELECT * FROM '.$this->config['table_prefix'].'acls'.' WHERE page_tag = "'.mysqli_real_escape_string($this->dblink, $tag).'"');
-        foreach( $res as $acl )
-        {
+        $table = $this->config['table_prefix'] . 'acls';
+        $tag = mysqli_real_escape_string($this->dblink, $tag);
+        $res = $this->loadAll(
+            "SELECT * FROM $table WHERE page_tag = \"$tag\""
+        );
+
+        foreach ($res as $acl) {
             $this->aclsCache[$tag][$acl['privilege']] = $acl;
         }
 
-        if( isset($this->aclsCache[$tag][$privilege]) )
-        {
+        if (isset($this->aclsCache[$tag][$privilege])) {
             return $this->aclsCache[$tag][$privilege];
         }
-        return null ;
 
+        return null ;
     }
 
     /**
@@ -1612,19 +1866,28 @@ class Wiki extends Actions
      * @param string $privilege the privilege
      * @param string $list the multiline string describing the acl
      */
-    public function SaveAcl($tag, $privilege, $list, $appendAcl = false )
+    public function saveAcl($tag, $privilege, $list, $appendAcl = false )
     {
-        $acl = $this->LoadAcl($tag, $privilege, false );
+        $acl = $this->loadAcl($tag, $privilege, false);
 
-        if( $acl && $appendAcl ) {
+        if ($acl and $appendAcl) {
             $list = $acl['list']."\n".$list ;
         }
 
+
+        $table = $this->config['table_prefix'] . 'acls';
+        $tag = mysqli_real_escape_string($this->dblink, $tag);
+        $privilege = mysqli_real_escape_string($this->dblink, $privilege);
+        $list = mysqli_real_escape_string(
+            $this->dblink,
+            trim(str_replace("\r", '', $list))
+        );
+
+        $sql = "insert into $table set list = '$list', page_tag = '$tag', privilege = '$privilege'";
         if ($acl) {
-            $this->Query('update ' . $this->config['table_prefix'] . 'acls set list = "' . mysqli_real_escape_string($this->dblink, trim(str_replace("\r", '', $list))) . '" where page_tag = "' . mysqli_real_escape_string($this->dblink, $tag) . '" and privilege = "' . mysqli_real_escape_string($this->dblink, $privilege) . '"');
-        } else {
-            $this->Query('insert into ' . $this->config['table_prefix'] . "acls set list = '" . mysqli_real_escape_string($this->dblink, trim(str_replace("\r", '', $list))) . "', page_tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "', privilege = '" . mysqli_real_escape_string($this->dblink, $privilege) . "'");
+            $sql = "update $table set list = '$list' where page_tag = '$tag' and privilege = '$privilege'";
         }
+        $this->query($sql);
 
         // update the acls cache
         $this->aclsCache[$tag][$privilege] = array(
@@ -1637,26 +1900,33 @@ class Wiki extends Actions
     /**
      *
      * @param string $tag The page's WikiName
-     * @param string|array $privileges A privilege or several privileges to delete from database.
+     * @param string|array $privileges A privilege or several privileges to
+     *                                 delete from database.
      */
-    public function DeleteAcl( $tag, $privileges=array('read','write','comment') )
+    public function deleteAcl($tag, $privileges = array('read', 'write', 'comment'))
     {
-        if( ! is_array($privileges)) {
+        if (!is_array($privileges)) {
             $privileges = array($privileges);
         }
 
         // add '"' at begin and end of each escaped privileges elements.
-        for( $i=0; $i<count($privileges); $i++ )
-            $privileges[$i] = '"'.mysqli_real_escape_string($this->dblink, $privileges[$i]) .'"';
+        // TODO utiliser array_walk
+        for ($i=0; $i<count($privileges); $i++) {
+            $privileges[$i] = '"' . mysqli_real_escape_string($this->dblink, $privileges[$i]) . '"';
+        }
+
         // construct a CSV string with privileges elements
         $privileges = implode(',', $privileges);
+        $strTag = mysqli_real_escape_string($this->dblink, $tag);
+        $table = $this->config['table_prefix'] . 'acls';
+        $this->query("DELETE FROM $table"
+            ." WHERE page_tag = \"$tag\""
+            ." AND privilege IN ($privileges)");
 
-        $this->Query('DELETE FROM ' . $this->config['table_prefix'] . 'acls'
-            .' WHERE page_tag = "' . mysqli_real_escape_string($this->dblink, $tag) . '"'
-            .' AND privilege IN (' . $privileges .')');
+        if (isset($this->aclsCache[$strTag])) {
+            unset($this->aclsCache[$strTag]);
+        }
 
-        if( isset($this->aclsCache[$tag]))
-            unset($this->aclsCache[$tag]);
     }
 
     /**
@@ -1668,27 +1938,26 @@ class Wiki extends Actions
      * @param string $user The username. Default to current user.
      * @return boolean true if access granted, false if not.
      */
-    public function HasAccess($privilege, $tag = '', $user = '')
+    public function hasAccess($privilege, $tag = '', $user = '')
     {
-
         // set default to current page
         if (! $tag = trim($tag)) {
-            $tag = $this->GetPageTag();
+            $tag = $this->getPageTag();
         }
         // set default to current user
-        if (! $user) {
-            $user = $this->GetUserName();
+        if (!$user) {
+            $user = $this->getUserName();
         }
 
         // if current user is owner, return true. owner can do anything!
-        if ($this->UserIsOwner($tag)) {
+        if ($this->userIsOwner($tag)) {
             return true;
         }
 
         // load acl
-        $acl = $this->LoadAcl($tag, $privilege);
+        $acl = $this->loadAcl($tag, $privilege);
         // now check them
-        $access = $this->CheckACL($acl['list'], $user);
+        $access = $this->checkACL($acl['list'], $user);
 
         return $access ;
     }
@@ -1703,13 +1972,13 @@ class Wiki extends Actions
      *            the current remote user.
      * @return bool True if the $user satisfies the $acl, false otherwise
      */
-    public function CheckACL($acl, $user = null, $admincheck = true)
+    public function checkACL($acl, $user = null, $admincheck = true)
     {
         if (! $user) {
-            $user = $this->GetUserName();
+            $user = $this->getUserName();
         }
 
-        if ($admincheck && $this->UserIsAdmin($user)) {
+        if ($admincheck and $this->userIsAdmin($user)) {
             return true;
         }
 
@@ -1718,11 +1987,10 @@ class Wiki extends Actions
             $line = trim($line);
 
             // check for inversion character "!"
+            $negate = false;
             if (preg_match('/^[!](.*)$/', $line, $matches)) {
                 $negate = true ;
                 $line = $matches[1];
-            } else {
-                $negate = false;
             }
 
             // if there's still anything left... lines with just a "!" don't count!
@@ -1732,27 +2000,30 @@ class Wiki extends Actions
                         break;
                     case '*': // everyone
                         return ! $negate;
+                        break;
                     case '+': // registered users
-                        if (! $this->LoadUser($user)) {
+                        if (! $this->loadUser($user)) {
                             return $negate;
-                        } else {
-                            return ! $negate;
                         }
+                        return !$negate;
+                        break;
                     case '@': // groups
                         $gname = substr($line, 1);
                         // paranoiac: avoid line = '@'
-                        if ($gname && $this->UserIsInGroup($gname, $user, false/* we have allready checked if user was an admin */)) {
-                            return ! $negate;
+                        // we have allready checked if user was an admin
+                        if ($gname
+                            and $this->userIsInGroup($gname, $user, false)
+                        ) {
+                            return !$negate;
                         }
                         break;
                     default: // simple user entry
-                        if ($line == $user) {
-                            return ! $negate;
+                        if ($line === $user) {
+                            return !$negate;
                         }
                 }
             }
         }
-
         // tough luck.
         return false;
     }
@@ -1771,27 +2042,33 @@ class Wiki extends Actions
      *            The type of module: 'action' or 'handler'
      * @return string The ACL string  for the given module or "*" if not found.
      */
-    public function GetModuleACL($module, $module_type)
+    public function getModuleACL($module, $module_type)
     {
         $module = strtolower($module);
         switch ($module_type) {
 
             case 'action':
-                if (array_key_exists($module, $this->_actionsAclsCache)) {
-                    $acl = $this->_actionsAclsCache[$module];
+                if (array_key_exists($module, $this->actionsAclsCache)) {
+                    $acl = $this->actionsAclsCache[$module];
                     break;
                 }
-                $this->_actionsAclsCache[$module] = $acl = $this->GetTripleValue($module, WIKINI_VOC_ACLS, WIKINI_VOC_ACTIONS_PREFIX);
+                $acl = $this->getTripleValue(
+                    $module,
+                    WIKINI_VOC_ACLS,
+                    WIKINI_VOC_ACTIONS_PREFIX
+                );
+                $this->actionsAclsCache[$module] = $acl;
                 if ($acl === null) {
                     $action = $this->getActionObject($module);
                     if (is_object($action)) {
-                        return $this->_actionsAclsCache[$module] = $action->GetDefaultACL();
+                        $this->actionsAclsCache[$module] = $action->GetDefaultACL();
+                        return $this->actionsAclsCache[$module];
                     }
                 }
                 break;
 
             case 'handler':
-                $acl = $this->GetTripleValue($module, WIKINI_VOC_ACLS, WIKINI_VOC_HANDLERS_PREFIX);
+                $acl = $this->getTripleValue($module, WIKINI_VOC_ACLS, WIKINI_VOC_HANDLERS_PREFIX);
                 break;
             default:
                 return null; // TODO error msg ?
@@ -1808,25 +2085,24 @@ class Wiki extends Actions
      *            The type of module ('action' or 'handler')
      * @param string $acl
      *            The new ACL for that module
-     * @return 0 on success, > 0 on error (see InsertTriple and UpdateTriple)
+     * @return 0 on success, > 0 on error (see insertTriple and updateTriple)
      */
-    public function SetModuleACL($module, $module_type, $acl)
+    public function setModuleACL($module, $module_type, $acl)
     {
         $module = strtolower($module);
         $voc_prefix = $module_type == 'action' ? WIKINI_VOC_ACTIONS_PREFIX : WIKINI_VOC_HANDLERS_PREFIX;
-        $old = $this->GetTripleValue($module, WIKINI_VOC_ACLS, $voc_prefix);
+        $old = $this->getTripleValue($module, WIKINI_VOC_ACLS, $voc_prefix);
 
         if ($module_type == 'action') {
-            $this->_actionsAclsCache[$module] = $acl;
+            $this->actionsAclsCache[$module] = $acl;
         }
 
         if ($old === null) {
-            return $this->InsertTriple($module, WIKINI_VOC_ACLS, $acl, $voc_prefix);
+            return $this->insertTriple($module, WIKINI_VOC_ACLS, $acl, $voc_prefix);
         } elseif ($old === $acl) {
             return 0; // nothing has changed
-        } else {
-            return $this->UpdateTriple($module, WIKINI_VOC_ACLS, $old, $acl, $voc_prefix);
         }
+        return $this->updateTriple($module, WIKINI_VOC_ACLS, $old, $acl, $voc_prefix);
     }
 
     /**
@@ -1841,33 +2117,33 @@ class Wiki extends Actions
      *            the current remote user.
      * @return bool True if the $user has access to the given $module, false otherwise.
      */
-    public function CheckModuleACL($module, $module_type, $user = null)
+    public function checkModuleACL($module, $module_type, $user = null)
     {
-        $acl = $this->GetModuleACL($module, $module_type);
+        $acl = $this->getModuleACL($module, $module_type);
         if ($acl === null) {
             return true;
         }
         // undefined ACL means everybody has access
-        return $this->CheckACL($acl, $user);
+        return $this->checkACL($acl, $user);
     }
 
     // MAINTENANCE
-    public function Maintenance()
+    public function maintenance()
     {
         // purge referrers
-        $this->PurgeReferrers();
+        $this->purgeReferrers();
         // purge old page revisions
-        $this->PurgePages();
+        $this->purgePages();
     }
 
     // THE BIG EVIL NASTY ONE!
-    public function Run($tag, $method = '')
+    public function run($tag, $method = '')
     {
-        if (! ($this->GetMicroTime() % 9)) {
-            $this->Maintenance();
+        if (! ($this->getMicroTime() % 9)) {
+            $this->maintenance();
         }
 
-        $this->ReadInterWikiConfig();
+        $this->readInterWikiConfig();
 
         // do our stuff!
         if (! $this->method = trim($method)) {
@@ -1875,22 +2151,25 @@ class Wiki extends Actions
         }
 
         if (! $this->tag = trim($tag)) {
-            $this->Redirect($this->href("", $this->config['root_page']));
+            $this->redirect($this->href("", $this->config['root_page']));
         }
 
-        if ((! $this->GetUser() && isset($_COOKIE['name'])) && ($user = $this->LoadUser($_COOKIE['name'], $_COOKIE['password']))) {
-            $this->SetUser($user, $_COOKIE['remember']);
+        if ((! $this->getUser()
+            and isset($_COOKIE['name']))
+            and ($user = $this->loadUser($_COOKIE['name'], $_COOKIE['password']))
+        ) {
+            $this->setUser($user, $_COOKIE['remember']);
         }
 
-        $this->SetPage($this->LoadPage($tag, (isset($_REQUEST['time']) ? $_REQUEST['time'] : '')));
-        $this->LogReferrer();
+        $this->setPage($this->loadPage($tag, (isset($_REQUEST['time']) ? $_REQUEST['time'] : '')));
+        $this->logReferrer();
 
         // correction pour un support plus facile de nouveaux handlers
-        if ($this->CheckModuleACL($this->method, 'handler')) {
-            echo $this->Method($this->method);
-        } else {
-            echo _t('HANDLER_NO_ACCESS');
+        $text = _t('HANDLER_NO_ACCESS');
+        if ($this->checkModuleACL($this->method, 'handler')) {
+            $text = $this->method($this->method);
         }
+        echo $text;
 
         // action redirect: aucune redirection n'a eu lieu, effacer la liste des redirections precedentes
         if (! empty($_SESSION['redirects'])) {

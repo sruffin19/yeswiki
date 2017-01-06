@@ -31,31 +31,31 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 $search_page = $this->href("", "RechercheTexte", "");
-$edit_link = $this->HasAccess("write") ? "<a href=\"".$this->href("edit")."\" title=\"Cliquez pour &eacute;diter cette page.\">&Eacute;diter cette page</a> ::\n" : "";
-$revisions_link = $this->GetPageTime() ? "<a href=\"".$this->href("revisions")."\" title=\"Cliquez pour voir les derni&egrave;res modifications sur cette page.\">".$this->GetPageTime()."</a> ::\n" : "";
+$edit_link = $this->hasAccess("write") ? "<a href=\"".$this->href("edit")."\" title=\"Cliquez pour &eacute;diter cette page.\">&Eacute;diter cette page</a> ::\n" : "";
+$revisions_link = $this->getPageTime() ? "<a href=\"".$this->href("revisions")."\" title=\"Cliquez pour voir les derni&egrave;res modifications sur cette page.\">".$this->getPageTime()."</a> ::\n" : "";
 $owner_info = '';
 // if this page exists
 if ($this->page)
 {
     // if owner is current user
-    if ($this->UserIsOwner())
+    if ($this->userIsOwner())
     {
         $owner_info = "Propri&eacute;taire&nbsp;: vous :: \n";
     }
     else
     {
-        if ($owner = $this->GetPageOwner())
+        if ($owner = $this->getPageOwner())
         {
-            $owner_info = "Propri&eacute;taire : " . $this->Format($owner);
+            $owner_info = "Propri&eacute;taire : " . $this->format($owner);
         }
         else
         {
             $owner_info = "Pas de propri&eacute;taire ";
-            $owner_info .= ($this->GetUser() ? "(<a href=\"".$this->href("claim")."\">Appropriation</a>)" : "");
+            $owner_info .= ($this->getUser() ? "(<a href=\"".$this->href("claim")."\">Appropriation</a>)" : "");
         }
         $owner_info .= " :: \n";
     }
-    if ($this->UserIsOwner() || $this->UserIsAdmin())
+    if ($this->userIsOwner() || $this->userIsAdmin())
     {
         $owner_info .=
         "<a href=\"" . $this->href("acls") . "\" title=\"Cliquez pour &eacute;diter les permissions de cette page.\">&Eacute;diter permissions</a> :: \n" .
@@ -66,9 +66,9 @@ $backlinks = $this->href('backlinks');
 $carto = $this->href('svg');
 $xhtml_validation_link = 'http://validator.w3.org/check?uri=' . urlencode($this->href());
 $css_validation_link = 'http://jigsaw.w3.org/css-validator/validator?uri=' . urlencode($this->href());
-$wikini_site_url = $this->Link("WikiNi:PagePrincipale", "", "WikiNi ".$this->GetWikiNiVersion());
+$wikini_site_url = $this->link("WikiNi:PagePrincipale", "", "WikiNi ".$this->getWikiNiVersion());
 $debug_log = '';
-if ($this->GetConfigValue("debug")=="yes")
+if ($this->getConfigValue("debug")=="yes")
 {
     $debug_log = "<span class=\"debug\"><b>Query log :</b><br />\n";
     $T_SQL=0;

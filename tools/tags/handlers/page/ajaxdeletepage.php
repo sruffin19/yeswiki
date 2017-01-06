@@ -28,18 +28,18 @@ if (!defined("WIKINI_VERSION"))
 }
 
 // on ne fait quelque chose uniquement dans le cas d'une requete jsonp
-if (isset($_GET['jsonp_callback'])) 
+if (isset($_GET['jsonp_callback']))
 {
     // on initialise la sortie:
     header('Content-type:application/json');
-    if ($this->UserIsOwner() || $this->UserIsAdmin()) {    
-        $tag = $this->GetPageTag();
-        $this->DeleteOrphanedPage($tag);
+    if ($this->userIsOwner() || $this->userIsAdmin()) {    
+        $tag = $this->getPageTag();
+        $this->deleteOrphanedPage($tag);
         // on supprime les mots cles associes a la page
         $this->DeleteAllTags($tag);
-        $this->LogAdministrativeAction($this->GetUserName(), "Suppression de la page ->\"\"" . $tag . "\"\"");
+        $this->logAdministrativeAction($this->getUserName(), "Suppression de la page ->\"\"" . $tag . "\"\"");
         echo $_GET['jsonp_callback']."(".json_encode(array("reponse"=>utf8_encode("succes"))).")";
-    } 
+    }
     else {
         echo $_GET['jsonp_callback']."(".json_encode(array("reponse"=>utf8_encode("interdit"))).")";
     }

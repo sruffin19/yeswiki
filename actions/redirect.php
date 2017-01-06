@@ -26,28 +26,28 @@ Parametres : page : nom wiki de la page vers laquelle ont doit rediriger (obliga
 exemple : {{redirect page="BacASable"}}
 */
 
-$redirPageName = $this->GetParameter('page');
+$redirPageName = $this->getParameter('page');
 
 if (!$redirPageName)
 {
     echo '<div class="alert alert-danger"><strong>'._t('ERROR_ACTION_REDIRECT').'</strong> : '._t('MISSING_PAGE_PARAMETER').'.</div>'."\n";
 }
-elseif ($this->GetMethod() == 'show')
+elseif ($this->getMethod() == 'show')
 {
     if (!isset($_SESSION['redirects'])) $_SESSION['redirects'] = array();
-    $_SESSION['redirects'][] = strtolower($this->GetPageTag());
+    $_SESSION['redirects'][] = strtolower($this->getPageTag());
 
     if (in_array(strtolower($redirPageName), $_SESSION['redirects']))
     {
         echo "<div class=\"alert alert-danger\"><strong>"._t('ERROR_ACTION_REDIRECT')."</strong> : "._t('CIRCULAR_REDIRECTION_FROM_PAGE')." $redirPageName ( "
-         . $this->ComposeLinkToPage($redirPageName, 'edit',  call_user_func('_t', 'CLICK_HERE')) . ')</div>'."\n";
+         . $this->composeLinkToPage($redirPageName, 'edit',  call_user_func('_t', 'CLICK_HERE')) . ')</div>'."\n";
     }
     else
     {
-        $this->Redirect($this->Href('', $redirPageName));
+        $this->redirect($this->href('', $redirPageName));
     }
 }
 else
 {
-    echo '<span style="color: red; weight: bold">'._t('PRESENCE_OF_REDIRECTION_TO').' "' . $this->Link($redirPageName) . '"</span>';
+    echo '<span style="color: red; weight: bold">'._t('PRESENCE_OF_REDIRECTION_TO').' "' . $this->link($redirPageName) . '"</span>';
 }

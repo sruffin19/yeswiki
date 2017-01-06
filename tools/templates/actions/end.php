@@ -6,13 +6,13 @@ if (!defined("WIKINI_VERSION"))
 
 
 // classe css supplémentaire
-$elem = $this->GetParameter('elem');
+$elem = $this->getParameter('elem');
 if (empty($elem)) {
     echo '<div class="alert alert-danger"><strong>'._t('TEMPLATE_ACTION_END').'</strong> : '._t('TEMPLATE_ELEM_PARAMETER_REQUIRED').'.</div>'."\n";
     return;
 }
 else {
-    $pagetag = $this->GetPageTag();
+    $pagetag = $this->getPageTag();
     // teste s'il y a bien un element de fermeture associé avant d'ouvrir une balise
     if (!isset($GLOBALS['check_'.$pagetag]['col'])) {
         $GLOBALS['check_'.$pagetag ][$elem] = check_graphical_elements($elem, $pagetag, $this->page['body']);

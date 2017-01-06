@@ -25,7 +25,7 @@ if (!defined("WIKINI_VERSION")) {
 
 header('Content-type: text/xml; charset=UTF-8');
 
-if ($HasAccessRead=$this->HasAccess("read")) {
+if ($HasAccessRead=$this->hasAccess("read")) {
     if ($this->page) {
         // display rss
         echo baz_afficher_flux_RSS() ;

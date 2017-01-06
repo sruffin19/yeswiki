@@ -20,11 +20,11 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-if ($pages = $this->LoadOrphanedPages())
+if ($pages = $this->loadOrphanedPages())
 {
     foreach ($pages as $page)
     {
-        echo $this->ComposeLinkToPage($page["tag"], "", "", 0),"<br />\n" ;
+        echo $this->composeLinkToPage($page["tag"], "", "", 0),"<br />\n" ;
     }
 }
 else

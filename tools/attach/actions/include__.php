@@ -5,5 +5,5 @@
     }
 
     $this->tag = $oldpage;
-    $this->page = $this->LoadPage($oldpage);
+    $this->page = $this->loadPage($oldpage);
 ?>

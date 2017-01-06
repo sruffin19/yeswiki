@@ -29,7 +29,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 // Which is the max number of pages to be shown ?
-if ($max = $this->GetParameter("max"))
+if ($max = $this->getParameter("max"))
 {
     if ($max=="last") $max=50; else $last = (int) $max;
 }
@@ -39,14 +39,14 @@ else
 }
 
 // Show recently commented pages
-if ($pages = $this->LoadRecentlyCommented($max))
+if ($pages = $this->loadRecentlyCommented($max))
 {
-    if ($this->GetParameter("max"))
+    if ($this->getParameter("max"))
     {
         foreach ($pages as $page)
         {
             // echo entry
-            echo "(",$page["comment_time"],") <a href=\"",$this->href("", $page["tag"], "show_comments=1"),"#",$page["comment_tag"],"\">",$page["tag"],"</a> . . . . dernier commentaire par ",$this->Format($page["comment_user"]),"<br />\n" ;
+            echo "(",$page["comment_time"],") <a href=\"",$this->href("", $page["tag"], "show_comments=1"),"#",$page["comment_tag"],"\">",$page["tag"],"</a> . . . . dernier commentaire par ",$this->format($page["comment_user"]),"<br />\n" ;
         }
     }
     else
@@ -64,7 +64,7 @@ if ($pages = $this->LoadRecentlyCommented($max))
             }
 
             // echo entry
-            echo "&nbsp;&nbsp;&nbsp;(",$time,") <a href=\"",$this->href("", $page["tag"], "show_comments=1"),"#",$page["comment_tag"],"\">",$page["tag"],"</a> . . . . dernier commentaire par ",$this->Format($page["comment_user"]),"<br />\n" ;
+            echo "&nbsp;&nbsp;&nbsp;(",$time,") <a href=\"",$this->href("", $page["tag"], "show_comments=1"),"#",$page["comment_tag"],"\">",$page["tag"],"</a> . . . . dernier commentaire par ",$this->format($page["comment_user"]),"<br />\n" ;
         }
     }
 }

@@ -27,13 +27,13 @@ class ActionEditgroups extends WikiniAdminAction
     function PerformAction($args, $command)
     {
         $wiki = &$this->wiki;
-        $list = $wiki->GetGroupsList();
-        if (!$wiki->UserIsAdmin())
+        $list = $wiki->getGroupsList();
+        if (!$wiki->userIsAdmin())
         {
             $list = array_diff($list, array(ADMIN_GROUP));
         }
         sort($list);
-        $res = $wiki->FormOpen('', '', 'get', 'form-inline');
+        $res = $wiki->formOpen('', '', 'get', 'form-inline');
         $res .= _t('DEFINITION_OF_THE_GROUP').'<select name="groupname">';
         foreach ($list as $group)
         {
@@ -41,9 +41,9 @@ class ActionEditgroups extends WikiniAdminAction
             if (!empty($_GET['groupname']) && $_GET['groupname'] == $group) $res .= ' selected="selected"';
             $res .= '>' . htmlspecialchars($group, ENT_COMPAT, YW_CHARSET) .  '</option>';
         }
-        $res .= '</select>'."\n".'<input class="btn btn-default" type="submit" value="'._t('SEE').'" />'."\n" . $wiki->FormClose();
-        $res .= $wiki->FormOpen('', '', 'get', 'form-inline') . _t('CREATE_NEW_GROUP').': <input type="text" required="required" name="groupname" />';
-        $res .= '<input class="btn btn-default" type="submit" value="'._t('DEFINE').'" />' . $wiki->FormClose();
+        $res .= '</select>'."\n".'<input class="btn btn-default" type="submit" value="'._t('SEE').'" />'."\n" . $wiki->formClose();
+        $res .= $wiki->formOpen('', '', 'get', 'form-inline') . _t('CREATE_NEW_GROUP').': <input type="text" required="required" name="groupname" />';
+        $res .= '<input class="btn btn-default" type="submit" value="'._t('DEFINE').'" />' . $wiki->formClose();
 
         if ($_POST && !empty($_POST['groupname']) && isset($_POST['acl'])) // save ACL's
         {
@@ -51,16 +51,16 @@ class ActionEditgroups extends WikiniAdminAction
             $newacl = $_POST['acl'];
             if (strtolower($name) == ADMIN_GROUP)
             {
-                if (!$wiki->UserIsAdmin())
+                if (!$wiki->userIsAdmin())
                 {
                     return $res . _t('ONLY_ADMINS_CAN_CHANGE_MEMBERS') .'.<br/>';
                 }
-                if (!$wiki->CheckACL($newacl))
+                if (!$wiki->checkACL($newacl))
                 {
                     return $res . _t('YOU_CANNOT_REMOVE_YOURSELF').'.<br/>';
                 }
             }
-            $result = $wiki->SetGroupACL($name, $newacl);
+            $result = $wiki->setGroupACL($name, $newacl);
             if ($result)
             {
                 if ($result == 1000)
@@ -74,7 +74,7 @@ class ActionEditgroups extends WikiniAdminAction
             }
             else
             {
-                $wiki->LogAdministrativeAction($wiki->GetUserName(), _t('NEW_ACL_FOR_GROUP')." " . ucfirst($name) . ' : ' . $newacl . "\n");
+                $wiki->logAdministrativeAction($wiki->getUserName(), _t('NEW_ACL_FOR_GROUP')." " . ucfirst($name) . ' : ' . $newacl . "\n");
                 return $res . _t('NEW_ACL_SUCCESSFULLY_SAVED_FOR_THE_GROUP').' ' . ucfirst($name) . '.<br />';
             }
         }
@@ -83,12 +83,12 @@ class ActionEditgroups extends WikiniAdminAction
             $name = $_GET['groupname'];
             if (!preg_match('/[^A-Za-z0-9]/', $name))
             {
-                $res .= $wiki->FormOpen();
+                $res .= $wiki->formOpen();
                 $res .= '<br />'._t('EDIT_GROUP').' <strong>' . htmlspecialchars($name, ENT_COMPAT, YW_CHARSET) . '</strong>: <br />';
                 $res .= '<input type="hidden" name="groupname" value="'. $name . '" />';
-                $res .= '<textarea name="acl" rows="3" class="form-control">' . (in_array($name, $list) ? $wiki->GetGroupACL($name) : '') . '</textarea><br />';
+                $res .= '<textarea name="acl" rows="3" class="form-control">' . (in_array($name, $list) ? $wiki->getGroupACL($name) : '') . '</textarea><br />';
                 $res .= '<input type="submit" value="'._t('SAVE').'" class="btn btn-primary" accesskey="s" />';
-                return $res . $wiki->FormClose();
+                return $res . $wiki->formClose();
             }
             else
             {

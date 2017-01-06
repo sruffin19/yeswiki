@@ -4,7 +4,7 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
-$param = $this->GetParameter('param');
+$param = $this->getParameter('param');
 if (!empty($param)) {
     switch($param) {
           case 'wakka_version':

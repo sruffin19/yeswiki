@@ -31,7 +31,7 @@ if (!defined("WIKINI_VERSION")) {
     die ("acc&egrave;s direct interdit");
 }
 
-echo $this->Header();
+echo $this->header();
 $output = baz_afficher_formulaire_import();
 echo "<div class=\"page\">\n$output\n<hr class=\"hr_clear\" />\n</div>\n";
-echo $this->Footer();
+echo $this->footer();

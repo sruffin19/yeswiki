@@ -39,11 +39,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 if (!WIKINI_VERSION) {
      die ("acc&egrave;s direct interdit");
 }
-echo $this->Header();
+echo $this->header();
 ?>
 <div class="page">
 <?php
-if($this->UserIsOwner()){
+if($this->userIsOwner()){
     if (!class_exists('attach')){
         include('tools/attach/actions/attach.class.php');
     }
@@ -51,8 +51,8 @@ if($this->UserIsOwner()){
     $att->doFilemanager();
     unset($att);
 }else{
-    echo $this->Format("//Seul le propriétaire de cette page peut accéder au gestionnaire des fichiers attaché//");
+    echo $this->format("//Seul le propriétaire de cette page peut accéder au gestionnaire des fichiers attaché//");
 }
 ?>
 </div>
-<?php echo $this->Footer(); ?>
+<?php echo $this->footer(); ?>

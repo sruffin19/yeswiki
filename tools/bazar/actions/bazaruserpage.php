@@ -23,13 +23,13 @@ if ($nomwiki) {
         AND tag IN (SELECT DISTINCT resource FROM '.BAZ_PREFIXE.'triples WHERE value = "fiche_bazar"
         AND property = "http://outils-reseaux.org/_vocabulary/type" ORDER BY resource ASC) ORDER BY time DESC';
 
-    $results = $GLOBALS['wiki']->LoadAll($requetesql);
+    $results = $GLOBALS['wiki']->loadAll($requetesql);
     if (count($results)>0) {
         echo baz_voir_fiche(1, $results[0]["tag"]).'<br /><br />';
     }
 
     // On cherche un template personnalise dans le repertoire themes/tools/bazar/templates
-    $GLOBALS['_BAZAR_']['templates'] = $this->GetParameter("template");
+    $GLOBALS['_BAZAR_']['templates'] = $this->getParameter("template");
     if (empty($GLOBALS['_BAZAR_']['templates'])) {
         $GLOBALS['_BAZAR_']['templates'] = BAZ_TEMPLATE_LISTE_DEFAUT;
     }

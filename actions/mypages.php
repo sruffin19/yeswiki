@@ -30,18 +30,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-if ($user = $this->GetUser())
+if ($user = $this->getUser())
 {
     echo "<b>"._t('LIST_OF_PAGES_WHERE_YOU_ARE_THE_OWNER').".</b><br /><br />\n" ;
 
     $my_pages_count = 0;
     $curChar = '';
 
-    if ($pages = $this->LoadAllPages())
+    if ($pages = $this->loadAllPages())
     {
         foreach ($pages as $page)
         {
-            if ($this->GetUserName() == $page["owner"] && !preg_match("/^Comment/", $page["tag"])) {
+            if ($this->getUserName() == $page["owner"] && !preg_match("/^Comment/", $page["tag"])) {
                 // XXX: strtoupper is locale dependent
                 $firstChar = strtoupper($page["tag"][0]);
                 if (!preg_match("/".WN_UPPER."/", $firstChar)) {
@@ -54,7 +54,7 @@ if ($user = $this->GetUser())
                     $curChar = $firstChar;
                 }
 
-                echo $this->ComposeLinkToPage($page["tag"]),"<br />\n" ;
+                echo $this->composeLinkToPage($page["tag"]),"<br />\n" ;
 
                 $my_pages_count++;
             }

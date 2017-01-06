@@ -33,7 +33,7 @@ if ($this->config['favorite_style']!='none') {
 }
 
 // si l'action propose d'autres css a ajouter, on les ajoute
-$othercss = $this->GetParameter('othercss'); 
+$othercss = $this->getParameter('othercss'); 
 if (!empty($othercss)) {
     $tabcss = explode(',', $othercss);
     foreach($tabcss as $cssfile) {

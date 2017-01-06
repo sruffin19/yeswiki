@@ -196,4 +196,4 @@ if (!(preg_match('#^[A-Za-z0-9_]*$#', $method))) {
 
 include 'includes/prepend.php';
 
-$wiki->Run($page, $method);
+$wiki->run($page, $method);

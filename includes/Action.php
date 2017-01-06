@@ -46,7 +46,7 @@ abstract class Actions
 
         // Now that we have the action's name, we can check if the user
         // satisfies the ACLs
-        if (! $this->CheckModuleACL($action, 'action')) {
+        if (! $this->checkModuleACL($action, 'action')) {
             // TODO UGLY no html !!
             return '<div class="alert alert-danger">'
                 . _t('ERROR_NO_ACCESS')
@@ -54,7 +54,7 @@ abstract class Actions
         }
 
         // match all attributes (key and value)
-        // prepare an array for extract() to work with (in $this->IncludeBuffered())
+        // prepare an array for extract() to work with (in $this->includeBuffered())
         if (preg_match_all("/([a-zA-Z0-9]*)=\"(.*)\"/U", $varsTemp, $matches)) {
             for ($a = 0; $a < count($matches[1]); $a ++) {
                 $vars[$matches[1][$a]] = $matches[2][$a];
@@ -62,7 +62,7 @@ abstract class Actions
         }
 
         if (!$forceLinkTracking) {
-            $this->StopLinkTracking();
+            $this->stopLinkTracking();
         }
 
         if ($actionObj = $this->getActionObject($action)) {
@@ -74,7 +74,7 @@ abstract class Actions
 
             $this->parameter = &$vars;
             // TODO UGLY no html !!
-            $result = $this->IncludeBuffered(
+            $result = $this->includeBuffered(
                 strtolower($action) . '.php',
                 '<div class="alert alert-danger">'
                     . _t('UNKNOWN_ACTION')
@@ -85,7 +85,7 @@ abstract class Actions
             unset($this->parameter);
         }
         // shouldn't we restore the previous status ?
-        $this->StartLinkTracking();
+        $this->startLinkTracking();
         return $result;
     }
 
@@ -135,11 +135,11 @@ abstract class Actions
         require_once 'includes/WikiNiAction.class.php';
         require_once 'includes/WikiNiAdminAction.class.php';
         // include the action file, this should return an empty string
-        $result = $this->IncludeBuffered(
+        $result = $this->includeBuffered(
             $filename,
             null,
             null,
-            $this->GetConfigValue('action_path')
+            $this->getConfigValue('action_path')
         );
         if ($result) {
             // the result was not an empty string, certainly an error message
@@ -169,7 +169,7 @@ abstract class Actions
      */
     function GetActionsList()
     {
-        $action_path = $this->GetConfigValue('action_path');
+        $action_path = $this->getConfigValue('action_path');
         $dirs = explode(":", $action_path);
         $list = array();
         foreach ($dirs as $dir) {

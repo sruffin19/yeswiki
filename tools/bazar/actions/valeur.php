@@ -14,16 +14,16 @@ if (!defined('WIKINI_VERSION')) {
 }
 
 // url de la fiche bazar
-$url = $this->GetParameter('url');
+$url = $this->getParameter('url');
 if (empty($url) && isset($this->config['source_url']) && !empty($this->config['source_url'])) {
     $url = $this->config['source_url'];
 }
 if (!empty($url)) {
     // parameter of this action
-    $champ = $this->GetParameter('champ');
-    $image = $this->GetParameter('image');
-    $texte = $this->GetParameter('texte');
-    $defaut = $this->GetParameter('defaut');
+    $champ = $this->getParameter('champ');
+    $image = $this->getParameter('image');
+    $texte = $this->getParameter('texte');
+    $defaut = $this->getParameter('defaut');
 
     if (!empty($champ)) {
         // on harge dans une variable globale pour le cas ou l'action est appelée plusieurs fois

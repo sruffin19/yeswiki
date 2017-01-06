@@ -44,13 +44,13 @@ $global = !empty($_REQUEST['global']);
 if ($global)
 {
     $title = "Domaines faisant r&eacute;f&eacute;rence &agrave; ce wiki (<a href=\"".$this->href("referrers", "", "global=1")."\">voir la liste des pages externes</a>):";
-    $referrers = $this->LoadReferrers();
+    $referrers = $this->loadReferrers();
 }
 else
 {
-    $title = "Domaines faisant r&eacute;f&eacute;rence &agrave; ".$this->Link($this->GetPageTag()).
-        ($this->GetConfigValue("referrers_purge_time") ? " (depuis ".($this->GetConfigValue("referrers_purge_time") == 1 ? "24 heures" : $this->GetConfigValue("referrers_purge_time")." jours").")" : "")." (<a href=\"".$this->href("referrers")."\">voir la liste des pages externes</a>):";
-    $referrers = $this->LoadReferrers($this->GetPageTag());
+    $title = "Domaines faisant r&eacute;f&eacute;rence &agrave; ".$this->link($this->getPageTag()).
+        ($this->getConfigValue("referrers_purge_time") ? " (depuis ".($this->getConfigValue("referrers_purge_time") == 1 ? "24 heures" : $this->getConfigValue("referrers_purge_time")." jours").")" : "")." (<a href=\"".$this->href("referrers")."\">voir la liste des pages externes</a>):";
+    $referrers = $this->loadReferrers($this->getPageTag());
 }
 
 echo "<b>$title</b><br /><br />\n" ;
@@ -91,7 +91,7 @@ else
 
 if ($global)
 {
-    echo "<br />[<a href=\"",$this->href("referrers_sites"),"\">Voir les domaines faisant r&eacute;f&eacute;rence &agrave; ",$this->GetPageTag()," seulement</a> | <a href=\"",$this->href("referrers"),"\">Voir les r&eacute;f&eacute;rences ",$this->GetPageTag()," seulement</a>]";
+    echo "<br />[<a href=\"",$this->href("referrers_sites"),"\">Voir les domaines faisant r&eacute;f&eacute;rence &agrave; ",$this->getPageTag()," seulement</a> | <a href=\"",$this->href("referrers"),"\">Voir les r&eacute;f&eacute;rences ",$this->getPageTag()," seulement</a>]";
 }
 else
 {
@@ -104,8 +104,8 @@ else
 <?php
 
 $content = ob_get_clean();
-echo $this->Header();
+echo $this->header();
 echo $content;
-echo $this->Footer();
+echo $this->footer();
 
 ?>

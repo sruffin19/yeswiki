@@ -4,7 +4,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 // taille de la colonne
-$size = $this->GetParameter('size');
+$size = $this->getParameter('size');
 if (empty($size)) {
     echo '<div><div class="alert alert-danger"><strong>' . _t('TEMPLATE_ACTION_COL') . '</strong> : '
         . _t('TEMPLATE_SIZE_PARAMETER_REQUIRED') . '.</div>' . "\n";
@@ -18,12 +18,12 @@ if (!(ctype_digit($size) && intval($size) >= 1 && intval($size) <= 12)) {
 }
 
 // classe css additionnelle
-$class = $this->GetParameter('class');
+$class = $this->getParameter('class');
 
 // data attributes
 $data = getDataParameter();
 
-$pagetag = $this->GetPageTag();
+$pagetag = $this->getPageTag();
 
 // teste s'il y a bien un element de fermeture associé avant d'ouvrir une balise
 if (!isset($GLOBALS['check_' . $pagetag]['col'])) {

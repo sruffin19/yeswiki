@@ -21,7 +21,7 @@ if (!isset($GLOBALS['_BAZAR_']['nbbazarliste'])) {
 
 // Recuperation de tous les parametres
 $params = getAllParameters($this);
-if (empty($this->GetParameter('template'))) {
+if (empty($this->getParameter('template'))) {
     $params['template'] = 'map.tpl.html';
 }
 

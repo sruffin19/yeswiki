@@ -50,7 +50,7 @@ define('BACKGROUND_IMAGE_PAR_DEFAUT', '');
 // Pour que seul le propriétaire et l'admin puissent changer de theme
 define('SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME', false);
 
-// Surcharge  fonction  LoadRecentlyChanged : suppression remplissage cache car affecte le rendu du template.
+// Surcharge  fonction  loadRecentlyChanged : suppression remplissage cache car affecte le rendu du template.
 $wikiClasses[] = 'Template';
 
 // fonctions supplementaires a ajouter la classe wiki
@@ -60,7 +60,7 @@ fclose($fp);
 $wikiClassesContent [] = str_replace('<?php', '', $contents);
 
 //on récupère les metadonnées de la page
-$metadatas = $wiki->GetTripleValue(
+$metadatas = $wiki->getTripleValue(
     $page,
     'http://outils-reseaux.org/_vocabulary/metadata',
     '',
@@ -127,7 +127,7 @@ if (isset($wakkaConfig['hide_action_template']) && $wakkaConfig['hide_action_tem
         } else {
             //on récupére les valeurs du template associées à la page de l'ancienne version de templates
             //on récupère le contenu de la page
-            $contenu = $wiki->LoadPage($page);
+            $contenu = $wiki->loadPage($page);
             if ($act = preg_match_all('/'.'(\\{\\{template)'.'(.*?)'.'(\\}\\})'.'/is', $contenu['body'], $matches)) {
                 $i = 0;
                 $j = 0;

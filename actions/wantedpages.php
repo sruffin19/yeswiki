@@ -29,15 +29,15 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-if ($pages = $this->LoadWantedPages())
+if ($pages = $this->loadWantedPages())
 {
     echo "<ul>\n";
     foreach ($pages as $page)
     {
         echo '    <li>', $page['tag'];
-        echo $this->ComposeLinkToPage($page['tag'], 'edit', '?', false);
+        echo $this->composeLinkToPage($page['tag'], 'edit', '?', false);
         echo ' (';
-        echo $this->ComposeLinkToPage($page['tag'], 'backlinks', $page['count'], false);
+        echo $this->composeLinkToPage($page['tag'], 'backlinks', $page['count'], false);
         echo ")</li>\n";
     }
     echo "</ul>\n";

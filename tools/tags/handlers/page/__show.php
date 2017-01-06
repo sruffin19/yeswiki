@@ -31,10 +31,10 @@ if (!defined("WIKINI_VERSION"))
 {
     die ("acc&egrave;s direct interdit");
 }
-$tag = $this->GetPageTag();
+$tag = $this->getPageTag();
 
 // on ouvre les commentaires si la configuration generale ou de la page le demande
-$pageouverte = $this->GetTripleValue($tag,'http://outils-reseaux.org/_vocabulary/comments', '', '');
+$pageouverte = $this->getTripleValue($tag,'http://outils-reseaux.org/_vocabulary/comments', '', '');
 
 $GLOBALS["open_comments"][$tag] = ((COMMENTAIRES_OUVERTS_PAR_DEFAUT && $pageouverte!='0' ) || (!COMMENTAIRES_OUVERTS_PAR_DEFAUT && $pageouverte=='1')) && $this->page["comment_on"] == '';
 

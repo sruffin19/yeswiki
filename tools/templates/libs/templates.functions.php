@@ -151,7 +151,7 @@ function replace_missingpage_links($output)
                         '&amp;squelette='.urlencode($GLOBALS['wiki']->config['favorite_squelette']).
                         '&amp;style='.urlencode($GLOBALS['wiki']->config['favorite_style']).
                         '&amp;bgimg='.urlencode($GLOBALS['wiki']->config['favorite_background_image']).
-                        ((!$GLOBALS['wiki']->IsWikiName($values[1])) ? '&amp;body='.urlencode($values[1]) : '').
+                        ((!$GLOBALS['wiki']->isWikiName($values[1])) ? '&amp;body='.urlencode($values[1]) : '').
                         '&amp;newpage=1';
         $replacement = '<a class="yeswiki-editable" href="'
             .$GLOBALS['wiki']->href("edit", $values[2], $query_string)
@@ -175,16 +175,16 @@ function replace_missingpage_links($output)
 function print_diaporama($pagetag, $template = 'diaporama_slides.tpl.html', $class = '')
 {
     // On teste si l'utilisateur peut lire la page
-    if (!$GLOBALS['wiki']->HasAccess("read", $pagetag)) {
+    if (!$GLOBALS['wiki']->hasAccess("read", $pagetag)) {
         return '<div class="alert alert-danger">'
             ._t('TEMPLATE_NO_ACCESS_TO_PAGE').'</div>'
-            .$GLOBALS['wiki']->Format('{{login template="minimal.tpl.html"}}');
+            .$GLOBALS['wiki']->format('{{login template="minimal.tpl.html"}}');
     } else {
         // On teste si la page existe
-        if (!$page = $GLOBALS['wiki']->LoadPage($pagetag)) {
+        if (!$page = $GLOBALS['wiki']->loadPage($pagetag)) {
             return '<div class="alert alert-danger">'._t('TEMPLATE_PAGE_DOESNT_EXIST').' ('.$pagetag.').</div>';
         } else {
-            $body_f = $GLOBALS['wiki']->Format($page["body"]);
+            $body_f = $GLOBALS['wiki']->format($page["body"]);
             // on regarde si on gere la 2d pour reveal
             //preg_match_all('/<h1>.*<\/h1>/m', $body_f, $titles);
             preg_match_all('/======.*======/Um', $page["body"], $titles);
@@ -217,7 +217,7 @@ function print_diaporama($pagetag, $template = 'diaporama_slides.tpl.html', $cla
                 $titles = array() ;
                 $previousistitle = false;
                 foreach ($body as $slide) {
-                    $slide = $GLOBALS['wiki']->Format($slide);
+                    $slide = $GLOBALS['wiki']->format($slide);
                     //var_dump($slide);
                     // s'il a des titres de niveau 1 ou 2 il s'agit des separateurs de diapo
                     if (preg_match('/<h[12]>.*<\/h[12]>/', $slide)) {
@@ -253,7 +253,7 @@ function print_diaporama($pagetag, $template = 'diaporama_slides.tpl.html', $cla
 
         $buttons = '';
         //si la fonction est appelee par le handler diaporama, on ajoute les liens d'edition et de retour
-        if ($GLOBALS['wiki']->GetMethod() == "diaporama") {
+        if ($GLOBALS['wiki']->getMethod() == "diaporama") {
             $buttons .= '<a class="btn" href="'.$GLOBALS['wiki']->href('', $pagetag).'">&times;</a>'."\n";
         }
 
@@ -447,7 +447,7 @@ function show_form_theme_selector($mode = 'selector', $formclass = 'form-horizon
                                 </div>
                             </div>'."\n";
 
-        $tablistWikinames = $GLOBALS['wiki']->LoadAll('SELECT DISTINCT tag FROM '. $GLOBALS['wiki']->GetConfigValue('table_prefix') .'pages WHERE latest="Y"');
+        $tablistWikinames = $GLOBALS['wiki']->loadAll('SELECT DISTINCT tag FROM '. $GLOBALS['wiki']->getConfigValue('table_prefix') .'pages WHERE latest="Y"');
         foreach ($tablistWikinames as $tag) {
             $listWikinames[] = $tag['tag'];
         }
@@ -599,7 +599,7 @@ function isExtension($filename, $ext)
 function getDataParameter()
 {
     // container data attributes
-    $data = $GLOBALS['wiki']->GetParameter('data');
+    $data = $GLOBALS['wiki']->getParameter('data');
     if (!empty($data)) {
         $datas = array();
         $tab = explode(',', $data);

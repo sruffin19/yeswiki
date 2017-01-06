@@ -39,7 +39,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 //recuperation des parametres
-$contactelements['mail'] = $this->GetParameter('mail');
+$contactelements['mail'] = $this->getParameter('mail');
 if (empty($contactelements['mail'])) {
     echo '<div class="alert alert-danger"><strong>'._t('CONTACT_ACTION_CONTACT').' :</strong>&nbsp;'._t('CONTACT_MAIL_REQUIRED').'</div>';
 }
@@ -53,19 +53,19 @@ else {
     }
     $contactelements['nbactionmail'] = $GLOBALS['nbactionmail'];
 
-    $contactelements['entete'] = $this->GetParameter('entete');
+    $contactelements['entete'] = $this->getParameter('entete');
     if (empty($contactelements['entete'])) {
         $contactelements['entete'] = $this->config['wakka_name'];
     }
 
     // on choisit le template utilisé
-    $template = $this->GetParameter('template');
+    $template = $this->getParameter('template');
     if (empty($template)) {
         $template = 'complete-contact-form.tpl.html';
     }
 
     // on peut ajouter des classes à la classe par défaut
-    $contactelements['class'] = ($this->GetParameter('class') ? 'form-contact '.$this->GetParameter('class') : 'form-contact');
+    $contactelements['class'] = ($this->getParameter('class') ? 'form-contact '.$this->getParameter('class') : 'form-contact');
 
     // adresse url d'envoi du mail
     $contactelements['mailerurl'] = $this->href('mail');

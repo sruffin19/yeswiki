@@ -3,11 +3,11 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-if ($this->UserIsAdmin()) {
-    $sql = 'SELECT tag,time,owner FROM '.$this->GetConfigValue('table_prefix').'pages '.
+if ($this->userIsAdmin()) {
+    $sql = 'SELECT tag,time,owner FROM '.$this->getConfigValue('table_prefix').'pages '.
            'WHERE latest="Y" AND comment_on="" AND tag NOT LIKE "LogDesActionsAdministratives%"'.
            'ORDER BY tag';
-    $pages = $this->LoadAll($sql);
+    $pages = $this->loadAll($sql);
 
     include_once 'includes/tools/squelettephp.class.php';
     $template_pages = new SquelettePhp('tools/templates/presentation/templates/pages_table.tpl.html');

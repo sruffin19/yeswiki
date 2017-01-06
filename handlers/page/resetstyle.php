@@ -26,5 +26,5 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-$this->SetPersistentCookie('sitestyle', 'wakka', 1);
+$this->setPersistentCookie('sitestyle', 'wakka', 1);
 header("Location: ".$this->href());

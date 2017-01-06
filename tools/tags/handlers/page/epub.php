@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
 
-$metadatas = $this->GetMetaDatas($this->GetPageTag());
+$metadatas = $this->GetMetaDatas($this->getPageTag());
 
 if (isset($metadatas["ebook-title"]) && isset($metadatas["ebook-description"]) && isset($metadatas["ebook-author"]) && isset($metadatas["ebook-biblio-author"]) && isset($metadatas["ebook-cover-image"])) {
 
@@ -38,7 +38,7 @@ if (isset($metadatas["ebook-title"]) && isset($metadatas["ebook-description"]) &
     $book->setSourceURL($this->href('',$this->getPageTag()));
 
     // on concatene tous les styles dans un css
-    $styles = $this->Format("{{linkstyle}}");
+    $styles = $this->format("{{linkstyle}}");
     preg_match_all('/href="(.*css)"/U', $styles, $matches);
     $cssData = '';
     foreach ($matches[1] as $key => $value) {
@@ -57,10 +57,10 @@ if (isset($metadatas["ebook-title"]) && isset($metadatas["ebook-description"]) &
     // on recupere les include pour faire les chapitres 
     preg_match_all("/{{include.*page=\"(.*)\".*class=\"(.*)\".*}}/U", $this->page["body"], $matches);
     foreach ($matches[1] as $nb => $pageWiki) {
-        $page = $this->LoadPage($pageWiki);
+        $page = $this->loadPage($pageWiki);
         $url = explode('wakka.php', $this->config['base_url']);
-        if (YW_CHARSET != 'UTF-8') $contentpage = utf8_encode($content_start . str_replace('<img src="'.$url[0], '<img src="', $this->Format('{{include page="'.$pageWiki.'" class="'.$matches[2][$nb].'"}}')) . $bookEnd);
-        else $contentpage = $content_start . str_replace('<img src="'.$url[0], '<img src="', $this->Format('{{include page="'.$pageWiki.'" class="'.$matches[2][$nb].'"}}')) . $bookEnd;
+        if (YW_CHARSET != 'UTF-8') $contentpage = utf8_encode($content_start . str_replace('<img src="'.$url[0], '<img src="', $this->format('{{include page="'.$pageWiki.'" class="'.$matches[2][$nb].'"}}')) . $bookEnd);
+        else $contentpage = $content_start . str_replace('<img src="'.$url[0], '<img src="', $this->format('{{include page="'.$pageWiki.'" class="'.$matches[2][$nb].'"}}')) . $bookEnd;
         $book->addChapter(get_title_from_body($page), $pageWiki.".html", $contentpage, false, EPub::EXTERNAL_REF_ADD);
     }
 
@@ -76,7 +76,7 @@ if (isset($metadatas["ebook-title"]) && isset($metadatas["ebook-description"]) &
     $zipData = $book->sendBook($this->getPageTag());
 }
 else {
-    echo $this->Header().'<div class="alert alert-danger">'._t('TAGS_NO_EBOOK_METADATAS').'</div>'.$this->Footer();
+    echo $this->header().'<div class="alert alert-danger">'._t('TAGS_NO_EBOOK_METADATAS').'</div>'.$this->footer();
 }
 
 ?>

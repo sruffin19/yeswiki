@@ -5,17 +5,17 @@ if (!defined("WIKINI_VERSION")) {
         die("acc&egrave;s direct interdit");
 }
 
-$tag = $this->GetPageTag();
-$class = $this->GetParameter("class");
-$offset = $this->GetParameter("offset");
+$tag = $this->getPageTag();
+$class = $this->getParameter("class");
+$offset = $this->getParameter("offset");
 if (empty($offset)) {
     $offset = '70';
 }
-$align = $this->GetParameter("align");
+$align = $this->getParameter("align");
 if (empty($align) || $align != 'left') {
     $align = 'right';
 }
-$size = $this->GetParameter("size");
+$size = $this->getParameter("size");
 if (empty($size)) {
     $size = '3';
 }

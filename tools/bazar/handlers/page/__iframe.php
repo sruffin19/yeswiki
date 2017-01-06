@@ -4,7 +4,7 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-$type = $this->GetTripleValue($this->GetPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
+$type = $this->getTripleValue($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
 $bazaroutput = '';
 if ($type == 'fiche_bazar') {
     // si la page est de type fiche_bazar, alors on affiche la fiche plutot que de formater en wiki
@@ -45,7 +45,7 @@ if ($type == 'fiche_bazar') {
 if (!empty($bazaroutput)) {
     $output = '';
     // on recupere les entetes html mais pas ce qu'il y a dans le body
-    $header = explode('<body', $this->Header());
+    $header = explode('<body', $this->header());
     $output .= $header[0] . "<body class=\"yeswiki-body\">\n<div class=\"yeswiki-page-widget page-widget page\">\n";
 
     // affichage de la page formatee
@@ -78,6 +78,6 @@ if (!empty($bazaroutput)) {
   </style>' . "\n";
 
     // on recupere juste les javascripts et la fin des balises body et html
-    $output .= preg_replace('/^.+<script/Us', $styleiframe . '<script', $this->Footer());
+    $output .= preg_replace('/^.+<script/Us', $styleiframe . '<script', $this->footer());
     die($output);
 }

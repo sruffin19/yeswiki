@@ -22,16 +22,16 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-if ($this->GetMethod() != 'xml') {
+if ($this->getMethod() != 'xml') {
     echo _t('TO_OBTAIN_RSS_FEED_TO_GO_THIS_ADDRESS').' : ';
-    echo $this->Link($this->Href('xml'));
+    echo $this->link($this->href('xml'));
     return;
 }
 
 require_once 'tools/rss/libs/rssdiff.function.php';
 
 $max = 50;
-if ($user = $this->GetUser()) {
+if ($user = $this->getUser()) {
     $max = $user["changescount"];
 }
 
@@ -40,18 +40,18 @@ $sql = "SELECT id, tag, time, user, owner
     FROM $pageTableName
     WHERE comment_on = '' ORDER BY time desc limit $max";
 
-$pages = $this->LoadAll($sql);
+$pages = $this->loadAll($sql);
 if (!$pages) {
     return;
 }
 
-if (!($link = $this->GetParameter("link"))) {
-    $link = $this->GetConfigValue("root_page");
+if (!($link = $this->getParameter("link"))) {
+    $link = $this->getConfigValue("root_page");
 }
 
-$xmlUrl = $this->Href("xml");
+$xmlUrl = $this->href("xml");
 $wakkaName = htmlspecialchars(
-    $this->GetConfigValue("wakka_name"),
+    $this->getConfigValue("wakka_name"),
     ENT_COMPAT,
     YW_CHARSET
 );
@@ -63,7 +63,7 @@ $output =
     <channel>
         <atom:link href='$xmlUrl' rel='self' type='application/rss+xml' />
         <title>$wakkaName</title>
-        <link>" . $this->Href(false, $link) . "</link>
+        <link>" . $this->href(false, $link) . "</link>
         <description>$wakkaName</description>
         <generator>WikiNi " . WIKINI_VERSION . "</generator>
 ";
@@ -98,8 +98,8 @@ for ($i = 0; $i < sizeof($pages); $i++) {
         );
         $itemurl = $this->href(false, $tag, "time=$rawTime");
         $description = htmlspecialchars(
-            'Modification de ' . $this->ComposeLinkToPage($page["tag"])
-            . ' (' . $this->ComposeLinkToPage($page["tag"], 'revisions', 'historique') . ')'
+            'Modification de ' . $this->composeLinkToPage($page["tag"])
+            . ' (' . $this->composeLinkToPage($page["tag"], 'revisions', 'historique') . ')'
             . " --- par $user"  . rssdiff($page["tag"], $firstpage["id"], $lastpage["id"])
         );
 

@@ -81,7 +81,7 @@ if (isset($_REQUEST['demand'])) {
             if (empty($idfiche)) {
                 echo json_encode(array('error' => 'no id_fiche specified.'));
             } else {
-                $wikipage = $this->LoadPage($idfiche);
+                $wikipage = $this->loadPage($idfiche);
                 if ($wikipage) {
                     if ($html==1) {
                         echo json_encode(array('html' => baz_voir_fiche(0, $idfiche)));
@@ -176,7 +176,7 @@ if (isset($_REQUEST['demand'])) {
                     }
                     echo $res;
                 } elseif ($type == 'form') { // template d'un formulaire bazar
-                    $url = $this->href('json', $this->GetPageTag(), 'demand=save_entry');
+                    $url = $this->href('json', $this->getPageTag(), 'demand=save_entry');
 
                     //contruction du squelette du formulaire
                     $formtemplate = new HTML_QuickForm('formulaire', 'post', preg_replace('/&amp;/', '&', $url));
@@ -278,11 +278,11 @@ if (isset($_REQUEST['demand'])) {
             break;
         case "pages":
             // recuperation des pages wikis
-            $sql = 'SELECT * FROM '.$this->GetConfigValue('table_prefix').'pages';
+            $sql = 'SELECT * FROM '.$this->getConfigValue('table_prefix').'pages';
             $sql .= ' WHERE latest="Y" AND comment_on="" AND tag NOT LIKE "LogDesActionsAdministratives%" ';
-            $sql .= ' AND tag NOT IN (SELECT resource FROM '.$this->GetConfigValue('table_prefix').'triples WHERE property="http://outils-reseaux.org/_vocabulary/type") ';
+            $sql .= ' AND tag NOT IN (SELECT resource FROM '.$this->getConfigValue('table_prefix').'triples WHERE property="http://outils-reseaux.org/_vocabulary/type") ';
             $sql .= ' ORDER BY tag ASC';
-            $pages = _convert($this->LoadAll($sql), 'ISO-8859-15');
+            $pages = _convert($this->loadAll($sql), 'ISO-8859-15');
             $pagesindex = array();
             foreach ($pages as $page) {
                 $pagesindex[$page["tag"]] = $page;
@@ -292,7 +292,7 @@ if (isset($_REQUEST['demand'])) {
             break;
         case "comments":
             // les commentaires wiki
-            echo json_encode($this->LoadRecentComments());
+            echo json_encode($this->loadRecentComments());
             break;
     }
 }

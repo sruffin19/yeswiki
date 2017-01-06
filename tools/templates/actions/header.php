@@ -4,7 +4,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 //=======Restes de wikini=================================================================================
-$user = $this->GetUser();
+$user = $this->getUser();
 
 $chemin_theme = 'themes/'.$this->config['favorite_theme'].'/squelettes/'.$this->config['favorite_squelette'];
 if (file_exists($chemin_theme)) {
@@ -24,7 +24,7 @@ if ($act = preg_match_all("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_hea
         foreach ($valeur as $val) {
             if (isset($matches[2][$j]) && $matches[2][$j]!='') {
                 $action = $matches[2][$j];
-                $template_header = str_replace('{{'.$action.'}}', $this->Format('{{'.$action.'}}', 'action'), $template_header);
+                $template_header = str_replace('{{'.$action.'}}', $this->format('{{'.$action.'}}', 'action'), $template_header);
             }
             $j++;
         }

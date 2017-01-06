@@ -46,14 +46,14 @@ $global = isset($_REQUEST["global"]) && $_REQUEST["global"];
 if ($global)
 {
     $title = "Sites faisant r&eacute;f&eacute;rence &agrave; ce wiki (<a href=\"".$this->href("referrers_sites", "", "global=1")."\">voir la liste des domaines</a>)&nbsp;:";
-    $referrers = $this->LoadReferrers();
+    $referrers = $this->loadReferrers();
 }
 else
 {
-    $title = "Pages externes faisant r&eacute;f&eacute;rence &agrave;  ".$this->ComposeLinkToPage($this->GetPageTag()).
-    ($this->GetConfigValue("referrers_purge_time") ? " (depuis ".($this->GetConfigValue("referrers_purge_time") == 1 ? "24 heures" : $this->GetConfigValue("referrers_purge_time")." jours").")" : "")." (<a href=\"".$this->href("referrers_sites")."\">voir la liste des domaines</a>)&nbsp;:";
+    $title = "Pages externes faisant r&eacute;f&eacute;rence &agrave;  ".$this->composeLinkToPage($this->getPageTag()).
+    ($this->getConfigValue("referrers_purge_time") ? " (depuis ".($this->getConfigValue("referrers_purge_time") == 1 ? "24 heures" : $this->getConfigValue("referrers_purge_time")." jours").")" : "")." (<a href=\"".$this->href("referrers_sites")."\">voir la liste des domaines</a>)&nbsp;:";
         
-    $referrers = $this->LoadReferrers($this->GetPageTag());
+    $referrers = $this->loadReferrers($this->getPageTag());
 }
 
 echo "<b>$title</b><br /><br />\n" ;
@@ -78,7 +78,7 @@ else
 
 if ($global)
 {
-    echo "<br />[<a href=\"",$this->href("referrers_sites"),"\">Voir les domaines faisant r&eacute;f&eacute;rence &agrave; ",$this->GetPageTag()," seulement</a> | <a href=\"",$this->href("referrers"),"\">Voir les r&eacute;f&eacute;rences &agrave; ",$this->GetPageTag()," seulement</a>]" ;
+    echo "<br />[<a href=\"",$this->href("referrers_sites"),"\">Voir les domaines faisant r&eacute;f&eacute;rence &agrave; ",$this->getPageTag()," seulement</a> | <a href=\"",$this->href("referrers"),"\">Voir les r&eacute;f&eacute;rences &agrave; ",$this->getPageTag()," seulement</a>]" ;
 }
 else
 {
@@ -92,8 +92,8 @@ else
 <?php
 
 $content = ob_get_clean();
-echo $this->Header();
+echo $this->header();
 echo $content;
-echo $this->Footer();
+echo $this->footer();
 
 ?>

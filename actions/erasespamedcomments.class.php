@@ -46,10 +46,10 @@ class ActionErasespamedcomments extends WikiniAdminAction
         if(!isset($_POST['clean']))
         {
             $limit = isset($args['max']) && $args["max"] > 0 ? (int) $args["max"] : 0;
-            if ($comments = $wiki->LoadRecentComments($limit))
+            if ($comments = $wiki->loadRecentComments($limit))
             {
                 // Formulaire listant les commentaires
-                echo "<form method=\"post\" action=\"". $wiki->Href() . "\" name=\"selection\">\n";
+                echo "<form method=\"post\" action=\"". $wiki->href() . "\" name=\"selection\">\n";
                 $curday = '';
                 foreach ($comments as $comment)
                 {
@@ -75,7 +75,7 @@ class ActionErasespamedcomments extends WikiniAdminAction
                         htmlspecialchars(substr($comment['body'], 0, 25), ENT_COMPAT, YW_CHARSET)."</code> ".
                         "<a href=\"",$wiki->href("", $comment["comment_on"], "show_comments=1")."#".$comment["tag"]."\">".
                         $comment["comment_on"],"</a> . . . . ".
-                        $wiki->Format($comment["user"]),"</li>\n" ;
+                        $wiki->format($comment["user"]),"</li>\n" ;
                 }
                 echo "</ul>\n<input type=\"hidden\" name=\"clean\" value=\"yes\" />\n";
                 echo "<button value=\"Valider\">Nettoyer >></button>\n";
@@ -102,21 +102,21 @@ class ActionErasespamedcomments extends WikiniAdminAction
                 foreach ($_POST['suppr'] as $page)
                 {
                     // Effacement de la page en utilisant la méthode adéquate
-                    // (si DeleteOrphanedPage ne convient pas, soit on créé
+                    // (si deleteOrphanedPage ne convient pas, soit on créé
                     // une autre, soit on la modifie
                     echo "Effacement de : " . $page . "<br />\n";
-                    $wiki->DeleteOrphanedPage($page);
+                    $wiki->deleteOrphanedPage($page);
                     $deletedPages .= $page . ", ";
                 }
                 $deletedPages = trim($deletedPages, ", ");
-                echo "<p><a href=\"".$wiki->Href()."\">Retour au formulaire.</a></p>";
+                echo "<p><a href=\"".$wiki->href()."\">Retour au formulaire.</a></p>";
             }
 
             // -- 3.2 Si aucune page n'a été sélectionné : message
             else
             {
                 echo "<p>Aucun commentaire n'a été sélectionné pour étre effacé.</p>";
-                echo "<p><a href=\"".$wiki->Href()."\">Retour au formulaire.</a></p>";
+                echo "<p><a href=\"".$wiki->href()."\">Retour au formulaire.</a></p>";
             }
 
             // -- 3.3 écriture du journal des actions ---
@@ -130,7 +130,7 @@ class ActionErasespamedcomments extends WikiniAdminAction
                 $reportingPage = isset($args["logpage"]) ? $args["logpage"] : "";
 
                 // -- Ajout de la ligne de log
-                $wiki->LogAdministrativeAction($wiki->GetUserName(),
+                $wiki->logAdministrativeAction($wiki->getUserName(),
                     "Commentaire(s) effacé(s)" .
                     /*" [" .*/ /*$_POST['comment'] .*/ /* "]".*/
                     "&nbsp;: " .

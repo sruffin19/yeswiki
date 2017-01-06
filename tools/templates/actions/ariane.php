@@ -15,7 +15,7 @@
 */
 
 
-if ($max = $this->GetParameter("nb")) {
+if ($max = $this->getParameter("nb")) {
       $max = (int) $max;
 } else {
     $max=4;
@@ -48,7 +48,7 @@ if (!isset($_SESSION['breadcrumbs'])) {
 # The crumbs are already stored, so get them and put them in the crumbs array.
     $crumbs=$_SESSION['breadcrumbs'];
 
-    if ($crumbs[count($crumbs)-1] != $this->GetPageTag()) {
+    if ($crumbs[count($crumbs)-1] != $this->getPageTag()) {
 # Test for the maximum amount of crumbs and if the last pagetag is not
 # the same as the last stored tag. If it is a duplicate we'll get rid of it later.
         if (count($crumbs) >= $max and $PageTag != $crumbs[$max - 1]) {
@@ -94,7 +94,7 @@ $page_trail = "<ol class=\"breadcrumb\">\n"
     . "\n";
 
 foreach ($crumbs as $this_crumb) {
-    if ($this->GetPageTag() == $this_crumb) {
+    if ($this->getPageTag() == $this_crumb) {
         $page_trail .= '<li class="active">'.$this_crumb.'</li>'."\n";
     } else {
         $page_trail .= '<li><a href="'

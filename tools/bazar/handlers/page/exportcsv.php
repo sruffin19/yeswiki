@@ -33,6 +33,6 @@ if (!defined("WIKINI_VERSION")) {
 
 $output = baz_afficher_formulaire_export();
 
-echo $this->Header();
+echo $this->header();
 echo "<div class=\"page\">\n$output\n<hr class=\"hr_clear\" />\n</div>\n";
-echo $this->Footer();
+echo $this->footer();

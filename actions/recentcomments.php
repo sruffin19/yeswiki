@@ -30,7 +30,7 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 // Which is the max number of comments to be shown ?
-if ($max = $this->GetParameter("max"))
+if ($max = $this->getParameter("max"))
 {
     if ($max=="last") $max=50;
     else $last = (int) $max;
@@ -41,7 +41,7 @@ else
 }
 
 // Show recent comments
-if ($comments = $this->LoadRecentComments($max))
+if ($comments = $this->loadRecentComments($max))
 {
     $curday = '';
     foreach ($comments as $comment)
@@ -56,7 +56,7 @@ if ($comments = $this->LoadRecentComments($max))
         }
 
         // echo entry
-        echo "&nbsp;&nbsp;&nbsp;(",$comment["time"],") <a href=\"",$this->href("", $comment["comment_on"], "show_comments=1"),"#",$comment["tag"],"\">",$comment["comment_on"],"</a> . . . . ",$this->Format($comment["user"]),"<br />\n" ;
+        echo "&nbsp;&nbsp;&nbsp;(",$comment["time"],") <a href=\"",$this->href("", $comment["comment_on"], "show_comments=1"),"#",$comment["tag"],"\">",$comment["comment_on"],"</a> . . . . ",$this->format($comment["user"]),"<br />\n" ;
     }
 }
 else

@@ -40,11 +40,11 @@ class Wiki
         }
         return $result;
     }
-    function LoadSingle($query) { if ($data = $this->LoadAll($query)) return $data[0]; }
+    function LoadSingle($query) { if ($data = $this->loadAll($query)) return $data[0]; }
     function LoadAll($query)
     {
     $data=array();
-    if ($r = $this->Query($query))
+    if ($r = $this->query($query))
         {
             while ($row = mysql_fetch_assoc($r)) $data[] = $row;
             mysql_free_result($r);
@@ -54,12 +54,12 @@ class Wiki
     
     // Quelque fonctions utiles ...
     
-    function DeleteOrphanedPage($tag) {
+    function deleteOrphanedPage($tag) {
         
-        $this->Query("delete from ".$this->config["table_prefix"]."pages where tag='".mysqli_real_escape_string($this->dblink, $tag)."' ");
-        $this->Query("delete from ".$this->config["table_prefix"]."links where from_tag='".mysqli_real_escape_string($this->dblink, $tag)."' ");
-        $this->Query("delete from ".$this->config["table_prefix"]."acls where page_tag='".mysqli_real_escape_string($this->dblink, $tag)."' ");
-        $this->Query("delete from ".$this->config["table_prefix"]."referrers where page_tag='".mysqli_real_escape_string($this->dblink, $tag)."' ");
+        $this->query("delete from ".$this->config["table_prefix"]."pages where tag='".mysqli_real_escape_string($this->dblink, $tag)."' ");
+        $this->query("delete from ".$this->config["table_prefix"]."links where from_tag='".mysqli_real_escape_string($this->dblink, $tag)."' ");
+        $this->query("delete from ".$this->config["table_prefix"]."acls where page_tag='".mysqli_real_escape_string($this->dblink, $tag)."' ");
+        $this->query("delete from ".$this->config["table_prefix"]."referrers where page_tag='".mysqli_real_escape_string($this->dblink, $tag)."' ");
     }
 
 }

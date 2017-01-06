@@ -18,28 +18,28 @@ if (file_exists('cache')) {
 }
 
 // recuperation des parametres
-$titre = $this->GetParameter("titre");
+$titre = $this->getParameter("titre");
 
-$nb = $this->GetParameter("nb");
+$nb = $this->getParameter("nb");
 
-$pagination = $this->GetParameter("pagination");
+$pagination = $this->getParameter("pagination");
 if (empty($pagination)) {
     $pagination = 5;
 }
 
-$nbchar = $this->GetParameter("nbchar");
+$nbchar = $this->getParameter("nbchar");
 
-$class = $this->GetParameter("class");
+$class = $this->getParameter("class");
 
-$nouvellefenetre = $this->GetParameter("nouvellefenetre");
+$nouvellefenetre = $this->getParameter("nouvellefenetre");
 
-$formatdate = $this->GetParameter("formatdate");
+$formatdate = $this->getParameter("formatdate");
 
-$template = $this->GetParameter("template");
+$template = $this->getParameter("template");
 if (empty($template)) {
     $template = 'tools/syndication/templates/liste.tpl.html';
 } else {
-    $template = 'tools/syndication/templates/' . $this->GetParameter("template");
+    $template = 'tools/syndication/templates/' . $this->getParameter("template");
     if (!file_exists($template)) {
         echo '<p class="alert alert-error alert-danger">' . _t('SYNDICATION_ACTION_SYNDICATION') . ' : '
              . $template . ' ' . _t('SYNDICATION_TEMPLATE_NOT_FOUND') . '.</p>' . "\n";
@@ -48,7 +48,7 @@ if (empty($template)) {
 }
 
 //recuperation du parametre obligatoire des urls
-$urls = $this->GetParameter("url");
+$urls = $this->getParameter("url");
 if (!empty($urls)) {
     $tab_url = array_map('trim', explode(',', $urls));
     foreach ($tab_url as $cle => $url) {

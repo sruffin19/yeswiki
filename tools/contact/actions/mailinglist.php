@@ -39,11 +39,11 @@ if (!defined("WIKINI_VERSION"))
 }
 
 //recuperation des parametres
-$list = $this->GetParameter('list');
+$list = $this->getParameter('list');
 if (empty($list)) {
     echo '<div class="alert alert-danger"><strong>'._t('CONTACT_ACTION_MAILINGLIST').'</strong> : '._t('CONTACT_PARAMETER_LIST_REQUIRED').'.</div>';
 }
-elseif ($this->UserIsAdmin()) {
+elseif ($this->userIsAdmin()) {
 
     echo '<h2>'._('CONTACT_MAILS_TO_ADD_OR_REMOVE').' '.$list.'</h2>';
 

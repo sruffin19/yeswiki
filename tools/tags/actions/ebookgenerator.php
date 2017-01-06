@@ -83,20 +83,20 @@ if (isset($_POST["page"])) {
                                     $pagename = generatePageName($ebookpagenamestart . ' ' . $_POST["ebook-title"]);
                                 }
                                 $output .= '//' . _t('TAGS_CONTENT_VISIBLE_ONLINE_FROM_PAGE') . ' : ' . $this->href('', $pagename) . ' // {{button link="' . $this->href('epub', $pagename) . '" text="' . _t('TAGS_DOWNLOAD_EPUB') . '" class="btn-primary pull-right" icon="book icon-white"}}' . "\n";
-                                /*if ($this->IsWikiName($ebookstart)) {
+                                /*if ($this->isWikiName($ebookstart)) {
                                 $output .= '{{include page="'.$ebookstart.'" class=""}}'."\n";
                                 }*/
                                 foreach ($_POST["page"] as $page) {
                                     $output .= '{{include page="' . $page . '" class=""}}' . "\n";
                                 }
-                                /*if ($this->IsWikiName($ebookend)) {
+                                /*if ($this->isWikiName($ebookend)) {
                                 $output .= '{{include page="'.$ebookend.'" class=""}}'."\n";
                                 }*/
                                 unset($_POST['page']);
                                 unset($_POST['antispam']);
                                 $this->SaveMetaDatas($pagename, $_POST);
-                                $this->SavePage($pagename, $output);
-                                $output = $this->Format('""<div class="alert alert-success">' . _t('TAGS_EBOOK_PAGE_CREATED') . ' !""' . "\n" . '{{button class="btn-primary" link="' . $pagename . '" text="' . _t('TAGS_GOTO_EBOOK_PAGE') . ' ' . $pagename . '"}}""</div>""' . "\n");
+                                $this->savePage($pagename, $output);
+                                $output = $this->format('""<div class="alert alert-success">' . _t('TAGS_EBOOK_PAGE_CREATED') . ' !""' . "\n" . '{{button class="btn-primary" link="' . $pagename . '" text="' . _t('TAGS_GOTO_EBOOK_PAGE') . ' ' . $pagename . '"}}""</div>""' . "\n");
                             } else {
                                 $output = '<div class="alert alert-danger">' . _t('TAGS_NOT_IMAGE_FILE') . '</div>' . "\n";
                             }
@@ -127,7 +127,7 @@ if (isset($_POST["page"])) {
         }
 
         if ($doc == '_root_page.txt') {
-            $installpagename[$this->GetConfigValue("root_page")] = $this->GetConfigValue("root_page");
+            $installpagename[$this->getConfigValue("root_page")] = $this->getConfigValue("root_page");
         } else {
             $pagename = substr($doc, 0, strpos($doc, '.txt'));
             $installpagename[$pagename] = $pagename;
@@ -135,7 +135,7 @@ if (isset($_POST["page"])) {
     }
 
     // recuperation des pages wikis
-    $sql = 'SELECT DISTINCT tag,body FROM ' . $this->GetConfigValue('table_prefix') . 'pages';
+    $sql = 'SELECT DISTINCT tag,body FROM ' . $this->getConfigValue('table_prefix') . 'pages';
     if (!empty($taglist)) {
         $sql .= ', ' . $this->config['table_prefix'] . 'triples tags';
     }
@@ -143,9 +143,9 @@ if (isset($_POST["page"])) {
                 AND comment_on="" AND tag NOT LIKE "LogDesActionsAdministratives%" ';
 
     if ($type == 'wiki') {
-        $sql .= ' AND tag NOT IN (SELECT resource FROM ' . $this->GetConfigValue('table_prefix') . 'triples WHERE property="http://outils-reseaux.org/_vocabulary/type") ';
+        $sql .= ' AND tag NOT IN (SELECT resource FROM ' . $this->getConfigValue('table_prefix') . 'triples WHERE property="http://outils-reseaux.org/_vocabulary/type") ';
     } elseif ($type == 'bazar') {
-        $sql .= ' AND tag IN (SELECT resource FROM ' . $this->GetConfigValue('table_prefix') . 'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="fiche_bazar")';
+        $sql .= ' AND tag IN (SELECT resource FROM ' . $this->getConfigValue('table_prefix') . 'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="fiche_bazar")';
     }
 
     if (!empty($taglist)) {
@@ -154,14 +154,14 @@ if (isset($_POST["page"])) {
 
     $sql .= ' ORDER BY tag ASC';
 
-    $pages = $this->LoadAll($sql);
+    $pages = $this->loadAll($sql);
 
     // on prend tous les tags
     //$sql = 'SELECT DISTINCT value FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag"';
-    //$tags = $this->LoadAll($sql);
+    //$tags = $this->loadAll($sql);
 
     if (isset($this->page["metadatas"]["ebook-title"])) {
-        $ebookpagename = $this->GetPageTag();
+        $ebookpagename = $this->getPageTag();
         preg_match_all('/{{include page="(.*)".*}}/Ui', $this->page['body'], $matches);
         $ebookstart = $matches[1][0];
         $last = count($matches[1]) - 1;
@@ -186,7 +186,7 @@ if (isset($_POST["page"])) {
     $template_export = new SquelettePhp('tools/tags/presentation/templates/exportpages_table.tpl.html');
     // charge le templates
     $template_export->set(
-        array('pages' => $pages, 'ebookstart' => $ebookstart, 'ebookend' => $ebookend, 'addinstalledpage' => $addinstalledpage, 'installedpages' => $installpagename, 'coverimageurl' => $coverimageurl, 'ebookpagename' => $ebookpagename, 'metadatas' => $this->page["metadatas"], 'selectedpages' => $selectedpages, 'url' => $this->href('', $this->GetPageTag()))
+        array('pages' => $pages, 'ebookstart' => $ebookstart, 'ebookend' => $ebookend, 'addinstalledpage' => $addinstalledpage, 'installedpages' => $installpagename, 'coverimageurl' => $coverimageurl, 'ebookpagename' => $ebookpagename, 'metadatas' => $this->page["metadatas"], 'selectedpages' => $selectedpages, 'url' => $this->href('', $this->getPageTag()))
         ); // on passe le tableau de pages en parametres
     $output .= $template_export->analyser(); // affiche les resultats
 }

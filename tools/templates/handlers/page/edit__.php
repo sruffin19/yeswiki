@@ -32,16 +32,16 @@ if (!defined('WIKINI_VERSION')) {
 }
 
 // on enleve l'action template
-$plugin_output_new = preg_replace('/'.'(\\{\\{template)'.'(.*?)'.'(\\}\\})'.'/is', '', $plugin_output_new);
+$pluginOutputNew = preg_replace('/'.'(\\{\\{template)'.'(.*?)'.'(\\}\\})'.'/is', '', $pluginOutputNew);
 
 // on enleve les restes de wikini : script obscur de la barre de redaction
-$plugin_output_new = str_replace("<script type=\"text/javascript\">\n".
+$pluginOutputNew = str_replace("<script type=\"text/javascript\">\n".
                 "document.getElementById(\"body\").onkeydown=fKeyDown;\n".
-                "</script>\n", '', $plugin_output_new);
+                "</script>\n", '', $pluginOutputNew);
 
 // personnalisation graphique que dans le cas ou on est autorise
 if ((!isset($this->config['hide_action_template']) or (isset($this->config['hide_action_template']) && !$this->config['hide_action_template'])) &&
-    ($this->HasAccess('write') && $this->HasAccess('read') && (!SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME || (SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME && ($this->UserIsAdmin() || $this->UserIsOwner()))))) {
+    ($this->hasAccess('write') && $this->hasAccess('read') && (!SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME || (SEUL_ADMIN_ET_PROPRIO_CHANGENT_THEME && ($this->userIsAdmin() || $this->userIsOwner()))))) {
 
     // graphical options : theme and background image
     $selecteur = '
@@ -50,7 +50,7 @@ if ((!isset($this->config['hide_action_template']) or (isset($this->config['hide
     '    <div class="modal-content">'."\n".
     '      <div class="modal-header">'."\n".
     '        <a class="close" data-dismiss="modal">&times;</a>'."\n".
-    '        <h3>'._t('TEMPLATE_CUSTOM_GRAPHICS').' '.$this->GetPageTag().'</h3>'."\n".
+    '        <h3>'._t('TEMPLATE_CUSTOM_GRAPHICS').' '.$this->getPageTag().'</h3>'."\n".
     '      </div>'."\n".
     '      <div class="modal-body">'."\n";
     $selecteur .= show_form_theme_selector('edit');
@@ -73,7 +73,7 @@ if ((!isset($this->config['hide_action_template']) or (isset($this->config['hide
     $selecteur .= '<input id="hiddenbgimg" type="hidden" name="bgimg" value="'.$this->config['favorite_background_image'].'" />'."\n";
 
     // on rajoute la personnalisation graphique
-    $plugin_output_new = preg_replace('/<\/body>/', $selecteur."\n".$js."\n".'</body>', $plugin_output_new);
+    $pluginOutputNew = preg_replace('/<\/body>/', $selecteur."\n".$js."\n".'</body>', $pluginOutputNew);
     $changetheme = true;
 } else {
     $changetheme = false;
@@ -83,7 +83,7 @@ $hidden = '';
 // cas des pages speciales
 if (isset($_SERVER["HTTP_REFERER"])) {
     $pagetag = str_replace($this->config['base_url'], '', $_SERVER["HTTP_REFERER"]);
-    if ($this->IsWikiName($pagetag) && in_array(
+    if ($this->isWikiName($pagetag) && in_array(
         $pagetag,
         array('PageFooter', 'PageHeader', 'PageTitre', 'PageRapideHaut','PageMenuHaut', 'PageMenu')
     )) {
@@ -104,4 +104,4 @@ $replacements = array(
                             (($changetheme) ? '<a class="btn btn-info offset1 col-lg-offset-1" data-toggle="modal" data-target="#graphical_options" data-backdrop="false">'._t('TEMPLATE_THEME').'</a>'."\n" : '').'</div>'."\n", // le bouton Theme du bas de l'interface d'edition
                     3 => ' class="edit form-control">',
                     );
-$plugin_output_new = preg_replace($patterns, $replacements, $plugin_output_new);
+$pluginOutputNew = preg_replace($patterns, $replacements, $pluginOutputNew);

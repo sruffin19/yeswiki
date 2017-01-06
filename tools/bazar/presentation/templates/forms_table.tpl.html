@@ -21,13 +21,13 @@
             <td>
                 <a class="btn btn-default btn-mini btn-xs"
                     data-toggle="tooltip" data-placement="bottom" title="<?php echo _t('BAZ_RECHERCHER'); ?>"
-                    href="<?php echo $GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag(), BAZ_VARIABLE_VOIR
+                    href="<?php echo $GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag(), BAZ_VARIABLE_VOIR
                     .'='.BAZ_VOIR_CONSULTER.'&amp;action='.BAZ_MOTEUR_RECHERCHE.'&amp;id_typeannonce='.$key); ?>">
                 <i class="glyphicon glyphicon-search icon-search"></i></a>
                 <a class="btn btn-default btn-mini btn-xs"
                     data-toggle="tooltip" data-placement="bottom"
                     title="<?php echo _t('BAZ_SAISIR_UNE_NOUVELLE_FICHE'); ?>"
-                    href="<?php echo $GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag(), BAZ_VARIABLE_VOIR
+                    href="<?php echo $GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag(), BAZ_VARIABLE_VOIR
                     .'='.BAZ_VOIR_SAISIR . '&amp;action='.BAZ_ACTION_NOUVEAU.'&amp;id_typeannonce='.$key); ?>">
                 <i class="glyphicon glyphicon-plus icon-plus"></i></a>
             </td>
@@ -78,7 +78,7 @@
                     href="<?php
                     echo $GLOBALS['wiki']->href(
                         '',
-                        $GLOBALS['wiki']->GetPageTag(),
+                        $GLOBALS['wiki']->getPageTag(),
                         BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_FORMULAIRE.'&amp;action_formulaire=modif&amp;idformulaire='.$key
                     ); ?>"><i class="glyphicon glyphicon-pencil"></i></a>
             <?php
@@ -93,7 +93,7 @@
                 href="<?php
                     echo $GLOBALS['wiki']->href(
                         '',
-                        $GLOBALS['wiki']->GetPageTag(),
+                        $GLOBALS['wiki']->getPageTag(),
                         BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_FORMULAIRE.'&amp;action_formulaire=delete&amp;idformulaire='.$key
                     ); ?>"  onclick="javascript:return confirm('<?php echo _t('BAZ_CONFIRM_SUPPRIMER_FORMULAIRE'); ?> ?');"><i class="glyphicon glyphicon-trash"></i></a>
             <?php else : ?>
@@ -113,7 +113,7 @@
 </div>
 <?php endif; ?>
 
-<a class="btn btn-primary" href="<?php echo $GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_FORMULAIRE.'&amp;action_formulaire=new'); ?>"><i class="glyphicon glyphicon-plus icon-plus icon-white"></i> <?php echo _t('BAZ_NOUVEAU_FORMULAIRE'); ?></a>
+<a class="btn btn-primary" href="<?php echo $GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_FORMULAIRE.'&amp;action_formulaire=new'); ?>"><i class="glyphicon glyphicon-plus icon-plus icon-white"></i> <?php echo _t('BAZ_NOUVEAU_FORMULAIRE'); ?></a>
 <hr>
 <strong><?php echo _t('BAZ_IMPORT_FORMS_FROM_URL'); ?></strong>
 <form action="javascript:undefined" class="form-horizontal">
@@ -127,7 +127,7 @@
 </form>
 <br>
 <div id="import-forms-result"></div>
-<form id="import-forms-form" action="<?php echo $GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_FORMULAIRE); ?>" class="hide" method="post">
+<form id="import-forms-form" action="<?php echo $GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_FORMULAIRE); ?>" class="hide" method="post">
 <div class="table-responsive">
 <table id="import-forms-table" class="table table-condensed table-striped" style="table-layout:fixed;word-wrap: break-word;">
     <thead>

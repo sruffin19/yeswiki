@@ -17,10 +17,10 @@ Les pages s'affichent et sont modifiées en fonction du squelette qu'elles utili
 
 </script>
 <?php
-$btnclass = $this->GetParameter('btnclass');
+$btnclass = $this->getParameter('btnclass');
 
 //action réservée aux admins
-if (! $this->UserIsAdmin()) {
+if (! $this->userIsAdmin()) {
     echo '<div class="alert alert-danger alert-error"><strong>Erreur action {{gererdroits..}}</strong> : cette action est r&eacute;serv&eacute;e aux admins</div>';
     return ;
 }
@@ -39,17 +39,17 @@ if (! $this->UserIsAdmin()) {
     {
         $wiki = $GLOBALS['wiki'] ;
 
-        $readACL = $wiki->LoadAcl($page, 'read', false);
-        $writeACL = $wiki->LoadAcl($page, 'write', false);
-        $commentACL = $wiki->LoadAcl($page, 'comment', false);
+        $readACL = $wiki->loadAcl($page, 'read', false);
+        $writeACL = $wiki->loadAcl($page, 'write', false);
+        $commentACL = $wiki->loadAcl($page, 'comment', false);
 
         $acls = array(
             'page' => $page,
-            'lire' => $wiki->GetConfigValue('default_read_acl'),
+            'lire' => $wiki->getConfigValue('default_read_acl'),
             'lire_default' => true,
-            'ecrire' => $wiki->GetConfigValue('default_write_acl'),
+            'ecrire' => $wiki->getConfigValue('default_write_acl'),
             'ecrire_default' => true,
-            'comment' => $wiki->GetConfigValue('default_comment_acl'),
+            'comment' => $wiki->getConfigValue('default_comment_acl'),
             'comment_default' => true,
         );
         if( isset($readACL['list']) )
@@ -70,9 +70,9 @@ if (! $this->UserIsAdmin()) {
         return $acls ;
         /*
         return array('page' => $page,
-            'droits_lire' => isset($readACL['list']) ? $readACL['list'] : $wiki->GetConfigValue('default_read_acl') ,
-            'droits_ecrire' =>  isset($writeACL['list']) ? $writeACL['list'] : $wiki->GetConfigValue('default_write_acl') ,
-            'droits_comment' =>  isset($commentACL['list']) ? $commentACL['list'] : $wiki->GetConfigValue('default_comment_acl') ,
+            'droits_lire' => isset($readACL['list']) ? $readACL['list'] : $wiki->getConfigValue('default_read_acl') ,
+            'droits_ecrire' =>  isset($writeACL['list']) ? $writeACL['list'] : $wiki->getConfigValue('default_write_acl') ,
+            'droits_comment' =>  isset($commentACL['list']) ? $commentACL['list'] : $wiki->getConfigValue('default_comment_acl') ,
         );*/
 
     }
@@ -86,14 +86,14 @@ error_log( var_export($_POST,true));
 
         if (!isset($_POST['selectpage'])) {
 
-            $this->SetMessage("Aucune page n'a &eacute;t&eacute; s&eacute;lectionn&eacute;e.");
+            $this->setMessage("Aucune page n'a &eacute;t&eacute; s&eacute;lectionn&eacute;e.");
 
         } else {
 
             if ( $_POST['typemaj'] != 'default'
                 && (!isset($_POST['modiflire'])) && (!isset($_POST['modifecrire'])) && !(isset($_POST['modifcomment']))
                 ) {
-                $this->SetMessage("Vous n'avez pas s&eacute;lectionn&eacute; de droits &agrave; modifier.");
+                $this->setMessage("Vous n'avez pas s&eacute;lectionn&eacute; de droits &agrave; modifier.");
 
             } else {
 
@@ -101,7 +101,7 @@ error_log( var_export($_POST,true));
 
                     if( $_POST['typemaj'] == 'default') {
 
-                        $this->DeleteAcl($page_cochee);
+                        $this->deleteAcl($page_cochee);
 
                     } else {
 
@@ -112,27 +112,27 @@ error_log( var_export($_POST,true));
                         }
 
                         if (isset($_POST['modiflire'])) {
-                            $this->SaveAcl($page_cochee, 'read', $_POST['newlire'], $appendAcl );
+                            $this->saveAcl($page_cochee, 'read', $_POST['newlire'], $appendAcl );
                         }
 
                         if (isset($_POST['modifecrire'])) {
-                            $this->SaveAcl($page_cochee, 'write', $_POST['newecrire'], $appendAcl );
+                            $this->saveAcl($page_cochee, 'write', $_POST['newecrire'], $appendAcl );
                         }
 
                         if (isset($_POST['modifcomment'])) {
-                            $this->SaveAcl($page_cochee, 'comment', $_POST['newcomment'], $appendAcl );
+                            $this->saveAcl($page_cochee, 'comment', $_POST['newcomment'], $appendAcl );
                         }
                     }
                 }
 
-                $this->SetMessage('Droit modifi&eacute;s avec succ&egrave;s');
+                $this->setMessage('Droit modifi&eacute;s avec succ&egrave;s');
 
             }
         }
     }
 
     //Récupération de la liste des pages
-    $liste_pages = $this->Query('SELECT * FROM '.$table."pages WHERE latest='Y' ORDER BY "
+    $liste_pages = $this->query('SELECT * FROM '.$table."pages WHERE latest='Y' ORDER BY "
         .$table.'pages.tag ASC');
 
     echo '<form method="post" action="'.$this->href().'" class="form-inline">';
@@ -166,7 +166,7 @@ while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {
           <input type="checkbox" name="selectpage[]" value="<?php echo $page_et_droits[$x]['page']; ?>">
       </td>
       <td>
-          <?php echo $this->Link($page_et_droits[$x]['page']); ?>
+          <?php echo $this->link($page_et_droits[$x]['page']); ?>
       </td>
       <td align="center"
         <?php if($page_et_droits[$x]['lire_default']) echo 'style="font-weight:bold;color:orange"' ;?>
@@ -254,4 +254,4 @@ while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {
         >
     </p>
 <?php
-echo $this->FormClose();
+echo $this->formClose();

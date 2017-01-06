@@ -187,7 +187,7 @@ $GLOBALS['js'] = ((isset($GLOBALS['js'])) ? $GLOBALS['js'] : '').  "<script type
 
 
 
-echo $GLOBALS['wiki']->Format("{{bazarcarto height=\"".$GLOBALS['wiki']->GetParameter('height')."\" zoom=\"".$GLOBALS['wiki']->GetParameter('zoom')."\" lat=\"".$GLOBALS['wiki']->GetParameter('lat')."\" lon=\"".$GLOBALS['wiki']->GetParameter('lon')."\"  liste=\"false\" titles=\"".$GLOBALS['wiki']->GetParameter('titles')."\" groups=\"".$GLOBALS['wiki']->GetParameter('groups')."\"}}"); ?>
+echo $GLOBALS['wiki']->format("{{bazarcarto height=\"".$GLOBALS['wiki']->getParameter('height')."\" zoom=\"".$GLOBALS['wiki']->getParameter('zoom')."\" lat=\"".$GLOBALS['wiki']->getParameter('lat')."\" lon=\"".$GLOBALS['wiki']->getParameter('lon')."\"  liste=\"false\" titles=\"".$GLOBALS['wiki']->getParameter('titles')."\" groups=\"".$GLOBALS['wiki']->getParameter('groups')."\"}}"); ?>
 
 <ul id="Grid">
 <?php echo $info_res;?>

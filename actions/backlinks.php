@@ -23,9 +23,9 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 
-if ($page = trim($this->GetParameter('page')))
+if ($page = trim($this->getParameter('page')))
 {
-    $title = _t('PAGES_WITH_LINK').' '.$this->ComposeLinkToPage($page)."&nbsp;: <br />\n";
+    $title = _t('PAGES_WITH_LINK').' '.$this->composeLinkToPage($page)."&nbsp;: <br />\n";
 }
 else
 {
@@ -33,23 +33,23 @@ else
     $title = _t('PAGES_WITH_LINK_TO_CURRENT_PAGE')."&nbsp;: <br />\n";
 }
 
-$pages = $this->LoadPagesLinkingTo($page);
+$pages = $this->loadPagesLinkingTo($page);
 
 if ($pages)
 {
     echo $title;
-    $exclude = explode(';', $this->GetParameter('exclude'));
+    $exclude = explode(';', $this->getParameter('exclude'));
     foreach($exclude as $key => $exclusion){
         $exclude[$key] = trim($exclusion);
     }
 
     foreach($pages as $page){
         if(!in_array($page['tag'], $exclude)){
-            echo $this->ComposeLinkToPage($page['tag'], '', '', false), "<br />\n";
+            echo $this->composeLinkToPage($page['tag'], '', '', false), "<br />\n";
         }
     }
 }
 else
 {
-    echo '<i>'._t('NO_PAGES_WITH_LINK_TO').' ', $this->ComposeLinkToPage($page), '.</i>';
+    echo '<i>'._t('NO_PAGES_WITH_LINK_TO').' ', $this->composeLinkToPage($page), '.</i>';
 }

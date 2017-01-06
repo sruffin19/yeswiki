@@ -36,13 +36,13 @@
 */
 
 // retrieve parameters
-$sort = strtolower($this->GetParameter('sort'));
-$tree = $this->GetParameter('tree');
-$levels = (int) $this->GetParameter('levels');
+$sort = strtolower($this->getParameter('sort'));
+$tree = $this->getParameter('tree');
+$levels = (int) $this->getParameter('levels');
 $max_levels = 7;
-$owner = $this->GetParameter('owner');
-$exclude = $this->GetParameter('exclude');
-$user = $this->GetParameter('user');
+$owner = $this->getParameter('owner');
+$exclude = $this->getParameter('exclude');
+$user = $this->getParameter('user');
 
 // default values
 // use a secure $sort value for MySQL
@@ -52,7 +52,7 @@ if (!in_array($sort, array('time', 'user', 'owner', 'tag')))
 }
 if ($owner == 'owner')
 {
-    $owner = $this->GetPageOwner();
+    $owner = $this->getPageOwner();
 }
 if (($owner && $sort == 'owner') || ($user && $sort == 'user'))
 {
@@ -66,7 +66,7 @@ if ($tree == 'tree')
     }
     else
     {
-        $tree = $this->GetConfigValue('root_page');
+        $tree = $this->getConfigValue('root_page');
     }
 }
 if ($levels <= 0)
@@ -88,10 +88,10 @@ else
 }
 if ($user == 'user')
 {
-    $user = $this->GetPageOwner();
+    $user = $this->getPageOwner();
 }
 
-$prefix = $this->GetConfigValue('table_prefix');
+$prefix = $this->getConfigValue('table_prefix');
 
 // treatment
 if ($tree)
@@ -133,7 +133,7 @@ if ($tree)
     if ($sort != 'tag')
     {
         $sql .= ' WHERE a.tag = "' . AddSlashes($tree) . '" AND a.latest = "Y" LIMIT 1';
-        if (!$rootData = $this->LoadSingle($sql))
+        if (!$rootData = $this->loadSingle($sql))
         {
             echo '<div class="alert alert-danger"><strong>'._t('ERROR').' '._t('ACTION').' ListPages</strong> : '._('THE_PAGE').' ' . htmlspecialchars($tree, ENT_COMPAT, YW_CHARSET) . ' '._t('DOESNT_EXIST').' !</div>';
             return;
@@ -231,7 +231,7 @@ if ($tree)
                 break;
         } // switch
 
-        if ($pages = $this->LoadAll($sql))
+        if ($pages = $this->loadAll($sql))
         {
             $from = '';
             $newworkingon = array();
@@ -293,7 +293,7 @@ if ($tree)
                     $retour .= "$indentStr\t<li>";
                     if ($pageData['page_exists'])
                     {
-                        $retour .= $wiki->ComposeLinkToPage($pageName, false, false, false);
+                        $retour .= $wiki->composeLinkToPage($pageName, false, false, false);
                         switch ($show)
                         {
                             case 'owner':
@@ -302,12 +302,12 @@ if ($tree)
                                 {
                                     if ($pageData['owner_has_ownpage'])
                                     {
-                                        $retour .= $wiki->ComposeLinkToPage($pageData['owner'], false, false, false);
+                                        $retour .= $wiki->composeLinkToPage($pageData['owner'], false, false, false);
                                     }
                                     else
                                     {
                                         $retour .= '<span class="missingpage">' . $pageData['owner'] . '</span>';
-                                        $retour .= $wiki->ComposeLinkToPage($pageData['owner'],'edit', '?', false);
+                                        $retour .= $wiki->composeLinkToPage($pageData['owner'],'edit', '?', false);
                                     }
                                 }
                                 else
@@ -321,12 +321,12 @@ if ($tree)
                                 {
                                     if ($pageData['user_has_ownpage'])
                                     {
-                                        $retour .= $wiki->ComposeLinkToPage($pageData['user'], false, false, false);
+                                        $retour .= $wiki->composeLinkToPage($pageData['user'], false, false, false);
                                     }
                                     else
                                     {
                                         $retour .= '<span class="missingpage">' . $pageData['user'] . '</span>';
-                                        $retour .= $wiki->ComposeLinkToPage($pageData['user'],'edit', '?', false);
+                                        $retour .= $wiki->composeLinkToPage($pageData['user'],'edit', '?', false);
                                     }
                                 }
                                 else
@@ -348,7 +348,7 @@ if ($tree)
                     else
                     {
                         $retour .= '<span class="missingpage">' . $pageName . '</span>'
-                            . $wiki->ComposeLinkToPage($pageName,'edit', '?', false);
+                            . $wiki->composeLinkToPage($pageName,'edit', '?', false);
                     }
                     $retour .= "</li>\n";
                 }
@@ -443,16 +443,16 @@ else
     }
 
     // retrieving the pages
-    $pages = $this->LoadAll($sql);
+    $pages = $this->loadAll($sql);
 
     // Display
     // Header
     if ($user)
     {
-        echo _t('PAGE_LIST_WHERE').' ' . $this->Format($user) . ' '._t('HAS_PARTICIPATED');
+        echo _t('PAGE_LIST_WHERE').' ' . $this->format($user) . ' '._t('HAS_PARTICIPATED');
         if ($owner)
         {
-            echo ' '._t('INCLUDING').' ' . $this->Link($owner) . ' '._t('IS_THE_OWNER');
+            echo ' '._t('INCLUDING').' ' . $this->link($owner) . ' '._t('IS_THE_OWNER');
         }
         if ($exclude)
         {
@@ -467,7 +467,7 @@ else
     }
     elseif ($owner)
     {
-        echo _t('LIST_PAGES_BELONGING_TO').' ' . $this->Link($owner);
+        echo _t('LIST_PAGES_BELONGING_TO').' ' . $this->link($owner);
         if ($exclude)
         {
             echo ' ('._t('EXCLUDING_EXCLUSIONS').')';
@@ -491,7 +491,7 @@ else
     echo "<ul>\n";
     foreach ($pages as $page)
     {
-        echo "\t<li>" . $this->ComposeLinkToPage($page['tag'], false, false, false);
+        echo "\t<li>" . $this->composeLinkToPage($page['tag'], false, false, false);
         if (!$owner)
         {
             echo ' . . . . ';
@@ -499,12 +499,12 @@ else
             {
                 if ($page['owner_has_ownpage'])
                 {
-                    echo $this->ComposeLinkToPage($page['owner'], false, false, false);
+                    echo $this->composeLinkToPage($page['owner'], false, false, false);
                 }
                 else
                 {
                     echo '<span class="missingpage">' . $page['owner'] . '</span>';
-                    echo $this->ComposeLinkToPage($page['owner'],'edit', '?', false);
+                    echo $this->composeLinkToPage($page['owner'],'edit', '?', false);
                 }
             }
             else
@@ -526,12 +526,12 @@ else
                 {
                     if ($page['user_has_ownpage'])
                     {
-                        echo $this->ComposeLinkToPage($page['user'], false, false, false);
+                        echo $this->composeLinkToPage($page['user'], false, false, false);
                     }
                     else
                     {
                         echo '<span class="missingpage">' . $page['user'] . '</span>';
-                        echo $this->ComposeLinkToPage($page['user'], 'edit', '?', false);
+                        echo $this->composeLinkToPage($page['user'], 'edit', '?', false);
                     }
                 }
                 else

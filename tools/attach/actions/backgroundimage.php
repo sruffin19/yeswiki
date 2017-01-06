@@ -24,10 +24,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // Get the action's parameters :
 
 // image's background color
-$bgcolor = $this->GetParameter('bgcolor');
+$bgcolor = $this->getParameter('bgcolor');
 
 // image's filename
-$file = $this->GetParameter('file');
+$file = $this->getParameter('file');
 if (empty($file) && empty($bgcolor)) {
     echo '<div class="alert alert-danger"><strong>' . _t('ATTACH_ACTION_BACKGROUNDIMAGE') . '</strong> : '
           . _t('ATTACH_PARAM_FILE_OR_BGCOLOR_NOT_FOUND') . '.</div>' . "\n";
@@ -45,8 +45,8 @@ if (!empty($file)) {
         return;
     }
     // image size
-    $height = $this->GetParameter('height');
-    $width = $this->GetParameter('width');
+    $height = $this->getParameter('height');
+    $width = $this->getParameter('width');
     if (empty($width)) {
         $width = 1920;
     }
@@ -65,10 +65,10 @@ if (!empty($file)) {
 }
 
 // container class
-$class = $this->GetParameter('class');
+$class = $this->getParameter('class');
 
 // container id
-$id = $this->GetParameter('id');
+$id = $this->getParameter('id');
 
 // container data attributes
 $data = getDataParameter();
@@ -83,7 +83,7 @@ if (is_array($data)) {
     }
 }
 echo '>' . "\n";
-$nocontainer = $this->GetParameter('nocontainer');
+$nocontainer = $this->getParameter('nocontainer');
 if (empty($nocontainer)) {
     echo '<div class="container">' . "\n";
 } else {

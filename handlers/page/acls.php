@@ -43,40 +43,40 @@ ob_start();
 <div class="page">
 <?php
 
-if ($this->page && ($this->UserIsOwner() || $this->UserIsAdmin()))
+if ($this->page && ($this->userIsOwner() || $this->userIsAdmin()))
 {
     if ($_POST)
     {
         // store lists
-        $this->SaveAcl($this->GetPageTag(), "read", $_POST["read_acl"]);
-        $this->SaveAcl($this->GetPageTag(), "write", $_POST["write_acl"]);
-        $this->SaveAcl($this->GetPageTag(), "comment", ($this->page['comment_on'] ? "" : $_POST["comment_acl"]));
+        $this->saveAcl($this->getPageTag(), "read", $_POST["read_acl"]);
+        $this->saveAcl($this->getPageTag(), "write", $_POST["write_acl"]);
+        $this->saveAcl($this->getPageTag(), "comment", ($this->page['comment_on'] ? "" : $_POST["comment_acl"]));
         $message = "Droits d\'acc&egrave;s mis &agrave; jour ";//$message = "Access control lists updated";
         
         // change owner?
         if ($newowner = $_POST["newowner"])
         {
-            $this->SetPageOwner($this->GetPageTag(), $newowner);
+            $this->setPageOwner($this->getPageTag(), $newowner);
             $message .= " et changement du propri&eacute;taire. Nouveau propri&eacute;taire : ".$newowner;//$message .= " and gave ownership to ".$newowner;
         }
 
         // redirect back to page
-        $this->SetMessage($message."!");
-        $this->Redirect($this->Href());
+        $this->setMessage($message."!");
+        $this->redirect($this->href());
     }
     else
     {
         // load acls
-        $readACL = $this->LoadAcl($this->GetPageTag(), "read");
-        $writeACL = $this->LoadAcl($this->GetPageTag(), "write");
-        $commentACL = $this->LoadAcl($this->GetPageTag(), "comment");
+        $readACL = $this->loadAcl($this->getPageTag(), "read");
+        $writeACL = $this->loadAcl($this->getPageTag(), "write");
+        $commentACL = $this->loadAcl($this->getPageTag(), "comment");
 
         // show form
         ?>
-        <h3>Liste des droits d'acc&egrave;s de la page  <?php echo  $this->ComposeLinkToPage($this->GetPageTag()) ?></h3><!-- Access Control Lists for-->
+        <h3>Liste des droits d'acc&egrave;s de la page  <?php echo  $this->composeLinkToPage($this->getPageTag()) ?></h3><!-- Access Control Lists for-->
         <br />
         
-        <?php echo  $this->FormOpen("acls") ?>
+        <?php echo  $this->formOpen("acls") ?>
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
                 <td valign="top" style="padding-right: 20px">
@@ -101,7 +101,7 @@ if ($this->page && ($this->UserIsOwner() || $this->UserIsAdmin()))
                         <option value="">Ne rien modifier</option><!-- Don't change-->
                         <option value="">&nbsp;</option>
                         <?php
-                        if ($users = $this->LoadUsers())
+                        if ($users = $this->loadUsers())
                         {
                             foreach($users as $user)
                             {
@@ -121,7 +121,7 @@ if ($this->page && ($this->UserIsOwner() || $this->UserIsAdmin()))
             </tr>
         </table>
         <?php
-        echo$this->FormClose();
+        echo$this->formClose();
     }
 }
 else
@@ -134,8 +134,8 @@ else
 <?php
 
 $content = ob_get_clean();
-echo $this->Header();
+echo $this->header();
 echo $content;
-echo $this->Footer();
+echo $this->footer();
 
 ?>

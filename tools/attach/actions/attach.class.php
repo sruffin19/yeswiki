@@ -63,7 +63,7 @@ if (!class_exists('attach')) {
         public function __construct(&$wiki)
         {
             $this->wiki = $wiki;
-            $this->attachConfig = $this->wiki->GetConfigValue("attach_config");
+            $this->attachConfig = $this->wiki->getConfigValue("attach_config");
 
             if (!is_array($this->attachConfig)) {
                 $this->attachConfig = array();
@@ -117,7 +117,7 @@ if (!class_exists('attach')) {
                 $this->attachConfig['fmTrash_symbole'] = 'Corbeille';
             }
 
-            $safemode = $this->wiki->GetConfigValue("no_safe_mode");
+            $safemode = $this->wiki->getConfigValue("no_safe_mode");
             if (empty($safemode)) {
                 if (version_compare(phpversion(), '5.3', '<')) {
                     // le safe_mode n'existe que pour php < 5.3
@@ -176,7 +176,7 @@ if (!class_exists('attach')) {
             if ($this->isSafeMode) {
                 $path = $this->attachConfig['upload_path'];
             } else {
-                $path = $this->attachConfig['upload_path'] . '/' . $this->wiki->GetPageTag();
+                $path = $this->attachConfig['upload_path'] . '/' . $this->wiki->getPageTag();
                 if (!is_dir($path)) {
                     $this->mkdir_recursif($path);
                 }
@@ -215,7 +215,7 @@ if (!class_exists('attach')) {
             if ($newName) {
                 $full_file_name = $file['name'] . '_' . $pagedate . '_' . $this->getDate() . '.' . $file['ext'];
                 if ($this->isSafeMode) {
-                    $full_file_name = $path . '/' . $this->wiki->GetPageTag() . '_' . $full_file_name;
+                    $full_file_name = $path . '/' . $this->wiki->getPageTag() . '_' . $full_file_name;
                 } else {
                     $full_file_name = $path . '/' . $full_file_name;
                 }
@@ -223,7 +223,7 @@ if (!class_exists('attach')) {
                 //recherche du fichier
                 if ($this->isSafeMode) {
                     //TODO Recherche dans le cas ou safe_mode=on
-                    $searchPattern = '`^' . $this->wiki->GetPageTag() . '_' . $file['name'] . '_\d{14}_\d{14}\.' . $file['ext'] . '$`';
+                    $searchPattern = '`^' . $this->wiki->getPageTag() . '_' . $file['name'] . '_\d{14}_\d{14}\.' . $file['ext'] . '$`';
                 } else {
                     $searchPattern = '`^' . $file['name'] . '_\d{14}_\d{14}\.' . $file['ext'] . '$`';
                 }
@@ -366,26 +366,26 @@ if (!class_exists('attach')) {
         public function CheckParams()
         {
             //recuperation des parametres necessaire
-            $this->file = $this->wiki->GetParameter("attachfile");
+            $this->file = $this->wiki->getParameter("attachfile");
             if (empty($this->file)) {
-                $this->file = $this->wiki->GetParameter("file");
+                $this->file = $this->wiki->getParameter("file");
             }
 
-            $this->desc = $this->wiki->GetParameter("attachdesc");
+            $this->desc = $this->wiki->getParameter("attachdesc");
             if (empty($this->desc)) {
-                $this->desc = $this->wiki->GetParameter("desc");
+                $this->desc = $this->wiki->getParameter("desc");
             }
 
-            $this->link = $this->wiki->GetParameter("attachlink"); //url de lien - uniquement si c'est une image
+            $this->link = $this->wiki->getParameter("attachlink"); //url de lien - uniquement si c'est une image
             if (empty($this->link)) {
-                $this->link = $this->wiki->GetParameter("link");
+                $this->link = $this->wiki->getParameter("link");
             }
 
-            $this->caption = $this->wiki->GetParameter("caption"); //texte de la vignette (au survol)
-            $this->legend = $this->wiki->GetParameter("legend"); //texte de la vignette (en dessous)
-            $this->nofullimagelink = $this->wiki->GetParameter("nofullimagelink");
-            $this->height = $this->wiki->GetParameter('height');
-            $this->width = $this->wiki->GetParameter('width');
+            $this->caption = $this->wiki->getParameter("caption"); //texte de la vignette (au survol)
+            $this->legend = $this->wiki->getParameter("legend"); //texte de la vignette (en dessous)
+            $this->nofullimagelink = $this->wiki->getParameter("nofullimagelink");
+            $this->height = $this->wiki->getParameter('height');
+            $this->width = $this->wiki->getParameter('width');
 
             //test de validit&eacute; des parametres
             if (empty($this->file)) {
@@ -401,14 +401,14 @@ if (!class_exists('attach')) {
                 $this->attachErr = '<div class="alert alert-danger"><strong>' . _t('ATTACH_ACTION_ATTACH') . '</strong> : ' . _t('ATTACH_PARAM_HEIGHT_NOT_NUMERIC') . '.</div>' . "\n";
             }
 
-            if ($this->wiki->GetParameter("class")) {
-                $array_classes = explode(" ", $this->wiki->GetParameter("class"));
+            if ($this->wiki->getParameter("class")) {
+                $array_classes = explode(" ", $this->wiki->getParameter("class"));
                 foreach ($array_classes as $c) {
                     $this->classes .= ' ' . trim($c);
                 }
             }
 
-            $size = $this->wiki->GetParameter("size");
+            $size = $this->wiki->getParameter("size");
             switch ($size) {
                 case 'small':
                     $this->width = $this->wiki->config['image-small-width'];
@@ -472,10 +472,10 @@ if (!class_exists('attach')) {
                 //test si le lien est un lien interwiki
                 if (preg_match("/^([A-Z][A-Z,a-z]+)[:]([A-Z,a-z,0-9]*)$/s", $this->link, $matches)) {
                     //modifie $link pour ?tre un lien vers un autre wiki
-                    $this->link = $this->wiki->GetInterWikiUrl($matches[1], $matches[2]);
+                    $this->link = $this->wiki->getInterWikiUrl($matches[1], $matches[2]);
                 }
                 //calcule du lien
-                $output = $this->wiki->Format('[[' . $this->link . " $this->file]]");
+                $output = $this->wiki->format('[[' . $this->link . " $this->file]]");
                 $output = preg_replace("/\>$this->file\</iU", ">$img<", $output); //insertion du tag <img...> dans le lien
             } else {
                 if (empty($this->nofullimagelink) or !$this->nofullimagelink) {
@@ -500,7 +500,7 @@ if (!class_exists('attach')) {
          */
         public function showAsLink($fullFilename)
         {
-            $url = $this->wiki->href("download", $this->wiki->GetPageTag(), "file=$this->file");
+            $url = $this->wiki->href("download", $this->wiki->getPageTag(), "file=$this->file");
             echo '<a href="' . $url . '">' . ($this->desc ? $this->desc : $this->file) . "</a>";
             $this->showUpdateLink();
         }
@@ -546,7 +546,7 @@ if (!class_exists('attach')) {
         public function showUpdateLink()
         {
             echo " <a href=\"" .
-            $this->wiki->href("upload", $this->wiki->GetPageTag(), "file=$this->file") .
+            $this->wiki->href("upload", $this->wiki->getPageTag(), "file=$this->file") .
             "\" title='Mise &agrave; jour'>" . $this->attachConfig['update_symbole'] . "</a>";
         }
         /**
@@ -554,7 +554,7 @@ if (!class_exists('attach')) {
          */
         public function showFileNotExits()
         {
-            echo "<a href=\"" . $this->wiki->href("upload", $this->wiki->GetPageTag(), "file=$this->file") . "\" class=\"btn btn-primary\"><i class=\"glyphicon glyphicon-upload icon-upload icon-white\"></i> " . _t('UPLOAD_FILE') . ' ' . $this->file . "</a>";
+            echo "<a href=\"" . $this->wiki->href("upload", $this->wiki->getPageTag(), "file=$this->file") . "\" class=\"btn btn-primary\"><i class=\"glyphicon glyphicon-upload icon-upload icon-white\"></i> " . _t('UPLOAD_FILE') . ' ' . $this->file . "</a>";
         }
         /**
          * Affiche l'attachement
@@ -596,7 +596,7 @@ if (!class_exists('attach')) {
          */
         public function doUpload()
         {
-            $HasAccessWrite = $this->wiki->HasAccess("write");
+            $HasAccessWrite = $this->wiki->hasAccess("write");
             if ($HasAccessWrite) {
                 switch ($_SERVER["REQUEST_METHOD"]) {
                     case 'GET':
@@ -610,7 +610,7 @@ if (!class_exists('attach')) {
                 }
             } else {
                 echo "<div class=\"alert alert-error alert-danger\">" . _t('NO_RIGHT_TO_WRITE_IN_THIS_PAGE') . "</div>\n";
-                echo $this->wiki->Format(_t('ATTACH_BACK_TO_PAGE') . " " . $this->wiki->GetPageTag());
+                echo $this->wiki->format(_t('ATTACH_BACK_TO_PAGE') . " " . $this->wiki->getPageTag());
             }
         }
         /**
@@ -620,8 +620,8 @@ if (!class_exists('attach')) {
         {
             $this->file = $_GET['file'];
             echo "<h3>" . _t('ATTACH_UPLOAD_FORM_FOR_FILE') . " " . $this->file . "</h3>\n";
-            echo "<form enctype=\"multipart/form-data\" name=\"frmUpload\" method=\"POST\" action=\"" . $this->wiki->href('upload', $this->wiki->GetPageTag()) . "\">\n"
-            . "    <input type=\"hidden\" name=\"wiki\" value=\"" . $this->wiki->GetPageTag() . "/upload\" />\n"
+            echo "<form enctype=\"multipart/form-data\" name=\"frmUpload\" method=\"POST\" action=\"" . $this->wiki->href('upload', $this->wiki->getPageTag()) . "\">\n"
+            . "    <input type=\"hidden\" name=\"wiki\" value=\"" . $this->wiki->getPageTag() . "/upload\" />\n"
             . "    <input type=\"hidden\" name=\"MAX_FILE_SIZE\" value=\"" . $this->attachConfig['max_file_size'] . "\" />\n"
             . "    <input type=\"hidden\" name=\"file\" value=\"$this->file\" />\n"
             . "    <input type=\"file\" name=\"upFile\" size=\"50\" /><br />\n"
@@ -648,7 +648,7 @@ if (!class_exists('attach')) {
                     $srcFile = $_FILES['upFile']['tmp_name'];
                     if (move_uploaded_file($srcFile, $destFile)) {
                         chmod($destFile, 0644);
-                        header("Location: " . $this->wiki->href("", $this->wiki->GetPageTag(), ""));
+                        header("Location: " . $this->wiki->href("", $this->wiki->getPageTag(), ""));
                     } else {
                         echo "<div class=\"alert alert-error alert-danger\">" . _t('ERROR_MOVING_TEMPORARY_FILE') . "</div>\n";
                     }
@@ -666,7 +666,7 @@ if (!class_exists('attach')) {
                     echo "<div class=\"alert alert-error alert-danger\">" . _t('ERROR_NO_FILE_UPLOADED') . "</div>\n";
                     break;
             }
-            echo $this->wiki->Format(_t('ATTACH_BACK_TO_PAGE') . " " . $this->wiki->GetPageTag());
+            echo $this->wiki->format(_t('ATTACH_BACK_TO_PAGE') . " " . $this->wiki->getPageTag());
         }
         /******************************************************************************
          *    FUNCTIONS DE DOWNLOAD DE FICHIERS
@@ -801,16 +801,16 @@ if (!class_exists('attach')) {
         public function fmShowAction($trash = false)
         {
 
-            $method = ($this->wiki->GetMethod() != 'show' ? $this->wiki->GetMethod() : '');
+            $method = ($this->wiki->getMethod() != 'show' ? $this->wiki->getMethod() : '');
             $output = '<ul id="fmtab' . $this->wiki->tag . '" class="nav nav-tabs">
                 <li' . (($trash) ? '' : ' class="active"') . '><a href="' . $this->wiki->href($method, $this->wiki->tag . '#fmtab' . $this->wiki->tag) . '" title="Gestion des fichiers"><i class="glyphicon glyphicon-file icon-file"></i>&nbsp;Gestion des fichiers</a></li>
-                <li' . (($trash) ? ' class="active"' : '') . '><a href="' . $this->wiki->href($method, $this->wiki->GetPageTag(), 'do=trash') . '" title="Corbeille"><i class="glyphicon glyphicon-trash icon-trash"></i>&nbsp;Corbeille</a></li>
+                <li' . (($trash) ? ' class="active"' : '') . '><a href="' . $this->wiki->href($method, $this->wiki->getPageTag(), 'do=trash') . '" title="Corbeille"><i class="glyphicon glyphicon-trash icon-trash"></i>&nbsp;Corbeille</a></li>
             </ul>';
 
             $files = $this->fmGetFiles($trash);
 
             if (!$files) {
-                $output .= '<div class="alert alert-info">Pas de fichiers attach&eacute;s &agrave; la page ' . $this->wiki->Format($this->wiki->tag) . ' pour l\'instant.</div>' . "\n";
+                $output .= '<div class="alert alert-info">Pas de fichiers attach&eacute;s &agrave; la page ' . $this->wiki->format($this->wiki->tag) . ' pour l\'instant.</div>' . "\n";
             } else {
                 // tri du tableau des fichiers
                 $files = $this->sortByNameRevFile($files);
@@ -832,22 +832,22 @@ if (!class_exists('attach')) {
                     $color = ($i % 2 ? "tableFMCol1" : "tableFMCol2");
                     //lien de suppression
                     if ($trash) {
-                        $url = $this->wiki->href('', $this->wiki->GetPageTag(), 'do=erase&file=' . $file['realname']);
+                        $url = $this->wiki->href('', $this->wiki->getPageTag(), 'do=erase&file=' . $file['realname']);
                         $icon = 'glyphicon glyphicon-remove icon-remove';
                     } else {
-                        $url = $this->wiki->href('', $this->wiki->GetPageTag(), 'do=del&file=' . $file['realname']);
+                        $url = $this->wiki->href('', $this->wiki->getPageTag(), 'do=del&file=' . $file['realname']);
                         $icon = 'glyphicon glyphicon-trash icon-trash';
                     }
                     $dellink = '<a class="btn btn-mini btn-danger" href="' . $url . '" title="Supprimer"><i class="' . $icon . ' icon-white"></i></a>';
                     //lien de restauration
                     $restlink = '';
                     if ($trash) {
-                        $url = $this->wiki->href('', $this->wiki->GetPageTag(), 'do=restore&file=' . $file['realname']);
+                        $url = $this->wiki->href('', $this->wiki->getPageTag(), 'do=restore&file=' . $file['realname']);
                         $restlink = '<a class="btn btn-mini btn-success" href="' . $url . '" title="Restaurer"><i class="glyphicon glyphicon-refresh icon-refresh icon-white"></i>&nbsp;Restaurer</a>';
                     }
 
                     //lien pour downloader le fichier
-                    $url = $this->wiki->href("download", $this->wiki->GetPageTag(), "file=" . $file['realname']);
+                    $url = $this->wiki->href("download", $this->wiki->getPageTag(), "file=" . $file['realname']);
                     $fileinfo = 'Nom r&eacute;el du fichier : ' . $file['realname'];
                     if ($trash) {
                         $fileinfo .= ' - Supprim&eacute; le : ' . $this->parseDate($file['trashdate']);
@@ -877,22 +877,22 @@ if (!class_exists('attach')) {
          */
         public function fmShow($trash = false)
         {
-            $fmTitlePage = $this->wiki->Format("====Gestion des fichiers attach&eacute;s ?  la page " . $this->wiki->tag . "====\n---");
+            $fmTitlePage = $this->wiki->format("====Gestion des fichiers attach&eacute;s ?  la page " . $this->wiki->tag . "====\n---");
             if ($trash) {
                 //Avertissement
                 $fmTitlePage .= '<div class="prev_alert">Les fichiers effac&eacute;s sur cette page le sont d&eacute;finitivement</div>';
                 //Pied du tableau
-                $url = $this->wiki->Link($this->wiki->tag, 'filemanager', 'Gestion des fichiers');
+                $url = $this->wiki->link($this->wiki->tag, 'filemanager', 'Gestion des fichiers');
                 $fmFootTable = '    <tfoot>' . "\n" .
                     '        <tr>' . "\n" .
                     '            <td colspan="6">' . $url . '</td>' . "\n";
-                $url = $this->wiki->Link($this->wiki->tag, 'filemanager&do=emptytrash', 'Vider la corbeille');
+                $url = $this->wiki->link($this->wiki->tag, 'filemanager&do=emptytrash', 'Vider la corbeille');
                 $fmFootTable .= '            <td>' . $url . '</td>' . "\n" .
                     '        </tr>' . "\n" .
                     '    </tfoot>' . "\n";
             } else {
                 //pied du tableau
-                $url = '<a href="' . $this->wiki->href('filemanager', $this->wiki->GetPageTag(), 'do=trash') . '" title="Corbeille">' . $this->attachConfig['fmTrash_symbole'] . "</a>";
+                $url = '<a href="' . $this->wiki->href('filemanager', $this->wiki->getPageTag(), 'do=trash') . '" title="Corbeille">' . $this->attachConfig['fmTrash_symbole'] . "</a>";
                 $fmFootTable = '    <tfoot>' . "\n" .
                     '        <tr>' . "\n" .
                     '            <td colspan="6">' . $url . '</td>' . "\n" .
@@ -924,20 +924,20 @@ if (!class_exists('attach')) {
                 $color = ($i % 2 ? "tableFMCol1" : "tableFMCol2");
                 //lien de suppression
                 if ($trash) {
-                    $url = $this->wiki->href('filemanager', $this->wiki->GetPageTag(), 'do=erase&file=' . $file['realname']);
+                    $url = $this->wiki->href('filemanager', $this->wiki->getPageTag(), 'do=erase&file=' . $file['realname']);
                 } else {
-                    $url = $this->wiki->href('filemanager', $this->wiki->GetPageTag(), 'do=del&file=' . $file['realname']);
+                    $url = $this->wiki->href('filemanager', $this->wiki->getPageTag(), 'do=del&file=' . $file['realname']);
                 }
                 $dellink = '<a href="' . $url . '" title="Supprimer">' . $this->attachConfig['fmDelete_symbole'] . "</a>";
                 //lien de restauration
                 $restlink = '';
                 if ($trash) {
-                    $url = $this->wiki->href('filemanager', $this->wiki->GetPageTag(), 'do=restore&file=' . $file['realname']);
+                    $url = $this->wiki->href('filemanager', $this->wiki->getPageTag(), 'do=restore&file=' . $file['realname']);
                     $restlink = '<a href="' . $url . '" title="Restaurer">' . $this->attachConfig['fmRestore_symbole'] . "</a>";
                 }
 
                 //lien pour downloader le fichier
-                $url = $this->wiki->href("download", $this->wiki->GetPageTag(), "file=" . $file['realname']);
+                $url = $this->wiki->href("download", $this->wiki->getPageTag(), "file=" . $file['realname']);
                 $dlLink = '<a href="' . $url . '">' . $file['name'] . '.' . $file['ext'] . "</a>";
                 $fmBodyTable .= '        <tr class="' . $color . '">' . "\n" .
                 '            <td>' . $dellink . ' ' . $restlink . '</td>' . "\n" .
@@ -957,7 +957,7 @@ if (!class_exists('attach')) {
             //affichage
             echo $fmTitlePage . "\n";
             echo '<table class="tableFM" border="0" cellspacing="0">' . "\n" . $fmHeadTable . $fmFootTable . $fmBodyTable . '</table>' . "\n";
-            echo $this->wiki->Format($fmFooterPage);
+            echo $this->wiki->format($fmFooterPage);
         }
         /**
          * Renvoie la liste des fichiers
@@ -966,7 +966,7 @@ if (!class_exists('attach')) {
         {
             $path = $this->GetUploadPath();
             if ($this->isSafeMode) {
-                $filePattern = '^' . $this->wiki->GetPageTag() . '_.*_\d{14}_\d{14}\..*';
+                $filePattern = '^' . $this->wiki->getPageTag() . '_.*_\d{14}_\d{14}\..*';
             } else {
                 $filePattern = '^.*_\d{14}_\d{14}\..*';
             }
@@ -1051,7 +1051,7 @@ if (!class_exists('attach')) {
         {
             $file = $this->decodeLongFilename($fullFilename);
             if ($this->isSafeMode) {
-                $file_vignette = $file['path'] . '/' . $this->wiki->GetPageTag() . '_' . $file['name'] . "_vignette_" . $width . '_' . $height . '_' . $file['datepage'] . '_' . $file['dateupload'] . '.' . $file['ext'];
+                $file_vignette = $file['path'] . '/' . $this->wiki->getPageTag() . '_' . $file['name'] . "_vignette_" . $width . '_' . $height . '_' . $file['datepage'] . '_' . $file['dateupload'] . '.' . $file['ext'];
             } else {
                 $file_vignette = $file['path'] . '/' . $file['name'] . "_vignette_" . $width . '_' . $height . '_' . $file['datepage'] . '_' . $file['dateupload'] . '.' . $file['ext'];
             }

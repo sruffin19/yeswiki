@@ -12,7 +12,7 @@ if (!function_exists("rssdiff")) {
         // TODO : cache ?
 
         if ($idfirst == $idlast) {
-            $previousdiff = $wiki->LoadSingle(
+            $previousdiff = $wiki->loadSingle(
                 "select id from "
                 . $wiki->config["table_prefix"]
                 . "pages where tag = '"
@@ -27,8 +27,8 @@ if (!function_exists("rssdiff")) {
 
         }
 
-        $pageA = $wiki->LoadPageById($idfirst);
-        $pageB = $wiki->LoadPageById($idlast);
+        $pageA = $wiki->loadPageById($idfirst);
+        $pageB = $wiki->loadPageById($idlast);
 
 
         $bodyA = explode("\n", $pageA["body"]);
@@ -53,7 +53,7 @@ if (!function_exists("rssdiff")) {
             . $pageB["time"]
             . "</a></b><br />\n";
 
-        $wiki->RegisterInclusion($tag);
+        $wiki->registerInclusion($tag);
         if ($added) {
             // remove blank lines
             $output .= "<br />\n<b>Ajouts:</b><br />\n";
@@ -65,7 +65,7 @@ if (!function_exists("rssdiff")) {
             $output .= "<div class=\"deletions\">".(implode("\n", $deleted))."</div>";
         }
 
-        $wiki->UnregisterLastInclusion();
+        $wiki->unregisterLastInclusion();
 
         if (!$added && !$deleted) {
             $output .= "<br />\nPas de diff&eacute;rences.";

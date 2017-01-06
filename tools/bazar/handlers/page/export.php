@@ -31,16 +31,16 @@ if (!defined("WIKINI_VERSION")) {
     die ("acc&egrave;s direct interdit");
 }
 
-echo $this->Header();
+echo $this->header();
 echo '<h1>Export</h1>'."\n";
 
 if (isset($_POST['submit_export'])) {
     echo "export!";
 
 } else {
-    echo $this->FormOpen('export');
+    echo $this->formOpen('export');
     $requete = "SELECT DISTINCT tag FROM ".$this->config["table_prefix"]."pages WHERE latest = 'Y' and comment_on = '' ORDER BY tag";
-    $tab = $this->LoadAll($requete);
+    $tab = $this->loadAll($requete);
 
     if (is_array($tab)) {
         foreach ($tab as $nompage) {
@@ -50,7 +50,7 @@ if (isset($_POST['submit_export'])) {
         }
     }
     echo '<input name="submit_export" type="submit" value="Exporter les pages sélectionnées" />'."\n";
-    echo $this->FormClose();
+    echo $this->formClose();
 }
 
-echo $this->Footer();
+echo $this->footer();

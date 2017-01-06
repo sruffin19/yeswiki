@@ -43,7 +43,7 @@ if (isset($_GET['jsonp_callback']))
     header('Content-type:application/json');
     $output = '';
 
-    if ($this->HasAccess('write') && $this->HasAccess('read')) {
+    if ($this->hasAccess('write') && $this->hasAccess('read')) {
         if (!empty($_GET['submit'])){
             $submit = $_GET['submit'];
         } else {
@@ -76,34 +76,34 @@ if (isset($_GET['jsonp_callback']))
                         echo $_GET['jsonp_callback']."(".json_encode(array("nochange"=>'1')).")";
                     } else { // sécurité
                         // add page (revisions)
-                        $this->SavePage($this->tag, $body);
+                        $this->savePage($this->tag, $body);
 
                         // now we render it internally so we can write the updated link table.
-                        $this->ClearLinkTable();
-                        $this->StartLinkTracking();
-                        $temp = $this->SetInclusions(); // a priori, ca ne sert à rien, mais on ne sait jamais...
-                        $this->RegisterInclusion($this->GetPageTag()); // on simule totalement un affichage normal
-                        $this->Format($body);
-                        $this->SetInclusions($temp);
-                        if($user = $this->GetUser()) {
-                            $this->TrackLinkTo($user['name']);
+                        $this->clearLinkTable();
+                        $this->startLinkTracking();
+                        $temp = $this->setInclusions(); // a priori, ca ne sert à rien, mais on ne sait jamais...
+                        $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
+                        $this->format($body);
+                        $this->setInclusions($temp);
+                        if($user = $this->getUser()) {
+                            $this->trackLinkTo($user['name']);
                         }
-                        if($owner = $this->GetPageOwner()) {
-                            $this->TrackLinkTo($owner);
+                        if($owner = $this->getPageOwner()) {
+                            $this->trackLinkTo($owner);
                         }
-                        $this->StopLinkTracking();
-                        $this->WriteLinkTable();
-                        $this->ClearLinkTable();
+                        $this->stopLinkTracking();
+                        $this->writeLinkTable();
+                        $this->clearLinkTable();
 
                         // on recupere le commentzire bien formatte
-                        $comment = $this->LoadPage($this->tag);
+                        $comment = $this->loadPage($this->tag);
 
                         $valcomment['commentaires'][0]['tag'] = $comment["tag"];
-                        $valcomment['commentaires'][0]['body'] = $this->Format($comment["body"]);
-                        $valcomment['commentaires'][0]['infos'] = $this->Format($comment["user"]).", ".date(_t('TAGS_DATE_FORMAT'), strtotime($comment["time"]));
-                        $valcomment['commentaires'][0]['hasrighttoaddcomment'] = $this->HasAccess("comment", $_GET['initialpage']);
-                        $valcomment['commentaires'][0]['hasrighttomodifycomment'] = $this->HasAccess('write', $comment['tag']) || $this->UserIsOwner($comment['tag']) || $this->UserIsAdmin();
-                        $valcomment['commentaires'][0]['hasrighttodeletecomment'] = $this->UserIsOwner($comment['tag']) || $this->UserIsAdmin();
+                        $valcomment['commentaires'][0]['body'] = $this->format($comment["body"]);
+                        $valcomment['commentaires'][0]['infos'] = $this->format($comment["user"]).", ".date(_t('TAGS_DATE_FORMAT'), strtotime($comment["time"]));
+                        $valcomment['commentaires'][0]['hasrighttoaddcomment'] = $this->hasAccess("comment", $_GET['initialpage']);
+                        $valcomment['commentaires'][0]['hasrighttomodifycomment'] = $this->hasAccess('write', $comment['tag']) || $this->userIsOwner($comment['tag']) || $this->userIsAdmin();
+                        $valcomment['commentaires'][0]['hasrighttodeletecomment'] = $this->userIsOwner($comment['tag']) || $this->userIsAdmin();
                         $valcomment['commentaires'][0]['replies'] = '';
                         include_once('includes/tools/squelettephp.class.php');
                         $squelcomment = new SquelettePhp('tools/tags/presentation/templates/comment_list.tpl.html');

@@ -5,7 +5,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 if ($this->config['use_nospam']) {
-    if ($this->HasAccess("comment") && !$this->page['comment_on']) {
+    if ($this->hasAccess("comment") && !$this->page['comment_on']) {
         $time = time();
         $nospam = array(
           'nospam1'    => substr(sha1(uniqid(rand(), true)), rand(8, 32)),
@@ -34,11 +34,11 @@ if ($this->config['use_nospam']) {
         $_SESSION['nospam'] = $nospam;
 
         // Ajoute l'ID ACEditor au formulaire de commentaire.
-        $plugin_output_new =
+        $pluginOutputNew =
           str_replace(
               $str_to_replace,
               $text_form,
-              $plugin_output_new
+              $pluginOutputNew
           );
     }
 }

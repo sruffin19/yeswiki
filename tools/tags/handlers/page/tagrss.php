@@ -23,8 +23,8 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
-$oldpagetag = $this->GetPageTag();
-$oldpage = $this->LoadPage($oldpagetag);
+$oldpagetag = $this->getPageTag();
+$oldpage = $this->loadPage($oldpagetag);
 $tags = trim((isset($_GET['tags'])) ? $_GET['tags'] : '');
 $type = (isset($_GET['type'])) ? $_GET['type'] : '';
 $req = '';
@@ -42,7 +42,7 @@ if (!empty($tags)) {
     if ($results) {
         header('Content-type: text/xml; charset=UTF-8');
         $output = '<?xml version="1.0" encoding="UTF-8"?>';
-        if (!($link = $this->GetParameter("link"))) {
+        if (!($link = $this->getParameter("link"))) {
             $link = $this->config["root_page"];
         }
         $output.= "<rss version=\"2.0\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\"".
@@ -56,7 +56,7 @@ if (!empty($tags)) {
         $output .= "</title>\n";
         $output .= "<link>" . $this->config["base_url"] . $link . "</link>\n";
         $output .= "<description>" . $textetitre . "</description>\n";
-        $output .= "<atom:link href=\"" . $this->Href('xml') . "\" rel=\"self\" type=\"application/rss+xml\" />\n";
+        $output .= "<atom:link href=\"" . $this->href('xml') . "\" rel=\"self\" type=\"application/rss+xml\" />\n";
         $items = '';
         foreach ($results as $page) {
             $this->tag = $page['tag'];
@@ -76,7 +76,7 @@ if (!empty($tags)) {
             } else {
                 $page["body"] = _convert($page["body"], 'ISO-8859-1');
             }
-            $texteformat = htmlspecialchars($this->Format($page['body']), ENT_COMPAT, YW_CHARSET);
+            $texteformat = htmlspecialchars($this->format($page['body']), ENT_COMPAT, YW_CHARSET);
             
             $items.= $texteformat . "]]></description>\r\n";
             $items.= "<dc:creator>by ".htmlspecialchars($page["user"], ENT_COMPAT, YW_CHARSET).
@@ -88,7 +88,7 @@ if (!empty($tags)) {
         }
         $this->tag = $oldpagetag;
         $this->page = $oldpage;
-        $oldpage = $this->LoadPage($oldpagetag);
+        $oldpage = $this->loadPage($oldpagetag);
         $output.= $items;
         $output.= "</channel>\n";
         $output.= "</rss>\n";

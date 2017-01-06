@@ -7,12 +7,12 @@ if (!defined("WIKINI_VERSION"))
 
 $this->AddJavascriptFile('tools/tags/libs/tag.js');
 
-$class = $this->GetParameter('class');
+$class = $this->getParameter('class');
 if (empty($class)) $class='';
 else $class = ' '.$class;
 
 $selectiontags = '';
-$tags = $this->GetParameter('tags');
+$tags = $this->getParameter('tags');
 if (!empty($tags))
 {
     $tags = trim($tags);
@@ -23,12 +23,12 @@ if (!empty($tags))
 }
 
 // définit le nombre de classes CSS disponibles pour le nuage
-$nb_taille_tag = $this->GetParameter('nbclasses');
+$nb_taille_tag = $this->getParameter('nbclasses');
 if (empty($nb_taille_tag)) $nb_taille_tag = 6;
 
 // on récupère le nb maximum et le nb minimum d'occurences
 $sql = 'SELECT COUNT(value) AS nb FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" '.$selectiontags.' GROUP BY value';
-$min_max = $this->LoadAll($sql);
+$min_max = $this->loadAll($sql);
 $min = 100000000;
 $max = 0;
 foreach ($min_max as $tab_min_max)
@@ -48,7 +48,7 @@ if ($mult<1) $mult = 1;
 
 // on récupère tous les tags existants
 $sql = 'SELECT value, resource FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" '.$selectiontags.' ORDER BY value ASC, resource ASC';
-$tab_tous_les_tags = $this->LoadAll($sql);
+$tab_tous_les_tags = $this->loadAll($sql);
 
 if (is_array($tab_tous_les_tags))
 {
@@ -70,7 +70,7 @@ if (is_array($tab_tous_les_tags))
             // on affiche les informations pour ce tag
             if ($nb_pages>1) $texte_page= $nb_pages.' '._t('TAGS_PAGES');
             else $texte_page= _t('TAGS_ONE_PAGE');
-            $texte_liste  = '<li class="tag-list">'."\n".'<a class="tag-link size'.ceil($nb_pages/$mult).'" id="j'.$i.'" data-title="'.htmlspecialchars('<button class="btn-close-popover pull-right close" type="button">&times;</button>'.$texte_page.' '._t('TAGS_CONTAINING_TAG').' : <a href="'.$this->href('listpages',$this->GetPageTag(),'tags='.$tag_precedent, ENT_QUOTES, $this->config['charset']).'" class="tag-label label label-primary">'.$tag_precedent.'</a>').'" data-content="'.htmlspecialchars('<ul class="unstyled list-unstyled">'.$liste_page.'</ul>', ENT_QUOTES, $this->config['charset']).'">'.$tag_precedent.'</a>'."\n";
+            $texte_liste  = '<li class="tag-list">'."\n".'<a class="tag-link size'.ceil($nb_pages/$mult).'" id="j'.$i.'" data-title="'.htmlspecialchars('<button class="btn-close-popover pull-right close" type="button">&times;</button>'.$texte_page.' '._t('TAGS_CONTAINING_TAG').' : <a href="'.$this->href('listpages',$this->getPageTag(),'tags='.$tag_precedent, ENT_QUOTES, $this->config['charset']).'" class="tag-label label label-primary">'.$tag_precedent.'</a>').'" data-content="'.htmlspecialchars('<ul class="unstyled list-unstyled">'.$liste_page.'</ul>', ENT_QUOTES, $this->config['charset']).'">'.$tag_precedent.'</a>'."\n";
             $texte_liste .= '</li>'."\n";
             $tab_tag[] = $texte_liste;
 
@@ -87,7 +87,7 @@ if (is_array($tab_tous_les_tags))
         echo '<div class="no-dblclick boite_nuage'.$class.'">
         <ul class="nuage">'."\n";
         // on regarde s'il faut trier alphabetiquement
-        $tri = $this->GetParameter('tri');
+        $tri = $this->getParameter('tri');
         if (!empty($tri) && $tri=="alpha")
         {
         }

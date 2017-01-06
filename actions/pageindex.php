@@ -28,7 +28,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-if ($pages = $this->LoadAll('SELECT tag FROM ' . $this->config["table_prefix"] . 'pages WHERE latest = \'Y\' AND comment_on=\'\' ORDER BY tag'))
+if ($pages = $this->loadAll('SELECT tag FROM ' . $this->config["table_prefix"] . 'pages WHERE latest = \'Y\' AND comment_on=\'\' ORDER BY tag'))
 {
     foreach ($pages as $page)
     {
@@ -44,7 +44,7 @@ if ($pages = $this->LoadAll('SELECT tag FROM ' . $this->config["table_prefix"] .
             $curChar = $firstChar;
         }
 
-        echo $this->ComposeLinkToPage($page['tag'], '', '', false),"<br />\n" ;
+        echo $this->composeLinkToPage($page['tag'], '', '', false),"<br />\n" ;
     }
 }
 else

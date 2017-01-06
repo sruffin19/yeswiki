@@ -8,12 +8,12 @@ if (!defined("WIKINI_VERSION"))
 
 $GLOBALS['tocaction'] = 0;
 
-$tag = $this->GetPageTag();
-$page = $this->LoadPage($tag);
+$tag = $this->getPageTag();
+$page = $this->loadPage($tag);
 $toc_body = $page["body"];
-$class = $this->GetParameter("class");
-$closed = $this->GetParameter("closed");
-$title = $this->GetParameter("title");
+$class = $this->getParameter("class");
+$closed = $this->getParameter("closed");
+$title = $this->getParameter("title");
 if (empty($title)) $title = _t('TOC_TABLE_OF_CONTENTS');
 
 

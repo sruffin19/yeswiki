@@ -83,13 +83,13 @@ if (!function_exists ('date_compare') ){
 
 
 
-//print_r($GLOBALS['wiki']->GetParameter("groups"));
+//print_r($GLOBALS['wiki']->getParameter("groups"));
 //exit;
 
 // TODO recuperer les parametres automatiquement.
 
 
-echo $GLOBALS['wiki']->Format("{{bazarcarto barregestion=\"false\" spider=\"true\" idtypeannonce=\"".$GLOBALS['wiki']->GetParameter('idtypeannonce')."\"  height=\"".$GLOBALS['wiki']->GetParameter('height')."\" zoom=\"".$GLOBALS['wiki']->GetParameter('zoom')."\" lat=\"".$GLOBALS['wiki']->GetParameter('lat')."\" lon=\"".$GLOBALS['wiki']->GetParameter('lon')."\"  liste=\"false\" titles=\"".$GLOBALS['wiki']->GetParameter('titles')."\" groups=\"".$GLOBALS['wiki']->GetParameter('groups')."\" facette=\"true\"}}"); ?>
+echo $GLOBALS['wiki']->format("{{bazarcarto barregestion=\"false\" spider=\"true\" idtypeannonce=\"".$GLOBALS['wiki']->getParameter('idtypeannonce')."\"  height=\"".$GLOBALS['wiki']->getParameter('height')."\" zoom=\"".$GLOBALS['wiki']->getParameter('zoom')."\" lat=\"".$GLOBALS['wiki']->getParameter('lat')."\" lon=\"".$GLOBALS['wiki']->getParameter('lon')."\"  liste=\"false\" titles=\"".$GLOBALS['wiki']->getParameter('titles')."\" groups=\"".$GLOBALS['wiki']->getParameter('groups')."\" facette=\"true\"}}"); ?>
 </div>
 
 <div class="span2">

@@ -36,13 +36,13 @@ if (!defined("WIKINI_VERSION"))
     die ("acc&egrave;s direct interdit");
 }
 
-if ($this->HasAccess("comment") && $this->page && !$this->page['comment_on'])
+if ($this->hasAccess("comment") && $this->page && !$this->page['comment_on'])
 {
     // find number
     $sql = 'SELECT MAX(SUBSTRING(tag, 8) + 0) AS comment_id'
-        . ' FROM ' . $this->GetConfigValue('table_prefix') . 'pages'
+        . ' FROM ' . $this->getConfigValue('table_prefix') . 'pages'
         . ' WHERE comment_on != ""';
-    if ($lastComment = $this->LoadSingle($sql))
+    if ($lastComment = $this->loadSingle($sql))
     {
         $num = $lastComment['comment_id'] + 1;
     }
@@ -54,12 +54,12 @@ if ($this->HasAccess("comment") && $this->page && !$this->page['comment_on'])
     $body = trim($_POST["body"]);
     if (!$body)
     {
-        $this->SetMessage("Commentaire vide  -- pas de sauvegarde !");
+        $this->setMessage("Commentaire vide  -- pas de sauvegarde !");
     }
     else
     {
         // store new comment
-        $this->SavePage("Comment".$num, $body, $this->tag);
+        $this->savePage("Comment".$num, $body, $this->tag);
     }
 
 
@@ -68,7 +68,7 @@ if ($this->HasAccess("comment") && $this->page && !$this->page['comment_on'])
 }
 else
 {
-    echo $this->Header();
+    echo $this->header();
     echo"<div class=\"page\"><i>Vous n'&ecirc;tes pas autoris&eacute; &agrave; commenter cette page.</i></div>\n";
-    echo $this->Footer();
+    echo $this->footer();
 }

@@ -38,13 +38,13 @@ if (isset($_GET['jsonp_callback']))
     // on initialise la sortie:
     header('Content-type:application/json');
 
-    if ($this->page && $this->HasAccess("comment", $_POST["initialpage"]) && isset($_POST['antispam']) && $_POST['antispam']==1)
+    if ($this->page && $this->hasAccess("comment", $_POST["initialpage"]) && isset($_POST['antispam']) && $_POST['antispam']==1)
     {
         // find number
         $sql = 'SELECT MAX(SUBSTRING(tag, 8) + 0) AS comment_id'
-            . ' FROM ' . $this->GetConfigValue('table_prefix') . 'pages'
+            . ' FROM ' . $this->getConfigValue('table_prefix') . 'pages'
             . ' WHERE comment_on != ""';
-        if ($lastComment = $this->LoadSingle($sql))
+        if ($lastComment = $this->loadSingle($sql))
         {
             $num = $lastComment['comment_id'] + 1;
         }
@@ -58,15 +58,15 @@ if (isset($_GET['jsonp_callback']))
         {
             // store new comment
             $wakkaname = "Comment".$num;
-            $this->SavePage($wakkaname, $body, $this->tag, true);
+            $this->savePage($wakkaname, $body, $this->tag, true);
 
-            $comment = $this->LoadPage($wakkaname);
+            $comment = $this->loadPage($wakkaname);
             $valcomment['commentaires'][0]['tag'] = $comment["tag"];
-            $valcomment['commentaires'][0]['body'] = $this->Format($comment["body"]);
-            $valcomment['commentaires'][0]['infos'] = $this->Format($comment["user"]).", ".date(_t('TAGS_DATE_FORMAT'), strtotime($comment["time"]));
-            $valcomment['commentaires'][0]['hasrighttoaddcomment'] = $this->HasAccess("comment", $_POST['initialpage']);
-            $valcomment['commentaires'][0]['hasrighttomodifycomment'] = $this->HasAccess('write', $comment['tag']) || $this->UserIsOwner($comment['tag']) || $this->UserIsAdmin();
-            $valcomment['commentaires'][0]['hasrighttodeletecomment'] = $this->UserIsOwner($comment['tag']) || $this->UserIsAdmin();
+            $valcomment['commentaires'][0]['body'] = $this->format($comment["body"]);
+            $valcomment['commentaires'][0]['infos'] = $this->format($comment["user"]).", ".date(_t('TAGS_DATE_FORMAT'), strtotime($comment["time"]));
+            $valcomment['commentaires'][0]['hasrighttoaddcomment'] = $this->hasAccess("comment", $_POST['initialpage']);
+            $valcomment['commentaires'][0]['hasrighttomodifycomment'] = $this->hasAccess('write', $comment['tag']) || $this->userIsOwner($comment['tag']) || $this->userIsAdmin();
+            $valcomment['commentaires'][0]['hasrighttodeletecomment'] = $this->userIsOwner($comment['tag']) || $this->userIsAdmin();
             $valcomment['commentaires'][0]['replies'] = '';
             include_once('includes/tools/squelettephp.class.php');
             $squelcomment = new SquelettePhp('tools/tags/presentation/templates/comment_list.tpl.html');

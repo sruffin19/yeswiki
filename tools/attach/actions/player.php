@@ -31,12 +31,12 @@ if (!defined("WIKINI_VERSION"))
         die ("acc&egrave;s direct interdit");
 }
 
-$url = $this->GetParameter('url');
+$url = $this->getParameter('url');
 if (!empty($url)) {
-    $height = $this->GetParameter('height');
+    $height = $this->getParameter('height');
     if (empty($height)) $height = "300px";
 
-    $width = $this->GetParameter('width');
+    $width = $this->getParameter('width');
     if (empty($width)) $width = "400px";
 
 

@@ -26,4 +26,4 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 $file = implode("", file("interwiki.conf", 1));
-echo $this->Format("%%".$file."%%") ;
+echo $this->format("%%".$file."%%") ;

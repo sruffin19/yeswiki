@@ -4,11 +4,11 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 // classe css supplémentaire
-$class = $this->GetParameter('class');
+$class = $this->getParameter('class');
 $class = 'row-fluid row'.((!empty($class)) ? ' '.$class : '');
 // data attributes
 $data = getDataParameter();
-$pagetag = $this->GetPageTag();
+$pagetag = $this->getPageTag();
 
 // teste s'il y a bien un element de fermeture associé avant d'ouvrir une balise
 if (!isset($GLOBALS['check_'.$pagetag]['grid'])) {

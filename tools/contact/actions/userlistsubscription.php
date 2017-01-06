@@ -37,10 +37,10 @@ if (!defined("WIKINI_VERSION"))
 }
 
 // valable que pour les utilisateurs connectes
-if ($user = $this->GetUser()) {
+if ($user = $this->getUser()) {
     if ($user['email'] != '') {
         //recuperation des parametres
-        $list = $this->GetParameter('list');
+        $list = $this->getParameter('list');
         if (!empty($list)) {
             $output =  '<div class="note"></div>
                 <form id="ajax-abonne-form" class="form-mail" action="'.$this->href('mail').'">

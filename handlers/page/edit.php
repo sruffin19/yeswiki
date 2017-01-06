@@ -40,7 +40,7 @@ if (!defined('WIKINI_VERSION')) {
 // on initialise la sortie:
 $output = '';
 
-if ($this->HasAccess('write') && $this->HasAccess('read')) {
+if ($this->hasAccess('write') && $this->hasAccess('read')) {
     if (!empty($_POST['submit'])) {
         $submit = $_POST['submit'];
     } else {
@@ -61,26 +61,26 @@ if ($this->HasAccess('write') && $this->HasAccess('read')) {
 
     switch ($submit) {
         case 'Apercu':
-            $temp = $this->SetInclusions(); // a priori, éa ne sert é rien, mais on ne sait jamais...
-            $this->RegisterInclusion($this->GetPageTag()); // on simule totalement un affichage normal
+            $temp = $this->setInclusions(); // a priori, éa ne sert é rien, mais on ne sait jamais...
+            $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
             $output .=
               "<div class=\"page_preview\">\n".
               "<div class=\"prev_alert\"><strong>Aper&ccedil;u</strong></div>\n".
-              $this->Format($body)."\n\n".
-              $this->FormOpen('edit').
+              $this->format($body)."\n\n".
+              $this->formOpen('edit').
               "<input type=\"hidden\" name=\"previous\" value=\"$previous\" />\n".
               '<input type="hidden" name="body" value="'.htmlspecialchars($body, ENT_COMPAT, YW_CHARSET)."\" />\n".
               "<br />\n".
               "<input name=\"submit\" type=\"submit\" value=\"Sauver\" accesskey=\"s\" />\n".
               "<input name=\"submit\" type=\"submit\" value=\"R&eacute;&eacute;diter\" accesskey=\"p\" />\n".
               "<input type=\"button\" value=\"Annulation\" onclick=\"document.location='".addslashes($this->href())."';\" />\n".
-              $this->FormClose()."\n"."</div>\n";
-            $this->SetInclusions($temp);
+              $this->formClose()."\n"."</div>\n";
+            $this->setInclusions($temp);
             break;
 
         // pour les navigateurs n'interprétant pas le javascript
         case 'Annulation':
-            $this->Redirect($this->Href());
+            $this->redirect($this->href());
             exit; // sécurité
 
         // only if saving:
@@ -95,37 +95,37 @@ if ($this->HasAccess('write') && $this->HasAccess('read')) {
 
                 // teste si la nouvelle page est differente de la précédente
                 if (rtrim($body) == rtrim($this->page['body'])) {
-                    $this->SetMessage('Cette page n\'a pas &eacute;t&eacute; enregistr&eacute;e car elle n\'a subi aucune modification.');
-                    $this->Redirect($this->href());
+                    $this->setMessage('Cette page n\'a pas &eacute;t&eacute; enregistr&eacute;e car elle n\'a subi aucune modification.');
+                    $this->redirect($this->href());
                 } else { // sécurité
                     // l'encodage de la base est en iso-8859-1, voir s'il faut convertir
                     $body = _convert($body, YW_CHARSET, true);
 
                     // add page (revisions)
-                    $this->SavePage($this->tag, $body);
+                    $this->savePage($this->tag, $body);
 
                     // now we render it internally so we can write the updated link table.
-                    $this->ClearLinkTable();
-                    $this->StartLinkTracking();
-                    $temp = $this->SetInclusions(); // a priori, éa ne sert é rien, mais on ne sait jamais...
-                    $this->RegisterInclusion($this->GetPageTag()); // on simule totalement un affichage normal
-                    $this->Format($body);
-                    $this->SetInclusions($temp);
-                    if ($user = $this->GetUser()) {
-                        $this->TrackLinkTo($user['name']);
+                    $this->clearLinkTable();
+                    $this->startLinkTracking();
+                    $temp = $this->setInclusions(); // a priori, éa ne sert é rien, mais on ne sait jamais...
+                    $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
+                    $this->format($body);
+                    $this->setInclusions($temp);
+                    if ($user = $this->getUser()) {
+                        $this->trackLinkTo($user['name']);
                     }
-                    if ($owner = $this->GetPageOwner()) {
-                        $this->TrackLinkTo($owner);
+                    if ($owner = $this->getPageOwner()) {
+                        $this->trackLinkTo($owner);
                     }
-                    $this->StopLinkTracking();
-                    $this->WriteLinkTable();
-                    $this->ClearLinkTable();
+                    $this->stopLinkTracking();
+                    $this->writeLinkTable();
+                    $this->clearLinkTable();
 
                     // forward
                     if ($this->page['comment_on']) {
-                        $this->Redirect($this->href('', $this->page['comment_on']).'#'.$this->tag);
+                        $this->redirect($this->href('', $this->page['comment_on']).'#'.$this->tag);
                     } else {
-                        $this->Redirect($this->href());
+                        $this->redirect($this->href());
                     }
                 }
 
@@ -141,11 +141,11 @@ if ($this->HasAccess('write') && $this->HasAccess('read')) {
 
             // append a comment?
             if (isset($_REQUEST['appendcomment'])) {
-                $body = trim($body)."\n\n----\n\n-- ".$this->GetUserName().' ('.strftime('%c').')';
+                $body = trim($body)."\n\n----\n\n-- ".$this->getUserName().' ('.strftime('%c').')';
             }
 
             $output .=
-              $this->FormOpen('edit').
+              $this->formOpen('edit').
               "<input type=\"hidden\" name=\"previous\" value=\"$previous\" />\n".
               "<textarea id=\"body\" name=\"body\" cols=\"60\" rows=\"40\" wrap=\"soft\" class=\"edit\">\n".
               htmlspecialchars($body, ENT_COMPAT, YW_CHARSET).
@@ -156,12 +156,12 @@ if ($this->HasAccess('write') && $this->HasAccess('read')) {
               ($this->config['preview_before_save'] ? '' : "<input name=\"submit\" type=\"submit\" value=\"Sauver\" accesskey=\"s\" />\n").
               "<input name=\"submit\" type=\"submit\" value=\"Aper&ccedil;u\" accesskey=\"p\" />\n".
               "<input type=\"button\" value=\"Annulation\" onclick=\"document.location='".addslashes($this->href())."';\" />\n".
-              $this->FormClose();
+              $this->formClose();
     } // switch
 } else {
     $output .= "<i>Vous n'avez pas acc&egrave;s en &eacute;criture &agrave; cette page !</i>\n";
 }
 
-echo $this->Header();
+echo $this->header();
 echo "<div class=\"page\">\n$output\n<hr class=\"hr_clear\" />\n</div>\n";
-echo $this->Footer();
+echo $this->footer();

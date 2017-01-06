@@ -31,7 +31,7 @@ if (!defined('WIKINI_VERSION')) {
     die('acc&egrave;s direct interdit');
 }
 if (isset($_GET['id'])) {
-    echo $this->Header();
+    echo $this->header();
     echo '<h1>Partager les résultats par widget HTML (code embed)</h1>'."\n";
     $params = getAllParameters($this);
     // tableau des fiches correspondantes aux critères
@@ -260,6 +260,6 @@ if (isset($_GET['id'])) {
     //   return value.join(\',\');
     // })
 ');
-    echo $this->Footer();
+    echo $this->footer();
     exit;
 }

@@ -20,24 +20,24 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
 
-if ($last = $this->GetParameter("last"))
+if ($last = $this->getParameter("last"))
 {
     if ($last=="last") $last=150; else $last= (int) $last;
     if ($last)
     {
-            $last_users = $this->LoadAll("select name, signuptime from ".$this->config["table_prefix"]."users order by signuptime desc limit $last");
-        foreach($last_users as $user) { echo $this->Format($user["name"])," . . . ",$user["signuptime"],"<br />\n" ; }
+            $last_users = $this->loadAll("select name, signuptime from ".$this->config["table_prefix"]."users order by signuptime desc limit $last");
+        foreach($last_users as $user) { echo $this->format($user["name"])," . . . ",$user["signuptime"],"<br />\n" ; }
     }
 }
 
 else
 {
-    if ($last_users = $this->LoadAll("select name, signuptime from ".$this->config["table_prefix"]."users order by name asc")
+    if ($last_users = $this->loadAll("select name, signuptime from ".$this->config["table_prefix"]."users order by name asc")
 )
     {
         foreach($last_users as $user)
         {
-            echo $this->Format($user["name"])," . . . ",$user["signuptime"],"<br />\n" ;
+            echo $this->format($user["name"])," . . . ",$user["signuptime"],"<br />\n" ;
         }
     }
 }

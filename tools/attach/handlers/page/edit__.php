@@ -5,7 +5,7 @@ if (!defined("WIKINI_VERSION"))
             die ("acc&egrave;s direct interdit");
 }
 
-if ($this->HasAccess("write") && $this->HasAccess("read") && $type!='fiche_bazar' && !isset($this->page["metadatas"]["ebook-title"]) )
+if ($this->hasAccess("write") && $this->hasAccess("read") && $type!='fiche_bazar' && !isset($this->page["metadatas"]["ebook-title"]) )
 {
     // preview?
     if (isset($_POST["submit"]) && $_POST["submit"] == "Apercu") {
@@ -117,10 +117,10 @@ if ($this->HasAccess("write") && $this->HasAccess("read") && $type!='fiche_bazar
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal /#UploadModal -->'."\n";
-        $plugin_output_new = preg_replace('/<body(.*)>/U', '<body$1>'.$uploadModal, $plugin_output_new);
+        $pluginOutputNew = preg_replace('/<body(.*)>/U', '<body$1>'.$uploadModal, $pluginOutputNew);
 
         $js = '<script src="tools/attach/libs/fileuploader.js"></script>';
-        $plugin_output_new = str_replace('</body>', $js.'</body>', $plugin_output_new);
+        $pluginOutputNew = str_replace('</body>', $js.'</body>', $pluginOutputNew);
 
         $UploadBar =   "<div id=\"attach-file-uploader\" class=\"btn-group\">
                             <noscript>
@@ -141,8 +141,8 @@ if ($this->HasAccess("write") && $this->HasAccess("read") && $type!='fiche_bazar
                             </div>
                         </div>";
 
-        $plugin_output_new = preg_replace ( '/\<div class=\"page\"\>/',
+        $pluginOutputNew = preg_replace ( '/\<div class=\"page\"\>/',
                                             '<div class="page">'.$UploadBar,
-                                            $plugin_output_new );
+                                            $pluginOutputNew );
     }
 }

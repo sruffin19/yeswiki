@@ -18,7 +18,7 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-$despam_url = $this->href('', $this->GetPageTag());
+$despam_url = $this->href('', $this->getPageTag());
 
 
 // -- (1) Formulaire d'accueil de l'action -------------------------------
@@ -28,7 +28,7 @@ $despam_url = $this->href('', $this->GetPageTag());
 
 
 // Action réservée aux admins
-if ($this->UserIsAdmin()) {
+if ($this->userIsAdmin()) {
     if (empty($_POST['spammer']) && empty($_POST['from']) && !isset($_POST['clean'])) {
         echo "<div class=\"action_erasespam\">\n" .
             "<form method=\"post\" action=\"". $despam_url . "\" name=\"selection\">\n".
@@ -68,7 +68,7 @@ if ($this->UserIsAdmin()) {
               $_POST['from'] . " heure(s)</h2>\n";
         }
         //echo $requete;
-        $pagesFromSpammer = $this->LoadAll($requete);
+        $pagesFromSpammer = $this->loadAll($requete);
         // Affichage des pages pour validation
         echo "<div class=\"action_erasespam\">\n";
         echo $title;
@@ -78,7 +78,7 @@ if ($this->UserIsAdmin()) {
             $req = "select * from ".$this->config["table_prefix"]."pages where tag = '"
                 .mysqli_real_escape_string($this->dblink, $page["tag"])
                 ."' order by time desc";
-            $revisions = $this->LoadAll($req);
+            $revisions = $this->loadAll($req);
 
             echo "<tr>\n".
               "<td>".
@@ -110,7 +110,7 @@ if ($this->UserIsAdmin()) {
                   "<br />\n";
             }
             unset($revision1);
-            echo //" . . . . ",$this->Format($page["user"]),"</p>\n",
+            echo //" . . . . ",$this->format($page["user"]),"</p>\n",
               "</td>\n",
               "</tr>\n",
               "";
@@ -136,9 +136,9 @@ if ($this->UserIsAdmin()) {
         if (!empty($_POST['suppr'])) {
             foreach ($_POST['suppr'] as $page) {
                 // Effacement de la page en utilisant la méthode adéquate
-                // (si DeleteOrphanedPage ne convient pas, soit on créé
+                // (si deleteOrphanedPage ne convient pas, soit on créé
                 // une autre, soit on la modifie
-                $this->DeleteOrphanedPage($page);
+                $this->deleteOrphanedPage($page);
                 $deletedPages .= $page . ", ";
             }
             $deletedPages = trim($deletedPages, ", ");
@@ -151,7 +151,7 @@ if ($this->UserIsAdmin()) {
             foreach ($_POST["rev"] as $rev_id) {
                 echo $rev_id."<br>";
                 // Selectionne la revision
-                $revision = $this->LoadSingle("select * from ".$this->config["table_prefix"]."pages where id = '"
+                $revision = $this->loadSingle("select * from ".$this->config["table_prefix"]."pages where id = '"
                   .mysqli_real_escape_string($this->dblink, $rev_id)."' limit 1");
 
 
@@ -163,11 +163,11 @@ if ($this->UserIsAdmin()) {
                   "where latest = 'Y' " .
                   "and tag = '" . $revision["tag"] . "' " .
                   "limit 1";
-                $this->Query($requeteUpdate);
+                $this->query($requeteUpdate);
                 $restoredPages .= $revision["tag"] . ", ";
 
                  // add new revision
-                $this->Query("insert into ".$this->config["table_prefix"]."pages set ".
+                $this->query("insert into ".$this->config["table_prefix"]."pages set ".
                  "tag = '".mysqli_real_escape_string($this->dblink, $revision['tag'])."', ".
                  "time = now(), ".
                  "owner = '".mysqli_real_escape_string($this->dblink, $revision['owner'])."', ".

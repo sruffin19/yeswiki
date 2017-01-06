@@ -30,7 +30,7 @@ if (!defined('WIKINI_VERSION')) {
 
 header('Content-type: text/xml; charset='.YW_CHARSET);
 
-if ($HasAccessRead = $this->HasAccess('read')) {
+if ($HasAccessRead = $this->hasAccess('read')) {
     // TODO : Return an empty xml ?
     // TODO : Return an error read (noaccess) xml ?
     // TODO : why only serve the body and not all page's properties ?
@@ -38,6 +38,6 @@ if ($HasAccessRead = $this->HasAccess('read')) {
     if ($this->page) {
         // display page
         echo '<?xml version="1.0" encoding="'.YW_CHARSET.'"?>';
-        echo $this->Format($this->page['body'], 'action');
+        echo $this->format($this->page['body'], 'action');
     }
 }

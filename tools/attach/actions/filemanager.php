@@ -40,7 +40,7 @@ if (!WIKINI_VERSION) {
      die ("acc&egrave;s direct interdit");
 }
 
-if($this->HasAccess('write')){
+if($this->hasAccess('write')){
     if (!class_exists('attach')){
         include('tools/attach/actions/attach.class.php');
     }

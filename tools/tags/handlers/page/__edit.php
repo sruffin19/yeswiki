@@ -5,7 +5,7 @@ if (!defined("WIKINI_VERSION"))
             die ("acc&egrave;s direct interdit");
 }
 
-if (!CACHER_MOTS_CLES && $this->HasAccess("write") && $this->HasAccess("read"))
+if (!CACHER_MOTS_CLES && $this->hasAccess("write") && $this->hasAccess("read"))
 {
     $response = array();
     // on recupere tous les tags du site
@@ -22,7 +22,7 @@ if (!CACHER_MOTS_CLES && $this->HasAccess("write") && $this->HasAccess("read"))
 
 
     // on recupere les tags de la page courante
-    $tabtagsexistants = $this->GetAllTags($this->GetPageTag());
+    $tabtagsexistants = $this->GetAllTags($this->getPageTag());
     foreach ($tabtagsexistants as $tab)
     {
         $tagspage[] = _convert($tab["value"], 'ISO-8859-1');
@@ -57,14 +57,14 @@ if (!CACHER_MOTS_CLES && $this->HasAccess("write") && $this->HasAccess("read"))
 }
 
 //Sauvegarde
-if (!CACHER_MOTS_CLES && $this->HasAccess("write") &&
+if (!CACHER_MOTS_CLES && $this->hasAccess("write") &&
     isset($_POST["submit"]) && $_POST["submit"] == 'Sauver' &&
     isset($_POST["pagetags"]) && $_POST['antispam']==1 )
 {
-    $this->SaveTags($this->GetPageTag(), stripslashes($_POST["pagetags"]));
+    $this->SaveTags($this->getPageTag(), stripslashes($_POST["pagetags"]));
 }
 
 // If the page is an ebook, we will display the ebook generator
-if ($this->HasAccess('write') && isset($this->page["metadatas"]["ebook-title"])) {
-    $pageeditionebook = $this->Format('{{ebookgenerator}}');
+if ($this->hasAccess('write') && isset($this->page["metadatas"]["ebook-title"])) {
+    $pageeditionebook = $this->format('{{ebookgenerator}}');
 }

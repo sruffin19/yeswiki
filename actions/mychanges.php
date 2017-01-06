@@ -28,18 +28,18 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-if ($user = $this->GetUser())
+if ($user = $this->getUser())
 {
     $my_edits_count = 0;
     $curChar = '';
     $curday = '';
     $last_tag = '';
 
-    if (($bydate = $this->GetParameter("bydate")))
+    if (($bydate = $this->getParameter("bydate")))
     {
         echo "<b>"._t('YOUR_MODIFIED_PAGES_ORDERED_BY_MODIFICATION_DATE').".</b><br /><br />\n";
 
-        if ($pages = $this->LoadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".mysqli_real_escape_string($this->dblink, $this->GetUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY time ASC, tag ASC"))
+        if ($pages = $this->loadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".mysqli_real_escape_string($this->dblink, $this->getUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY time ASC, tag ASC"))
         {
             foreach ($pages as $page)
             {
@@ -60,7 +60,7 @@ if ($user = $this->GetUser())
                 }
 
                 // echo entry
-                echo "&nbsp;&nbsp;&nbsp;($time) (",$this->ComposeLinkToPage($page["tag"], "revisions", "history", 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0),"<br />\n";
+                echo "&nbsp;&nbsp;&nbsp;($time) (",$this->composeLinkToPage($page["tag"], "revisions", "history", 0),") ",$this->composeLinkToPage($page["tag"], "", "", 0),"<br />\n";
 
                 $my_edits_count++;
             }
@@ -79,7 +79,7 @@ if ($user = $this->GetUser())
     {
         echo "<b>"._t('YOUR_MODIFIED_PAGES_ORDERED_BY_NAME').".</b><br /><br />\n";
 
-        if ($pages = $this->LoadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".mysqli_real_escape_string($this->dblink, $this->GetUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY tag ASC, time DESC"))
+        if ($pages = $this->loadAll("SELECT tag, time FROM ".$this->config["table_prefix"]."pages WHERE user = '".mysqli_real_escape_string($this->dblink, $this->getUserName())."' AND tag NOT LIKE 'Comment%' ORDER BY tag ASC, time DESC"))
         {
             foreach ($pages as $page)
             {
@@ -98,7 +98,7 @@ if ($user = $this->GetUser())
                     }
 
                     // echo entry
-                    echo "&nbsp;&nbsp;&nbsp;(",$page["time"],") (",$this->ComposeLinkToPage($page["tag"], "revisions", "history", 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0),"<br />\n";
+                    echo "&nbsp;&nbsp;&nbsp;(",$page["time"],") (",$this->composeLinkToPage($page["tag"], "revisions", "history", 0),") ",$this->composeLinkToPage($page["tag"], "", "", 0),"<br />\n";
 
                     $my_edits_count++;
                 }

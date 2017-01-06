@@ -25,20 +25,20 @@ if (!defined("WIKINI_VERSION"))
 include_once 'tools/tags/libs/tags.functions.php';
 $nbcartrunc = 200;
 $output = '';
-$class = $this->GetParameter('class');
-$pages = $this->GetParameter('pages');
+$class = $this->getParameter('class');
+$pages = $this->getParameter('pages');
 
 
 if (empty($pages)) {
     $output .= '<div class="alert alert-danger"><strong>'._t('TAGS_ACTION_INCLUDEPAGES').'</strong> : '._t('TAGS_NO_PARAM_PAGES').'</div>'."\n";
 }
 else {
-    $template = $this->GetParameter('template');
+    $template = $this->getParameter('template');
     if (empty($template)) $template = 'pages_list.tpl.html';
 
     $resultat = explode(',', $pages);
     foreach ($resultat as $page) {
-        $page = $this->LoadPage(trim($page));
+        $page = $this->loadPage(trim($page));
         $element[$page['tag']]['tagnames'] = '';
         $element[$page['tag']]['tagbadges'] = '';
         $element[$page['tag']]['body'] = $page['body'];
@@ -47,8 +47,8 @@ else {
         $element[$page['tag']]['time'] = $page['time'];
         $element[$page['tag']]['title'] = get_title_from_body($page);
         $element[$page['tag']]['image'] = get_image_from_body($page);
-        $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->Format($page['body'])), $nbcartrunc);
-        $pagetags = $this->GetAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+        $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->format($page['body'])), $nbcartrunc);
+        $pagetags = $this->getAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
         foreach ($pagetags as $tag) {
             $element[$page['tag']]['tagnames'] .= sanitizeEntity($tag['value']).' ';
             $element[$page['tag']]['tagbadges'] .= '<span class="label label-info">'.$tag['value'].'</span>&nbsp;';

@@ -4,7 +4,7 @@
             die ("acc&egrave;s direct interdit");
     }
 
-    $oldpage = $this->GetPageTag();
-    $this->tag = trim($this->GetParameter('page'));
-    $this->page = $this->LoadPage($this->tag);
+    $oldpage = $this->getPageTag();
+    $this->tag = trim($this->getParameter('page'));
+    $this->page = $this->loadPage($this->tag);
 ?>

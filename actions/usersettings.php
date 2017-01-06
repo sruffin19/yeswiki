@@ -31,17 +31,17 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 if (!isset($_REQUEST["action"])) $_REQUEST["action"] = '';
 if ($_REQUEST["action"] == "logout")
 {
-    $this->LogoutUser();
-    $this->SetMessage(_t('YOU_ARE_NOW_DISCONNECTED')." !");
-    $this->Redirect($this->href());
+    $this->logoutUser();
+    $this->setMessage(_t('YOU_ARE_NOW_DISCONNECTED')." !");
+    $this->redirect($this->href());
 }
-else if ($user = $this->GetUser())
+else if ($user = $this->getUser())
 {
 
     // is user trying to update?
     if ($_REQUEST["action"] == "update")
     {
-        $this->Query("update ".$this->config["table_prefix"]."users set ".
+        $this->query("update ".$this->config["table_prefix"]."users set ".
             "email = '".mysqli_real_escape_string($this->dblink, $_POST["email"])."', ".
             "doubleclickedit = '".mysqli_real_escape_string($this->dblink, $_POST["doubleclickedit"])."', ".
             "show_comments = '".mysqli_real_escape_string($this->dblink, $_POST["show_comments"])."', ".
@@ -50,11 +50,11 @@ else if ($user = $this->GetUser())
             "motto = '".mysqli_real_escape_string($this->dblink, $_POST["motto"])."' ".
             "where name = '".$user["name"]."' limit 1");
 
-        $this->SetUser($this->LoadUser($user["name"]));
+        $this->setUser($this->loadUser($user["name"]));
 
         // forward
-        $this->SetMessage(_t('PARAMETERS_SAVED')." !");
-        $this->Redirect($this->href());
+        $this->setMessage(_t('PARAMETERS_SAVED')." !");
+        $this->redirect($this->href());
     }
 
     if ($_REQUEST["action"] == "changepass")
@@ -66,21 +66,21 @@ else if ($user = $this->GetUser())
             else if ($user["password"] != md5($_POST["oldpass"])) $error = _t('WRONG_PASSWORD').".";
             else
             {
-                $this->Query("update ".$this->config["table_prefix"]."users set "."password = md5('".mysqli_real_escape_string($this->dblink, $password)."') "."where name = '".$user["name"]."'");
-                $this->SetMessage(_t('PASSWORD_CHANGED')." !");
+                $this->query("update ".$this->config["table_prefix"]."users set "."password = md5('".mysqli_real_escape_string($this->dblink, $password)."') "."where name = '".$user["name"]."'");
+                $this->setMessage(_t('PASSWORD_CHANGED')." !");
                 $user["password"]=md5($password);
-                $this->SetUser($user);
-                $this->Redirect($this->href());
+                $this->setUser($user);
+                $this->redirect($this->href());
             }
     }
     // user is logged in; display config form
-    echo $this->FormOpen();
+    echo $this->formOpen();
     ?>
     <input type="hidden" name="action" value="update" />
     <table>
         <tr>
             <td align="right"></td>
-            <td><?php echo _t('GREETINGS'); ?>, <?php echo $this->Link($user["name"]) ?>&nbsp;!</td>
+            <td><?php echo _t('GREETINGS'); ?>, <?php echo $this->link($user["name"]) ?>&nbsp;!</td>
         </tr>
         <tr>
             <td align="right"><?php echo _t('YOUR_EMAIL_ADDRESS'); ?>&nbsp;:</td>
@@ -113,9 +113,9 @@ else if ($user = $this->GetUser())
     </table>
 
     <?php
-    echo $this->FormClose();
+    echo $this->formClose();
 
-    echo $this->FormOpen();
+    echo $this->formOpen();
     ?>
     <input type="hidden" name="action" value="changepass" />
     <table>
@@ -147,7 +147,7 @@ else if ($user = $this->GetUser())
         </tr>
     </table>
     <?php
-    echo $this->FormClose();
+    echo $this->formClose();
 
 }
 else
@@ -158,13 +158,13 @@ else
     if ($_REQUEST["action"] == "login")
     {
         // if user name already exists, check password
-        if ($existingUser = $this->LoadUser($_POST["name"]))
+        if ($existingUser = $this->loadUser($_POST["name"]))
         {
             // check password
             if ($existingUser["password"] == md5($_POST["password"]))
             {
-                $this->SetUser($existingUser, $_POST["remember"]);
-                $this->Redirect($this->href('', '', 'action=checklogged', false));
+                $this->setUser($existingUser, $_POST["remember"]);
+                $this->redirect($this->href('', '', 'action=checklogged', false));
             }
             else
             {
@@ -180,7 +180,7 @@ else
             $confpassword = $_POST["confpassword"];
 
             // check if name is WikkiName style
-            if (!$this->IsWikiName($name)) $error = _t('USERNAME_MUST_BE_WIKINAME').".";
+            if (!$this->isWikiName($name)) $error = _t('USERNAME_MUST_BE_WIKINAME').".";
             else if (!$email) $error = _t('YOU_MUST_SPECIFY_AN_EMAIL').".";
             else if (!preg_match("/^.+?\@.+?\..+$/", $email)) $error = _t('THIS_IS_NOT_A_VALID_EMAIL').".";
             else if ($confpassword != $password) $error = _t('PASSWORDS_NOT_IDENTICAL').".";
@@ -188,17 +188,17 @@ else
             else if (strlen($password) < 5) $error = _t('PASSWORD_TOO_SHORT').". "._t('PASSWORD_SHOULD_HAVE_5_CHARS_MINIMUM').".";
             else
             {
-                $this->Query("insert into ".$this->config["table_prefix"]."users set ".
+                $this->query("insert into ".$this->config["table_prefix"]."users set ".
                     "signuptime = now(), ".
                     "name = '".mysqli_real_escape_string($this->dblink, $name)."', ".
                     "email = '".mysqli_real_escape_string($this->dblink, $email)."', ".
                     "password = md5('".mysqli_real_escape_string($this->dblink, $_POST["password"])."')");
 
                 // log in
-                $this->SetUser($this->LoadUser($name));
+                $this->setUser($this->loadUser($name));
 
                 // forward
-                $this->Redirect($this->href());
+                $this->redirect($this->href());
             }
         }
     }
@@ -207,7 +207,7 @@ else
         $error = _t('YOU_MUST_ACCEPT_COOKIES_TO_GET_CONNECTED').'.';
     }
 
-    echo $this->FormOpen();
+    echo $this->formOpen();
     ?>
     <input type="hidden" name="action" value="login" />
     <table>
@@ -255,5 +255,5 @@ else
         </tr>
     </table>
     <?php
-    echo $this->FormClose();
+    echo $this->formClose();
 }

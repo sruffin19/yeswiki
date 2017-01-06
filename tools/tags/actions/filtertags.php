@@ -8,13 +8,13 @@ if (!defined("WIKINI_VERSION"))
 include_once 'tools/tags/libs/tags.functions.php';
 $nbcartrunc = 200;
 
-$elementwidth = $this->GetParameter('elementwidth');
+$elementwidth = $this->getParameter('elementwidth');
 if (empty($elementwidth)) $elementwidth = 300;
 
-$elementoffset = $this->GetParameter('elementoffset');
+$elementoffset = $this->getParameter('elementoffset');
 if (empty($elementoffset)) $elementoffset = 10;
 
-$template = $this->GetParameter('template');
+$template = $this->getParameter('template');
 if (empty($template) || !file_exists('tools/tags/presentation/templates/'.$template)) {
     $template = 'pages_grid_filter.tpl.html';
 }
@@ -30,8 +30,8 @@ unset($params['tags']);
 // requete avec toutes les pages contenants les mots cles
 $req = "SELECT DISTINCT tag, time, user, owner, body
 FROM ".$this->config['table_prefix']."pages, ".$this->config['table_prefix']."triples tags
-WHERE latest = 'Y' AND comment_on = '' AND tags.value IN (".$taglist.") AND tags.property = \"http://outils-reseaux.org/_vocabulary/tag\" AND tags.resource = tag AND tag NOT IN (\"".implode('","', $this->GetAllInclusions())."\") ORDER BY tag ASC";
-$pages = $this->LoadAll($req);
+WHERE latest = 'Y' AND comment_on = '' AND tags.value IN (".$taglist.") AND tags.property = \"http://outils-reseaux.org/_vocabulary/tag\" AND tags.resource = tag AND tag NOT IN (\"".implode('","', $this->getAllInclusions())."\") ORDER BY tag ASC";
+$pages = $this->loadAll($req);
 
 echo '<div class="well well-sm no-dblclick controls">'."\n".'<div class="pull-right muted"><span class="nbfilteredelements">'.count($pages).'</span> '._t('TAGS_RESULTS').'</div>';
 foreach ($params as $param) {
@@ -59,10 +59,10 @@ foreach ($pages as $page) {
     $element[$page['tag']]['time'] = $page['time'];
     $element[$page['tag']]['title'] = get_title_from_body($page);
     $element[$page['tag']]['image'] = get_image_from_body($page);
-    $this->RegisterInclusion($page['tag']);
-    $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->Format($page['body'])), $nbcartrunc);
-    $this->UnregisterLastInclusion();
-    $pagetags = $this->GetAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+    $this->registerInclusion($page['tag']);
+    $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->format($page['body'])), $nbcartrunc);
+    $this->unregisterLastInclusion();
+    $pagetags = $this->getAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     foreach ($pagetags as $tag) {
         $tag['value'] = _convert(stripslashes($tag['value']), 'ISO-8859-1');
         $element[$page['tag']]['tagnames'] .= sanitizeEntity($tag['value']).' ';

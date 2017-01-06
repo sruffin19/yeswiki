@@ -44,13 +44,13 @@ if (empty($ebookpagenamestart)) $ebookpagenamestart = 'Ebook';
 $output = '';
 
 // recuperation des pages wikis
-$sql = 'SELECT DISTINCT resource FROM '.$this->GetConfigValue('table_prefix').'triples';
+$sql = 'SELECT DISTINCT resource FROM '.$this->getConfigValue('table_prefix').'triples';
 $sql .= ' WHERE property="http://outils-reseaux.org/_vocabulary/metadata" 
             AND value LIKE "%ebook-title%"
             AND resource LIKE "'.$ebookpagenamestart.'%" ';
 $sql .= ' ORDER BY resource ASC';
 
-$pages = $this->LoadAll($sql);
+$pages = $this->loadAll($sql);
 if (count($pages) > 0) {
     $output .= '<ul class="media-list">'."\n";
     foreach($pages as $page) {
@@ -60,7 +60,7 @@ if (count($pages) > 0) {
             <img src="'.$metas['ebook-cover-image'].'" alt="cover" class="media-object" width="128" />
         </a>
         <div class="media-body">'."\n";
-        if ($this->UserIsAdmin()) $output .= '<a class="btn btn-danger btn-error pull-right" href="'.$this->href('deletepage',$page['resource']).'"><i class="icon-trash icon-white"></i>&nbsp;'._t('TAGS_DELETE').'</a>';    
+        if ($this->userIsAdmin()) $output .= '<a class="btn btn-danger btn-error pull-right" href="'.$this->href('deletepage',$page['resource']).'"><i class="icon-trash icon-white"></i>&nbsp;'._t('TAGS_DELETE').'</a>';    
         $output .= '<h4 class="media-heading"><a href="'.$this->href('',$page['resource']).'">'.$metas['ebook-title'].'</a></h4>
             <strong>'.$metas['ebook-author'].'</strong><br />'.$metas['ebook-description'].'<br /><br />';    
         $output .= '<strong><i class="icon-download"></i>&nbsp;'._t('TAGS_DOWNLOAD').' </strong><a class="btn btn-primary" href="'.$this->href('epub',$page['resource']).'"><i class="icon-book icon-white"></i>&nbsp;'._t('TAGS_DOWNLOAD_EPUB').'</a> <!-- epub download link for '.$page['resource'].' -->

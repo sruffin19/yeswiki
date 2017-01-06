@@ -15,7 +15,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 // on recupere les entetes html mais pas ce qu'il y a dans le body
-$header =  explode('<body', $this->Header());
+$header =  explode('<body', $this->header());
 echo str_replace('<html', '<html class="slideshow-html"', $header[0])."<body class=\"slideshow-body\">\n";
 
 // on regarde si un template est passe en parametre GET, on passe celui par defaut sinon
@@ -29,6 +29,6 @@ if (isset($_GET['template']) && file_exists(realpath('tools/templates/presentati
 echo print_diaporama($this->tag, $template);
 
 // on recupere juste les javascripts et la fin des balises body et html
-$footer =  preg_replace('/^.+<script/Us', "\n".'<script', $this->Footer());
+$footer =  preg_replace('/^.+<script/Us', "\n".'<script', $this->footer());
 
 echo $footer;

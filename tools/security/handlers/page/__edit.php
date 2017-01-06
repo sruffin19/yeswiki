@@ -5,11 +5,11 @@ if (!defined('WIKINI_VERSION')) {
     die('acc&egrave;s direct interdit');
 }
 
-if ($this->HasAccess('write') && $this->HasAccess('read')) {
-    if (isset($this->config['password_for_editing']) and !empty($this->config['password_for_editing']) and !$this->UserIsAdmin()) {
+if ($this->hasAccess('write') && $this->hasAccess('read')) {
+    if (isset($this->config['password_for_editing']) and !empty($this->config['password_for_editing']) and !$this->userIsAdmin()) {
         if (!isset($_POST['password_for_editing'])
             or $_POST['password_for_editing'] != $this->config['password_for_editing']) {
-            echo $this->Header();
+            echo $this->header();
             if (isset($_POST['password_for_editing'])
                 and $_POST['password_for_editing'] != $this->config['password_for_editing']) {
                 echo '<div class="alert alert-danger">Mauvais mot de passe.</div>';
@@ -17,7 +17,7 @@ if ($this->HasAccess('write') && $this->HasAccess('read')) {
             if (isset($this->config['password_for_editing_message']) and !empty($this->config['password_for_editing_message'])) {
                 echo '<p class="password_for_editing_message">'.$this->config['password_for_editing_message'].'</p>'."\n";
             }
-            echo '<form method="post" action="'.$this->href('edit', $this->GetPageTag()).'" class="form-inline">
+            echo '<form method="post" action="'.$this->href('edit', $this->getPageTag()).'" class="form-inline">
       <div class="form-group">
         <label for="password_for_editing">'._t('HASHCASH_GENERAL_PASSWORD').'</label>
         <input type="password" class="form-control" id="password_for_editing" name="password_for_editing">
@@ -29,7 +29,7 @@ if ($this->HasAccess('write') && $this->HasAccess('read')) {
             echo '
       <button type="submit" class="btn btn-default">'._t('HASHCASH_SEND').'</button>
     </form>';
-            echo $this->Footer();
+            echo $this->footer();
             exit;
         }
     }

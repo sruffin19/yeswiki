@@ -6,7 +6,7 @@ if (!defined("WIKINI_VERSION")) {
 
 // Sauvegarde des metas
 if (isset($_GET["newpage"]) && $_GET["newpage"]==1 && isset($_GET["theme"]) && !isset($this->page['metadatas']['theme'])) {
-    $this->SaveMetaDatas($this->GetPageTag(), array('theme' => $_GET["theme"], 'style' => $_GET["style"], 'squelette' => $_GET["squelette"], 'bgimg' => $_GET["bgimg"] ));
+    $this->SaveMetaDatas($this->getPageTag(), array('theme' => $_GET["theme"], 'style' => $_GET["style"], 'squelette' => $_GET["squelette"], 'bgimg' => $_GET["bgimg"] ));
 }
 
 // Si une valeur de body est passee en paramétre GET (et pas POST) on l'ajoute en titre dans la nouvelle page vierge

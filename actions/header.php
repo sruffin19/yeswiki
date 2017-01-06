@@ -33,13 +33,13 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $charset = 'iso-8859-1';
 
 // Page info
-$page_name = $this->GetPageTag();
+$page_name = $this->getPageTag();
 $page_addr = $this->href();
 
 header("Content-Type: text/html; charset=$charset");
 
 // <head> : metas & style
-if ($this->GetMethod() != 'show'
+if ($this->getMethod() != 'show'
     || !empty($_REQUEST['phrase'])
     || !empty($_REQUEST['show_comments'])
     || isset($_REQUEST['time']))
@@ -50,18 +50,18 @@ else
 {
     $additionnal_metas = '';
 }
-$meta_keywords = $this->GetConfigValue("meta_keywords");
-$meta_description = $this->GetConfigValue("meta_description");
+$meta_keywords = $this->getConfigValue("meta_keywords");
+$meta_description = $this->getConfigValue("meta_description");
 $imported_style = isset($_COOKIE["sitestyle"]) ? htmlspecialchars($_COOKIE["sitestyle"], ENT_COMPAT, YW_CHARSET) : 'wakka';
 
 // Page contents
-$body_attr = ($message = $this->GetMessage()) ? "onLoad=\"alert('".addslashes($message)."');\" " : "";
-$wiki_name = $this->GetWakkaName();
+$body_attr = ($message = $this->getMessage()) ? "onLoad=\"alert('".addslashes($message)."');\" " : "";
+$wiki_name = $this->getWakkaName();
 $page_search = $this->href('', 'RechercheTexte', 'phrase=' . urlencode($page_name));
-$root_page = $this->ComposeLinkToPage($this->config["root_page"]);
-$navigation_links = $this->config["navigation_links"] ? $this->Format($this->config["navigation_links"]) : "";
-$user_name = $this->Format($this->GetUserName());
-$disconnect_link = $this->GetUser() ? '(<a href="' . $this->href('', 'ParametresUtilisateur', 'action=logout') . "\">D&eacute;connexion</a>)\n" : '';
+$root_page = $this->composeLinkToPage($this->config["root_page"]);
+$navigation_links = $this->config["navigation_links"] ? $this->format($this->config["navigation_links"]) : "";
+$user_name = $this->format($this->getUserName());
+$disconnect_link = $this->getUser() ? '(<a href="' . $this->href('', 'ParametresUtilisateur', 'action=logout') . "\">D&eacute;connexion</a>)\n" : '';
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -100,7 +100,7 @@ $disconnect_link = $this->GetUser() ? '(<a href="' . $this->href('', 'Parametres
                 if (e == null) e = event;
                 source = document.all ? e.srcElement : e.target;
                 if( source.nodeName == "TEXTAREA" || source.nodeName == "INPUT") return;
-                document.location = '<?php echo addslashes($this->Href('edit')) ?>';
+                document.location = '<?php echo addslashes($this->href('edit')) ?>';
             }
             /** invert all checkboxes that are descendant of a given parent */
             function invert_selection(parent_id)

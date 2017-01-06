@@ -5,19 +5,19 @@ if (!defined("WIKINI_VERSION"))
 }
 
 // adresse vers quoi le bouton pointe
-$link = $this->GetParameter('link');
-if ($this->IsWikiName($link)) {
+$link = $this->getParameter('link');
+if ($this->isWikiName($link)) {
     $link = $this->href('', $link);
 }
 
 // texte genere a l'interieur du bouton
-$text = $this->GetParameter('text');
+$text = $this->getParameter('text');
 
 // titre au survol du bouton et dans la boite modale associée
-$title = $this->GetParameter('title');
+$title = $this->getParameter('title');
 
 // icone du bouton
-$icon = trim($this->GetParameter('icon'));
+$icon = trim($this->getParameter('icon'));
 if (!empty($icon)) {
     // si le parametre contient des espaces, il s'agit d'une icone autre que celles par defaut de bootstrap
     if ( preg_match('/\s/', $icon) )
@@ -32,12 +32,12 @@ if (!empty($icon)) {
 }
 
 // classe css supplémentaire pour changer le look
-$class = $this->GetParameter('class');
+$class = $this->getParameter('class');
 $class = 'btn '.$class;
 if (!strstr($class, 'btn-')) $class .= ' btn-default';
 
 
-$nobtn = $this->GetParameter('nobtn');
+$nobtn = $this->getParameter('nobtn');
 if (!empty($nobtn) && $nobtn == '1') $class = str_replace(array('btn ', 'btn-default'), array('',''), $class);
 
 if (empty($link)) {

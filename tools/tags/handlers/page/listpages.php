@@ -57,16 +57,16 @@ $selectiontags = ' AND value IN ("'.implode(",",$tab_selected_tags).'")';
 
 // on recupere tous les tags existants
 $sql = 'SELECT DISTINCT value FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag" ORDER BY value ASC';
-$tab_tous_les_tags = $this->LoadAll($sql);
+$tab_tous_les_tags = $this->loadAll($sql);
 
 if (is_array($tab_tous_les_tags)) {    
     foreach ($tab_tous_les_tags as $tag) {
         $tag['value'] = _convert(stripslashes($tag['value']), 'ISO-8859-1');
         if (in_array($tag['value'], $tab_selected_tags)) {
-            $tab_tag[] = '&nbsp;<a class="tag-label label label-primary label-active" href="'.$this->href('listpages',$this->GetPageTag(),'tags='.urlencode($tag['value'])).'">'.$tag['value'].'</a>'."\n";
+            $tab_tag[] = '&nbsp;<a class="tag-label label label-primary label-active" href="'.$this->href('listpages',$this->getPageTag(),'tags='.urlencode($tag['value'])).'">'.$tag['value'].'</a>'."\n";
         } 
         else {
-            $tab_tag[] = '&nbsp;<a class="tag-label label label-info" href="'.$this->href('listpages',$this->GetPageTag(),'tags='.urlencode($tag['value'])).'">'.$tag['value'].'</a>'."\n";
+            $tab_tag[] = '&nbsp;<a class="tag-label label label-info" href="'.$this->href('listpages',$this->getPageTag(),'tags='.urlencode($tag['value'])).'">'.$tag['value'].'</a>'."\n";
         }
     }
     $outputselecttag = '';
@@ -95,8 +95,8 @@ if ($resultat) {
         $element[$page['tag']]['time'] = $page['time'];
         $element[$page['tag']]['title'] = get_title_from_body($page);
         $element[$page['tag']]['image'] = get_image_from_body($page);
-        $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->Format($page['body'])), $nbcartrunc);
-        $pagetags = $this->GetAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+        $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->format($page['body'])), $nbcartrunc);
+        $pagetags = $this->getAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
         foreach ($pagetags as $tag) {
             $element[$page['tag']]['tagnames'] .= sanitizeEntity($tag['value']).' ';
             $element[$page['tag']]['tagbadges'] .= '<span class="tag-label label label-primary">'.$tag['value'].'</span>&nbsp;';
@@ -113,10 +113,10 @@ if ($nb_total > 1) $output .= 'Un total de '.$nb_total.' pages ont &eacute;t&eac
 elseif ($nb_total == 1) $output .= 'Une page a &eacute;t&eacute; trouv&eacute;e';
 else $output .= 'Aucune page trouv&eacute;e';
 $output .= (!empty($tags) ? ' avec le mot cl&eacute; <span class="tag-label label label-info">'.$tags.'</span>' : '').'.';
-$output .= $this->Format('{{rss tags="'.$tags.'" class="pull-right"}}')."\n";
+$output .= $this->format('{{rss tags="'.$tags.'" class="pull-right"}}')."\n";
 $output .= '</div>'."\n".$text;
 
-echo $this->Header();
+echo $this->header();
 echo "<div class=\"page\">\n$output\n$outputselecttag\n<hr class=\"hr_clear\" />\n</div>\n";
-echo $this->Footer();
+echo $this->footer();
 ?>

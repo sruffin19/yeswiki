@@ -31,7 +31,7 @@ if (!defined("WIKINI_VERSION")) {
     die ("acc&egrave;s direct interdit");
 }
 
-echo $this->Header();
+echo $this->header();
 echo '<h1>Import</h1>'."\n";
 
 if (isset($_POST['submit_url'])) {
@@ -41,12 +41,12 @@ if (isset($_POST['submit_url'])) {
     echo "file";
 
 } else {
-    echo $this->FormOpen('import');
+    echo $this->formOpen('import');
     echo '<label for="urlimport">Entrez l\'URL du YesWiki d\'oé vous souhaitez importer des données</label>'."\n";
     echo '<input type="text" name="urlimport" id="urlimport" value="http://" /><input name="submit_url" type="submit" value="Envoyer" /><br /><br />'."\n";
     echo '<label for="fileimport">Ou entrez le fichier de sauvegarde YesWiki</label>'."\n";
     echo '<input type="file" name="fileimport" id="filelimport" /><input name="submit_file" type="submit" value="Importer ce fichier" />'."\n";
-    echo $this->FormClose();
+    echo $this->formClose();
 }
 
-echo $this->Footer();
+echo $this->footer();

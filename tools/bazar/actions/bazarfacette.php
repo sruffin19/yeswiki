@@ -6,12 +6,12 @@ if (!defined("WIKINI_VERSION"))
 }
 
 
-$template = $this->GetParameter("template");
+$template = $this->getParameter("template");
 if (empty($template)) {
     $template = 'liste_accordeon_facette.tpl.html';
 }
 
-$id_typeannonce = $this->GetParameter("idtypeannonce");
+$id_typeannonce = $this->getParameter("idtypeannonce");
 if (empty($id_typeannonce)) {
     $id_typeannonce = array();
 }
@@ -19,7 +19,7 @@ else {
     $id_typeannonce=explode(",",$id_typeannonce);
 }
 
-$facettejointure = $this->GetParameter("jointure");
+$facettejointure = $this->getParameter("jointure");
 if (empty($facettejointure)) {
     $facettejointure = 'OR';
 }
@@ -29,13 +29,13 @@ if (empty($facettejointure)) {
 *
 */
 
-$ordre = $this->GetParameter("ordre");
+$ordre = $this->getParameter("ordre");
 if (empty($ordre)) {
     $ordre = 'alphabetique';
 }
 
 
-$latitude = $this->GetParameter("lat");
+$latitude = $this->getParameter("lat");
 if (empty($latitude)) {
     $latitude = BAZ_GOOGLE_CENTRE_LAT;
 }
@@ -46,20 +46,20 @@ if (empty($latitude)) {
 *
 */
 
-$longitude = $this->GetParameter("lon");
+$longitude = $this->getParameter("lon");
 if (empty($longitude)) {
     $longitude = BAZ_GOOGLE_CENTRE_LON;
 }
 
 
-$zoom = $this->GetParameter("zoom");
+$zoom = $this->getParameter("zoom");
 if (empty($zoom)) {
     $zoom = BAZ_GOOGLE_ALTITUDE;
 }
 
 
 
-$pagination = $this->GetParameter("pagination");
+$pagination = $this->getParameter("pagination");
 
 
 // Interroger tout
@@ -67,7 +67,7 @@ $pagination = $this->GetParameter("pagination");
 // Afficher les groupes
 // Afficher le contenu selon le filtrage en cours
 
-$groups = $this->GetParameter("groups"); // parametre groups="bf_ce_titre,bf_ce_pays,etc."
+$groups = $this->getParameter("groups"); // parametre groups="bf_ce_titre,bf_ce_pays,etc."
 if (empty($groups)) {
     $groups = array();
 }
@@ -76,7 +76,7 @@ else {
 }
 
 
-$titles = $this->GetParameter("titles"); // parametre titles="bf_ce_titre,bf_ce_pays,etc."
+$titles = $this->getParameter("titles"); // parametre titles="bf_ce_titre,bf_ce_pays,etc."
 
 if (empty($titles)) {
     $titles = array();
@@ -494,7 +494,7 @@ function is_liste($idliste = '') {
         list($idliste,$suffixe)=explode( '*', $idliste);
 
 
-        if ($GLOBALS['wiki']->GetTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
+        if ($GLOBALS['wiki']->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
             return true;
     }
         else {
@@ -510,9 +510,9 @@ function liste_to_array($idliste = '') {
     if ($idliste != '') {
         list($idliste,$suffixe)=explode( '*', $idliste);
         //on vérifie que la page en question est bien une page wiki
-        if ($GLOBALS['wiki']->GetTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
+        if ($GLOBALS['wiki']->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
 
-        $valjson = $GLOBALS['wiki']->LoadPage($idliste);
+        $valjson = $GLOBALS['wiki']->loadPage($idliste);
         $valeurs_fiche = json_decode($valjson["body"], true);
         $valeurs_fiche['label'] = _convert($valeurs_fiche['label'], 'UTF-8');
         return $valeurs_fiche['label'];

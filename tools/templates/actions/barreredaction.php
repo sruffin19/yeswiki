@@ -3,31 +3,31 @@ if (!defined("WIKINI_VERSION")) {
     die ("acc&egrave;s direct interdit");
 }
 
-if ($this->HasAccess("write")) {
+if ($this->hasAccess("write")) {
     // on récupére la page et ses valeurs associées
-    $page = $this->GetParameter('page');
+    $page = $this->getParameter('page');
     if (empty($page)) {
-        $page = $this->GetPageTag();
-        $time = $this->GetPageTime();
+        $page = $this->getPageTag();
+        $time = $this->getPageTime();
         $content = $this->page;
     } else {
-        $content = $this->LoadPage($page);
+        $content = $this->loadPage($page);
         $time = $content["time"];
     }
     $barreredactionelements['page'] = $page;
     $barreredactionelements['linkpage'] = $this->href('', $page);
 
     // on choisit le template utilisé
-    $template = $this->GetParameter('template');
+    $template = $this->getParameter('template');
     if (empty($template)) {
         $template = 'barreredaction_basic.tpl.html';
     }
 
     // on peut ajouter des classes é la classe par défaut .footer
-    $barreredactionelements['class'] = ($this->GetParameter('class') ? 'footer '.$this->GetParameter('class') : 'footer');
+    $barreredactionelements['class'] = ($this->getParameter('class') ? 'footer '.$this->getParameter('class') : 'footer');
 
     // on ajoute le lien d'édition si l'action est autorisée
-    if ( $this->HasAccess("write", $page) ) {
+    if ( $this->hasAccess("write", $page) ) {
         $barreredactionelements['linkedit'] = $this->href("edit", $page);
     }
 
@@ -41,14 +41,14 @@ if ($this->HasAccess("write")) {
     // if this page exists
     if ($content) {
         // if owner is current user
-        if ($this->UserIsOwner($page) || $this->UserIsAdmin($page)) {
+        if ($this->userIsOwner($page) || $this->userIsAdmin($page)) {
             $barreredactionelements['owner'] = _t('TEMPLATE_OWNER')." : "._t('TEMPLATE_YOU').' - '._t('TEMPLATE_PERMISSIONS');
             $barreredactionelements['linkacls'] = $this->href("acls", $page);
             $barreredactionelements['linkdeletepage'] = $this->href("deletepage", $page);
         } else {
-            if ($owner = $this->GetPageOwner($page)) {
+            if ($owner = $this->getPageOwner($page)) {
                     $barreredactionelements['owner'] = _t('TEMPLATE_OWNER')." : ".$owner;
-                    if ($this->UserIsAdmin()) {
+                    if ($this->userIsAdmin()) {
                             $barreredactionelements['linkacls'] = $this->href("acls", $page);
                             $barreredactionelements['owner'] .= ' - '._t('TEMPLATE_PERMISSIONS');
                     }
@@ -56,8 +56,8 @@ if ($this->HasAccess("write")) {
                             //$barreredactionelements['linkacls'] = $this->href('', $owner);
                     }
             } else {
-                $barreredactionelements['owner'] = _t('TEMPLATE_NO_OWNER').($this->GetUser() ? " - "._t('TEMPLATE_CLAIM') : "");
-                if ($this->GetUser()) $barreredactionelements['linkacls'] = $this->href("claim", $page);
+                $barreredactionelements['owner'] = _t('TEMPLATE_NO_OWNER').($this->getUser() ? " - "._t('TEMPLATE_CLAIM') : "");
+                if ($this->getUser()) $barreredactionelements['linkacls'] = $this->href("claim", $page);
                 //else $barreredactionelements['linkacls'] = $this->href("claim", $page);
             }
         }

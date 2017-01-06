@@ -228,7 +228,7 @@ switch ($version) {
             0
         );
         $wiki = new Wiki($config);
-        $wiki->SetGroupACL('admins', $admin_name);
+        $wiki->setGroupACL('admins', $admin_name);
 
         //insertion des pages de documentation et des pages standards
         $d = dir('setup/doc/');
@@ -258,16 +258,16 @@ switch ($version) {
                 test(_t('INSERTION_OF_PAGE')." $pagename ...", @mysqli_query($dblink, $sql), '?', 0);
 
                 // update table_links
-                $wiki->SetPage($wiki->LoadPage($pagename, '', 0));
-                $wiki->ClearLinkTable();
-                $wiki->StartLinkTracking();
-                $wiki->TrackLinkTo($pagename);
-                $dummy = $wiki->Header();
-                $dummy .= $wiki->Format($pagecontent);
-                $dummy .= $wiki->Footer();
-                $wiki->StopLinkTracking();
-                $wiki->WriteLinkTable();
-                $wiki->ClearLinkTable();
+                $wiki->setPage($wiki->loadPage($pagename, '', 0));
+                $wiki->clearLinkTable();
+                $wiki->startLinkTracking();
+                $wiki->trackLinkTo($pagename);
+                $dummy = $wiki->header();
+                $dummy .= $wiki->format($pagecontent);
+                $dummy .= $wiki->footer();
+                $wiki->stopLinkTracking();
+                $wiki->writeLinkTable();
+                $wiki->clearLinkTable();
             } else {
                 test(_t('INSERTION_OF_PAGE')." $pagename ...", 0, _t('ALREADY_EXISTING').'.', 0);
             }
@@ -315,7 +315,7 @@ switch ($version) {
             );
         }
         $wiki = new Wiki($config);
-        test(_t('INSERTION_OF_USER_IN_ADMIN_GROUP').' ...', !$wiki->SetGroupACL('admins', $admin_name), 0);
+        test(_t('INSERTION_OF_USER_IN_ADMIN_GROUP').' ...', !$wiki->setGroupACL('admins', $admin_name), 0);
 }
 
 ?>

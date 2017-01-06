@@ -25,7 +25,7 @@ class ActionEditactionsacls extends WikiniAdminAction
         $wiki = &$this->wiki;
         $list = $wiki->GetActionsList();
         sort($list);
-        $res = $wiki->FormOpen('', '', 'get');
+        $res = $wiki->formOpen('', '', 'get');
         $res .= _t('ACTION_RIGHTS').' <select name="actionname">';
         foreach ($list as $action)
         {
@@ -35,24 +35,24 @@ class ActionEditactionsacls extends WikiniAdminAction
             }
             $res .= '>' . ucfirst($action) .  '</option>';
         }
-        $res .= '</select> <input type="submit" class="btn btn-default" value="'._t('SEE').'" />' . $wiki->FormClose();
+        $res .= '</select> <input type="submit" class="btn btn-default" value="'._t('SEE').'" />' . $wiki->formClose();
 
         // save ACL's
         if ($_POST and !empty($_POST['actionname'])) {
-            $result = $wiki->SetModuleACL($name = $_POST['actionname'], 'action', @$_POST['acl']);
+            $result = $wiki->setModuleACL($name = $_POST['actionname'], 'action', @$_POST['acl']);
             if ($result) {
                 return $res . _t('ERROR_WHILE_SAVING_ACL') .' ' . ucfirst($name) . ' ('._t('ERROR_CODE').' ' . $result . ')<br />';
             } else {
-                $wiki->LogAdministrativeAction($wiki->GetUserName(), _t('NEW_ACL_FOR_ACTION')." " . ucfirst($name) . ' : ' . @$_POST['acl'] . "\n");
+                $wiki->logAdministrativeAction($wiki->getUserName(), _t('NEW_ACL_FOR_ACTION')." " . ucfirst($name) . ' : ' . @$_POST['acl'] . "\n");
                 return $res . _t('NEW_ACL_SUCCESSFULLY_SAVED_FOR_ACTION').' ' . ucfirst($name) . '.<br />';
             }
         } elseif (!empty($_GET['actionname']) and in_array($name = $_GET['actionname'], $list)) {
-             $res .= $wiki->FormOpen();
+             $res .= $wiki->formOpen();
              $res .= '<br />'._t('EDIT_RIGHTS_FOR_ACTION').' <strong>' . ucfirst($name) . '</strong>:';
              $res .= '<input type="hidden" name="actionname" value="'. $name . '" />';
-             $res .= '<textarea class="form-control" name="acl" rows="3">' . $wiki->GetModuleACL($name, 'action') . '</textarea><br />';
+             $res .= '<textarea class="form-control" name="acl" rows="3">' . $wiki->getModuleACL($name, 'action') . '</textarea><br />';
              $res .= '<input type="submit" value="'._t('SAVE').'" class="btn btn-primary" accesskey="s" />';
-               return $res . $wiki->FormClose();
+               return $res . $wiki->formClose();
         }
         return $res;
     }

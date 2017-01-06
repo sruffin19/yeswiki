@@ -3,7 +3,7 @@
 function loadUserbyEmail($email, $password = 0)
 {
     global $wiki;
-    return $wiki->LoadSingle(
+    return $wiki->loadSingle(
         "select * from ".$wiki->getUserTablePrefix() . "users where email = '".mysqli_real_escape_string($wiki->dblink, $email).
         "' " . ($password === 0 ? "" : "and password = '" . mysqli_real_escape_string($wiki->dblink, $password) . "'") . " limit 1"
     );
@@ -18,7 +18,7 @@ function checkUNEmail($email)
     );
     if (isset($email) && trim($email) != '') {
         // email was entered
-        $existingEmail = $wiki->LoadSingle('select * from ' . $wiki->getUserTablePrefix() . 'users where email = "' . mysqli_real_escape_string($wiki->dblink, $email) . '" limit 1');
+        $existingEmail = $wiki->loadSingle('select * from ' . $wiki->getUserTablePrefix() . 'users where email = "' . mysqli_real_escape_string($wiki->dblink, $email) . '" limit 1');
         if ($existingEmail) {
             return array (
                 'status' => true,
@@ -36,12 +36,12 @@ function checkUNEmail($email)
 function sendPasswordEmail($userID)
 {
     global $wiki;
-    if ($existingUser = $wiki->LoadUser($userID)) {
+    if ($existingUser = $wiki->loadUser($userID)) {
         $key = md5($userID . '_' . $existingUser['email'] . rand(0, 10000) . date('Y-m-d H:i:s') . PW_SALT);
-        $res = $wiki->InsertTriple($userID, 'http://outils-reseaux.org/_vocabulary/key', $key);
-        $passwordLink = $wiki->Href() . '&a=recover&email=' . $key . '&u=' . urlencode(base64_encode($userID));
+        $res = $wiki->insertTriple($userID, 'http://outils-reseaux.org/_vocabulary/key', $key);
+        $passwordLink = $wiki->href() . '&a=recover&email=' . $key . '&u=' . urlencode(base64_encode($userID));
 
-        $pieces = parse_url($GLOBALS['wiki']->GetConfigValue('base_url'));
+        $pieces = parse_url($GLOBALS['wiki']->getConfigValue('base_url'));
         $domain = isset($pieces['host']) ? $pieces['host'] : '';
 
         $message = _t('LOGIN_DEAR').' ' . $userID . ",\n";
@@ -56,7 +56,7 @@ function sendPasswordEmail($userID)
         if (!function_exists('send_mail')) {
             require_once('includes/email.inc.php');
         }
-        send_mail($GLOBALS['wiki']->GetConfigValue('email_from', 'noreply@' . $domain), 'WikiAdmin', $existingUser['email'], $subject, $message);
+        send_mail($GLOBALS['wiki']->getConfigValue('email_from', 'noreply@' . $domain), 'WikiAdmin', $existingUser['email'], $subject, $message);
     }
 }
 
@@ -64,7 +64,7 @@ function checkEmailKey($key, $userID)
 {
     global $wiki;
     // Pas de detournement possible car utilisation de _vocabulary/key ....
-    $res = $wiki->TripleExists($userID, 'http://outils-reseaux.org/_vocabulary/key', $key);
+    $res = $wiki->tripleExists($userID, 'http://outils-reseaux.org/_vocabulary/key', $key);
     if ($res > 0) {
         return array (
             'status' => true,
@@ -82,8 +82,8 @@ function updateUserPassword($userID, $password, $key)
         return false;
     }
 
-    $wiki->Query("update " . $wiki->getUserTablePrefix() . "users " . "set " . "password = '" . MD5($password) . "' " . "where name = '" . $userID . "' limit 1");
+    $wiki->query("update " . $wiki->getUserTablePrefix() . "users " . "set " . "password = '" . MD5($password) . "' " . "where name = '" . $userID . "' limit 1");
 
-    $res = $wiki->DeleteTriple($userID, 'http://outils-reseaux.org/_vocabulary/key', $key);
+    $res = $wiki->deleteTriple($userID, 'http://outils-reseaux.org/_vocabulary/key', $key);
     return true;
 }

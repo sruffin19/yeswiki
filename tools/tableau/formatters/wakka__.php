@@ -105,4 +105,4 @@ if (!function_exists('wakka2callbacktableaux')) {
     }
 }
 
-$plugin_output_new = preg_replace_callback("/(^\[\|.*?\|\])/ms", 'wakka2callbacktableaux', $plugin_output_new);
+$pluginOutputNew = preg_replace_callback("/(^\[\|.*?\|\])/ms", 'wakka2callbacktableaux', $pluginOutputNew);

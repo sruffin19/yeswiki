@@ -22,7 +22,7 @@ class AutoUpdate
 
     public function isAdmin()
     {
-        return $this->wiki->UserIsAdmin();
+        return $this->wiki->userIsAdmin();
     }
 
     public function getWikiConfiguration()

@@ -54,26 +54,26 @@ include_once 'tools/login/libs/login.functions.php';
 // Lecture des parametres de l'action
 
 // url d'inscription
-$signupurl = $this->GetParameter('signupurl');
+$signupurl = $this->getParameter('signupurl');
 // si pas de pas d'url d'inscription renseignée, on utilise ParametresUtilisateur
 if (empty($signupurl) && $signupurl != "0") {
     $signupurl = $this->href("", "ParametresUtilisateur", "");
 } else {
-    if ($this->IsWikiName($signupurl)) {
+    if ($this->isWikiName($signupurl)) {
         $signupurl = $this->href('', $signupurl);
     }
 }
 
 // url du profil
-$profileurl = $this->GetParameter('profileurl');
+$profileurl = $this->getParameter('profileurl');
 
 // sauvegarde de l'url d'ou on vient
-$incomingurl = $this->GetParameter('incomingurl');
+$incomingurl = $this->getParameter('incomingurl');
 if (empty($incomingurl)) {
     $incomingurl = 'http'.((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 's' : '') . '://' . "{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 }
 
-$userpage = $this->GetParameter("userpage");
+$userpage = $this->getParameter("userpage");
 // si pas d'url de page de sortie renseignée, on retourne sur la page courante
 if (empty($userpage)) {
     $userpage = $incomingurl;
@@ -82,7 +82,7 @@ if (empty($userpage)) {
         $userpage = str_replace('&action=logout', '', $userpage);
     }
 } else {
-    if ($this->IsWikiName($userpage)) {
+    if ($this->isWikiName($userpage)) {
         $userpage = $this->href('', $userpage);
     }
 }
@@ -90,9 +90,9 @@ if (empty($userpage)) {
 /*
  * Url "Mot de passe perdu"
  */
-$lostpasswordurl = $this->GetParameter('lostpasswordurl');
+$lostpasswordurl = $this->getParameter('lostpasswordurl');
 if (!empty($lostpasswordurl)) {
-    if ($this->IsWikiName($lostpasswordurl)) {
+    if ($this->isWikiName($lostpasswordurl)) {
         $lostpasswordurl = $this->href('', $lostpasswordurl);
     }
 } else {
@@ -102,17 +102,17 @@ if (!empty($lostpasswordurl)) {
 
 
 // classe css pour l'action
-$class = $this->GetParameter("class");
+$class = $this->getParameter("class");
 
 // classe css pour les boutons
-$btnclass = $this->GetParameter("btnclass");
+$btnclass = $this->getParameter("btnclass");
 if (empty($btnclass)) {
     $btnclass = 'btn-default';
 }
-$nobtn = $this->GetParameter("nobtn");
+$nobtn = $this->getParameter("nobtn");
 
 // template par défaut
-$template = $this->GetParameter("template");
+$template = $this->getParameter("template");
 if (empty($template) || !file_exists('tools/login/presentation/templates/' . $template)) {
     $template = "default.tpl.html";
 }
@@ -127,31 +127,31 @@ if (!isset($_REQUEST["action"])) {
 
 // cas de la déconnexion
 if ($_REQUEST["action"] == "logout") {
-    $this->LogoutUser();
-    $this->SetMessage(_t('LOGIN_YOU_ARE_NOW_DISCONNECTED'));
-    $this->Redirect(str_replace('&action=logout', '', $incomingurl));
+    $this->logoutUser();
+    $this->setMessage(_t('LOGIN_YOU_ARE_NOW_DISCONNECTED'));
+    $this->redirect(str_replace('&action=logout', '', $incomingurl));
     exit;
 }
 
 // cas de l'identification
 if ($_REQUEST["action"] == "login") {
     // si l'utilisateur existe, on vérifie son mot de passe
-    if (isset($_POST["name"]) && $_POST["name"] != '' && $existingUser = $this->LoadUser($_POST["name"])) {
+    if (isset($_POST["name"]) && $_POST["name"] != '' && $existingUser = $this->loadUser($_POST["name"])) {
         // si le mot de passe est bon, on créée le cookie et on redirige sur la bonne page
         if ($existingUser["password"] == md5($_POST["password"])) {
-            $this->SetUser($existingUser, $_POST["remember"]);
+            $this->setUser($existingUser, $_POST["remember"]);
 
             // si l'on veut utiliser la page d'accueil correspondant au nom d'utilisateur
-            if ($userpage == 'user' && $this->LoadPage($_POST["name"])) {
-                $this->Redirect($this->href('', $_POST["name"], ''));
+            if ($userpage == 'user' && $this->loadPage($_POST["name"])) {
+                $this->redirect($this->href('', $_POST["name"], ''));
             } else {
                 // on va sur la page d'ou on s'est identifie sinon
-                $this->Redirect($incomingurl);
+                $this->redirect($incomingurl);
             }
         } else {
             // on affiche une erreur sur le mot de passe sinon
-            $this->SetMessage(_t('LOGIN_WRONG_PASSWORD'));
-            $this->Redirect($incomingurl);
+            $this->setMessage(_t('LOGIN_WRONG_PASSWORD'));
+            $this->redirect($incomingurl);
         }
     } else {
         // si le nomWiki est un mail
@@ -161,33 +161,33 @@ if ($_REQUEST["action"] == "login") {
         if (isset($_POST["email"]) && $_POST["email"] != '' && $existingUser = loadUserbyEmail($_POST["email"])) {
             // si le mot de passe est bon, on créée le cookie et on redirige sur la bonne page
             if ($existingUser["password"] == md5($_POST["password"])) {
-                $this->SetUser($existingUser, $_POST["remember"]);
+                $this->setUser($existingUser, $_POST["remember"]);
 
                 // si l'on veut utiliser la page d'accueil correspondant au nom d'utilisateur
-                if ($userpage == 'user' && $this->LoadPage($existingUser["name"])) {
-                    $this->Redirect($this->href('', $existingUser["name"], ''));
+                if ($userpage == 'user' && $this->loadPage($existingUser["name"])) {
+                    $this->redirect($this->href('', $existingUser["name"], ''));
                 } else {
                     // on va sur la page d'ou on s'est identifie sinon
-                    $this->Redirect($incomingurl);
+                    $this->redirect($incomingurl);
                 }
             } else {
                 // on affiche une erreur sur le mot de passe sinon
-                $this->SetMessage(_t('LOGIN_WRONG_PASSWORD'));
-                $this->Redirect($incomingurl);
+                $this->setMessage(_t('LOGIN_WRONG_PASSWORD'));
+                $this->redirect($incomingurl);
             }
         } else {
             // on affiche une erreur sur le NomWiki sinon
-            $this->SetMessage(_t('LOGIN_WRONG_USER'));
-            $this->Redirect($incomingurl);
+            $this->setMessage(_t('LOGIN_WRONG_USER'));
+            $this->redirect($incomingurl);
         }
     }
 }
 
 // cas d'une personne connectée déjà
-if ($user = $this->GetUser()) {
+if ($user = $this->getUser()) {
     $connected = true;
-    if ($this->LoadPage("PageMenuUser")) {
-        $PageMenuUser.= $this->Format("{{include page=\"PageMenuUser\"}}");
+    if ($this->loadPage("PageMenuUser")) {
+        $PageMenuUser.= $this->format("{{include page=\"PageMenuUser\"}}");
     }
 
     // si pas de pas d'url de profil renseignée, on utilise ParametresUtilisateur
@@ -196,7 +196,7 @@ if ($user = $this->GetUser()) {
     } elseif ($profileurl == 'WikiName') {
         $profileurl = $this->href("edit", $user['name'], "");
     } else {
-        if ($this->IsWikiName($profileurl)) {
+        if ($this->isWikiName($profileurl)) {
             $profileurl = $this->href('', $profileurl);
         }
     }

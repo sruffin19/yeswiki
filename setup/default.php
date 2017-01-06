@@ -232,7 +232,7 @@ if (!defined('WIKINI_VERSION')) {
         </div>
 
     <?php
-    if ($wiki && $users = $wiki->LoadUsers()) {
+    if ($wiki && $users = $wiki->loadUsers()) {
                 ?>
     <div class="col-sm-9"><p><?php echo _t('USE_AN_EXISTING_ACCOUNT');
                 ?> :</p><br>

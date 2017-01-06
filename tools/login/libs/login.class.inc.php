@@ -10,10 +10,10 @@ public function getUserTablePrefix()
 
 public function LoadUser($name, $password = 0)
 {
-    return $this->LoadSingle("select * from " . $this->getUserTablePrefix() . "users where name = '" . mysqli_real_escape_string($this->dblink, $name) . "' " . ($password === 0 ? "" : "and password = '" . mysqli_real_escape_string($this->dblink, $password) . "'") . " limit 1");
+    return $this->loadSingle("select * from " . $this->getUserTablePrefix() . "users where name = '" . mysqli_real_escape_string($this->dblink, $name) . "' " . ($password === 0 ? "" : "and password = '" . mysqli_real_escape_string($this->dblink, $password) . "'") . " limit 1");
 }
 
 public function LoadUsers()
 {
-    return $this->LoadAll("select * from " . $this->getUserTablePrefix() . "users order by name");
+    return $this->loadAll("select * from " . $this->getUserTablePrefix() . "users order by name");
 }

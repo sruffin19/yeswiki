@@ -4,7 +4,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 // taille de la colonne
-$size = $this->GetParameter('title');
+$size = $this->getParameter('title');
 if (empty($size)) {
     echo '<div><div class="alert alert-danger"><strong>' . _t('TEMPLATE_ACTION_PANEL') . '</strong> : '
         . _t('TEMPLATE_TITLE_PARAMETER_REQUIRED') . '.</div>' . "\n";
@@ -12,7 +12,7 @@ if (empty($size)) {
 }
 
 // classe css pour la couleur du panel ou autre
-$class = $this->GetParameter('class');
+$class = $this->getParameter('class');
 if (empty($class)) {
     $class = 'panel-default';
 }
@@ -20,7 +20,7 @@ if (empty($class)) {
 // data attributes
 $data = getDataParameter();
 
-$pagetag = $this->GetPageTag();
+$pagetag = $this->getPageTag();
 
 // teste s'il y a bien un element de fermeture associé avant d'ouvrir une balise
 if (!isset($GLOBALS['check_' . $pagetag]['panel'])) {

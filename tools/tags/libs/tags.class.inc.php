@@ -3,10 +3,10 @@
 function DeleteAllTags($page)
 {
     //on recupere les anciens tags de la page courante
-    $tabtagsexistants = $this->GetAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+    $tabtagsexistants = $this->getAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     if (is_array($tabtagsexistants)) {
         foreach ($tabtagsexistants as $tab) {
-            $this->DeleteTriple($page, 'http://outils-reseaux.org/_vocabulary/tag', $tab['value'], '', '');
+            $this->deleteTriple($page, 'http://outils-reseaux.org/_vocabulary/tag', $tab['value'], '', '');
         }
     }
 
@@ -18,7 +18,7 @@ function SaveTags($page, $liste_tags)
     $tags = explode(',', mysqli_real_escape_string($this->dblink, _convert($liste_tags, YW_CHARSET, true)));
 
     //on recupere les anciens tags de la page courante
-    $tabtagsexistants = $this->GetAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+    $tabtagsexistants = $this->getAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     if (is_array($tabtagsexistants)) {
         foreach ($tabtagsexistants as $tab) {
             $tags_restants_a_effacer[] = $tab['value'];
@@ -29,8 +29,8 @@ function SaveTags($page, $liste_tags)
     foreach ($tags as $tag) {
         trim($tag);
         if ($tag != '') {
-            if (!$this->TripleExists($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '')) {
-                $this->InsertTriple($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '');
+            if (!$this->tripleExists($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '')) {
+                $this->insertTriple($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '');
             }
             //on supprime ce tag du tableau des tags restants a effacer
             if (isset($tags_restants_a_effacer)) {
@@ -42,7 +42,7 @@ function SaveTags($page, $liste_tags)
     //on supprime les tags restants a effacer
     if (isset($tags_restants_a_effacer)) {
         foreach ($tags_restants_a_effacer as $tag) {
-            $this->DeleteTriple($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '');
+            $this->deleteTriple($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '');
         }
     }
 
@@ -54,9 +54,9 @@ function GetAllTags($page = '')
     if ($page == '') {
         $sql = 'SELECT DISTINCT value FROM '.$this->config['table_prefix'].'triples WHERE property="http://outils-reseaux.org/_vocabulary/tag"';
 
-        return $this->LoadAll($sql);
+        return $this->loadAll($sql);
     } else {
-        return $this->GetAllTriplesValues($this->GetPageTag(), 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+        return $this->getAllTriplesValues($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     }
 }
 
@@ -87,23 +87,23 @@ function PageList($tags = '', $type = '', $nb = '', $tri = '')
 
         $requete = 'SELECT * FROM '.$this->config['table_prefix'].'pages'.$req_from." WHERE latest = 'Y' and comment_on = '' ".$req;
 
-        return $this->LoadAll($requete);
+        return $this->loadAll($requete);
     } else {
         // recuperation des pages wikis
-        $sql = 'SELECT * FROM '.$this->GetConfigValue('table_prefix').'pages';
+        $sql = 'SELECT * FROM '.$this->getConfigValue('table_prefix').'pages';
         if (!empty($taglist)) {
             $sql .= ', '.$this->config['table_prefix'].'triples tags';
         }
         $sql .= ' WHERE latest="Y" AND comment_on="" AND tag NOT LIKE "LogDesActionsAdministratives%" ';
 
         if ($type == 'wiki') {
-            $sql .= ' AND tag NOT IN (SELECT resource FROM '.$this->GetConfigValue('table_prefix').'triples WHERE property="http://outils-reseaux.org/_vocabulary/type") ';
+            $sql .= ' AND tag NOT IN (SELECT resource FROM '.$this->getConfigValue('table_prefix').'triples WHERE property="http://outils-reseaux.org/_vocabulary/type") ';
         } elseif ($type == 'bazar') {
-            $sql .= ' AND tag IN (SELECT resource FROM '.$this->GetConfigValue('table_prefix').'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="fiche_bazar")';
+            $sql .= ' AND tag IN (SELECT resource FROM '.$this->getConfigValue('table_prefix').'triples WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="fiche_bazar")';
         }
 
         $sql .= ' ORDER BY tag ASC';
 
-        return $this->LoadAll($sql);
+        return $this->loadAll($sql);
     }
 }

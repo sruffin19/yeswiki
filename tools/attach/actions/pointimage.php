@@ -25,10 +25,10 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 // Get the action's parameters :
 
 // image's filename
-$file = $this->GetParameter('file');
+$file = $this->getParameter('file');
 if (empty($file)) {
     // former parameter from filename
-    $file = $this->GetParameter('srcmap');
+    $file = $this->getParameter('srcmap');
     if (empty($file)) {
         echo '<div class="alert alert-danger"><strong>'._t('ATTACH_ACTION_POINTIMAGE').'</strong> : '._t('ATTACH_PARAM_FILE_NOT_FOUND').'.</div>'."\n";
         return;
@@ -44,23 +44,23 @@ if (!in_array($ext, $supported_image_extensions)) {
 }
 
 // image size
-$height = $this->GetParameter('height');
-$width = $this->GetParameter('width');
+$height = $this->getParameter('height');
+$width = $this->getParameter('width');
 if (empty($height) && empty($width)) { $size="original"; }
 
 
 // colors of markers
-$colors = $this->GetParameter('color');
+$colors = $this->getParameter('color');
 if (empty($colors)) {
     // older parameter
-    $colors = $this->GetParameter('pointcolor');
+    $colors = $this->getParameter('pointcolor');
     if (empty($colors)) { $colors = 'green';}
 }
 $colors = '["'.str_replace(',', '","', $colors).'"]';
 
 
 // labels of markers
-$labels = $this->GetParameter('label');
+$labels = $this->getParameter('label');
 if (empty($labels)) {
     $labels = _t('ATTACH_DEFAULT_MARKER');
 }
@@ -68,16 +68,16 @@ $labels = '["'.str_replace(',', '","', $labels).'"]';
 
 
 // default size of marker : 10 pixels
-$point_size = $this->GetParameter('pointsize');
+$point_size = $this->getParameter('pointsize');
 if (empty($point_size)) {
     $point_size = 10;
 }
 
 // readonly (no add of markers)
-$readonly = $this->GetParameter('readonly');
+$readonly = $this->getParameter('readonly');
 
 // get an unique pagename based on the image filename, without extension
-$datapagetag = mysqli_real_escape_string($this->dblink, $this->GetPageTag().'PI'.preg_replace("/[^A-Za-z0-9 ]/", '', str_replace('.'.$ext, '', $file)));
+$datapagetag = mysqli_real_escape_string($this->dblink, $this->getPageTag().'PI'.preg_replace("/[^A-Za-z0-9 ]/", '', str_replace('.'.$ext, '', $file)));
 
 // save the posted data
 if (isset($_POST['title']) && !empty($_POST['title'])
@@ -88,13 +88,13 @@ if (isset($_POST['title']) && !empty($_POST['title'])
     && isset($_POST['color']) && !empty($_POST['color'])) {
     $pagetag = mysqli_real_escape_string($this->dblink, str_replace($this->config['base_url'], '', $_POST['pagetag']));
     $chaine = "\n\n~~\"\"<!--".$_POST['image_x']."-".$_POST['image_y']."-".$_POST['color']."--><!--title-->".$_POST['title']."<!--/title-->\"\"\n\"\"<!--desc-->\"\"".$_POST['description']."\"\"<!--/desc-->\n\"\"~~";
-    $donneesbody = $this->LoadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$pagetag."'and latest = 'Y' limit 1");
-    $this->SavePage($pagetag, $donneesbody['body'].$chaine, "", true);
-    $this->Redirect($this->Href());
+    $donneesbody = $this->loadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$pagetag."'and latest = 'Y' limit 1");
+    $this->savePage($pagetag, $donneesbody['body'].$chaine, "", true);
+    $this->redirect($this->href());
 }
 
 // get the data for the image
-$donneesbody = $this->LoadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$datapagetag."'and latest = 'Y' limit 1");
+$donneesbody = $this->loadSingle("SELECT * FROM ".$this->config["table_prefix"]."pages WHERE tag = '".$datapagetag."'and latest = 'Y' limit 1");
 
 // search for markers info
 preg_match_all('/~~(.*)~~/msU', $donneesbody['body'], $locations);
@@ -107,7 +107,7 @@ foreach ($locations[1] as $location){
         $marker['y'] = round($elements[2]);
         $marker['color'] = $elements[3];
         $marker['title'] = $elements[4];
-        $marker['description'] = $this->Format($elements[5]);
+        $marker['description'] = $this->format($elements[5]);
     }
 
     if (count($marker)==5) {
@@ -171,11 +171,11 @@ if (!isset($GLOBALS['pointimagejsincluded'])) {
 
 // output the image on the page
 
-echo '<div class="pointimage-container no-dblclick" data-readonly="'.((!empty($readonly) && $readonly==1) ? 'true' : 'false').'" data-markerscolor=\''.$colors.'\' data-markerslabel=\''.$labels.'\' data-markersize="'.$point_size.'" data-pagetag="'.$this->Href('', $datapagetag).'">'."\n";
+echo '<div class="pointimage-container no-dblclick" data-readonly="'.((!empty($readonly) && $readonly==1) ? 'true' : 'false').'" data-markerscolor=\''.$colors.'\' data-markerslabel=\''.$labels.'\' data-markersize="'.$point_size.'" data-pagetag="'.$this->href('', $datapagetag).'">'."\n";
 if (isset($size)) {
-    echo $this->Format('{{attach file="'.$file.'" desc="image '.$file.'" size="original" class="pointimage-image" nofullimagelink="1"}}');
+    echo $this->format('{{attach file="'.$file.'" desc="image '.$file.'" size="original" class="pointimage-image" nofullimagelink="1"}}');
 } else {
-    echo $this->Format('{{attach file="'.$file.'" desc="image '.$file.'"'.(!empty($width) ? ' width="'.$width.'"' : '').(!empty($height) ? ' height="'.$height.'"' : '').' class="pointimage-image" nofullimagelink="1"}}');
+    echo $this->format('{{attach file="'.$file.'" desc="image '.$file.'"'.(!empty($width) ? ' width="'.$width.'"' : '').(!empty($height) ? ' height="'.$height.'"' : '').' class="pointimage-image" nofullimagelink="1"}}');
 }
 echo $listofmarkers;
 echo '</div> <!-- /.pointimage-container -->'."\n";

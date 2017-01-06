@@ -13,6 +13,6 @@ if (!function_exists("wakkaProgressBar")) {
 
 }
 
-$plugin_output_new = preg_replace_callback("#\[([0-9]+)%\]#", "wakkaProgressBar", $plugin_output_new);
+$pluginOutputNew = preg_replace_callback("#\[([0-9]+)%\]#", "wakkaProgressBar", $pluginOutputNew);
 
 

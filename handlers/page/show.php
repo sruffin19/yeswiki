@@ -42,18 +42,18 @@ if (!defined("WIKINI_VERSION"))
 ob_start();
 
 echo '<div class="page"';
-echo (($user = $this->GetUser()) && ($user['doubleclickedit'] == 'N') || !$this->HasAccess('write')) ? '' : ' ondblclick="doubleClickEdit(event);"';
+echo (($user = $this->getUser()) && ($user['doubleclickedit'] == 'N') || !$this->hasAccess('write')) ? '' : ' ondblclick="doubleClickEdit(event);"';
 echo '>'."\n";
 if (!empty($_SESSION['redirects']))
 {
     $trace = $_SESSION['redirects'];
     $tag = $trace[count($trace) - 1];
-    $prevpage = $this->LoadPage($tag);
-    echo '<div class="redirectfrom"><em>(Redirig&eacute; depuis ', $this->Link($prevpage['tag'], 'edit'), ")</em></div>\n";
+    $prevpage = $this->loadPage($tag);
+    echo '<div class="redirectfrom"><em>(Redirig&eacute; depuis ', $this->link($prevpage['tag'], 'edit'), ")</em></div>\n";
   unset($_SESSION['redirects'][count($trace) - 1]);
 }
 
-if ($HasAccessRead=$this->HasAccess("read"))
+if ($HasAccessRead=$this->hasAccess("read"))
 {
     if (!$this->page)
     {
@@ -64,31 +64,31 @@ if ($HasAccessRead=$this->HasAccess("read"))
         // comment header?
         if ($this->page["comment_on"])
         {
-            echo "<div class=\"commentinfo\">Ceci est un commentaire sur ",$this->ComposeLinkToPage($this->page["comment_on"], "", "", 0),", post&eacute; par ",$this->Format($this->page["user"])," &agrave; ",$this->page["time"],"</div>";
+            echo "<div class=\"commentinfo\">Ceci est un commentaire sur ",$this->composeLinkToPage($this->page["comment_on"], "", "", 0),", post&eacute; par ",$this->format($this->page["user"])," &agrave; ",$this->page["time"],"</div>";
         }
 
         if ($this->page["latest"] == "N")
         {
-            echo "<div class=\"revisioninfo\">Ceci est une version archiv&eacute;e de <a href=\"",$this->href(),"\">",$this->GetPageTag(),"</a> &agrave; ",$this->page["time"],".</div>";
+            echo "<div class=\"revisioninfo\">Ceci est une version archiv&eacute;e de <a href=\"",$this->href(),"\">",$this->getPageTag(),"</a> &agrave; ",$this->page["time"],".</div>";
         }
 
 
         // display page
-        $this->RegisterInclusion($this->GetPageTag());
-        echo $this->Format($this->page["body"], "wakka");
-        $this->UnregisterLastInclusion();
+        $this->registerInclusion($this->getPageTag());
+        echo $this->format($this->page["body"], "wakka");
+        $this->unregisterLastInclusion();
 
         // if this is an old revision, display some buttons
-        if (($this->page["latest"] == "N") && $this->HasAccess("write"))
+        if (($this->page["latest"] == "N") && $this->hasAccess("write"))
         {
-            $latest = $this->LoadPage($this->tag);
+            $latest = $this->loadPage($this->tag);
             ?>
             <br />
-            <?php echo  $this->FormOpen("edit") ?>
+            <?php echo  $this->formOpen("edit") ?>
             <input type="hidden" name="previous" value="<?php echo  $latest["id"] ?>" />
             <input type="hidden" name="body" value="<?php echo  htmlspecialchars($this->page["body"], ENT_COMPAT, YW_CHARSET) ?>" />
             <input type="submit" value="R&eacute;&eacute;diter cette version archiv&eacute;e" />
-            <?php echo  $this->FormClose(); ?>
+            <?php echo  $this->formClose(); ?>
             <?php
         }
     }
@@ -106,13 +106,13 @@ else
 if ($HasAccessRead && (!$this->page || !$this->page["comment_on"]))
 {
     // load comments for this page
-    $comments = $this->LoadComments($this->tag);
+    $comments = $this->loadComments($this->tag);
 
     // store comments display in session
-    $tag = $this->GetPageTag();
+    $tag = $this->getPageTag();
 
     if (!isset($_SESSION["show_comments"][$tag]))
-        $_SESSION["show_comments"][$tag] = ($this->UserWantsComments() ? "1" : "0");
+        $_SESSION["show_comments"][$tag] = ($this->userWantsComments() ? "1" : "0");
     if (isset($_REQUEST["show_comments"])){
         switch($_REQUEST["show_comments"])
         {
@@ -142,38 +142,38 @@ if ($HasAccessRead && (!$this->page || !$this->page["comment_on"]))
             {
                 echo "<a name=\"",$comment["tag"],"\"></a>\n" ;
                 echo "<div class=\"comment\">\n" ;
-                if ($this->HasAccess('write', $comment['tag'])
-                 || $this->UserIsOwner($comment['tag'])
-                 || $this->UserIsAdmin($comment['tag']))
+                if ($this->hasAccess('write', $comment['tag'])
+                 || $this->userIsOwner($comment['tag'])
+                 || $this->userIsAdmin($comment['tag']))
                 {
                     echo '<div class="commenteditlink">';
-                    if ($this->HasAccess('write', $comment['tag']))
+                    if ($this->hasAccess('write', $comment['tag']))
                     {
                         echo '<a href="',$this->href('edit',$comment['tag']),'">&Eacute;diter ce commentaire</a>';
                     }
-                    if ($this->UserIsOwner($comment['tag'])
-                     || $this->UserIsAdmin())
+                    if ($this->userIsOwner($comment['tag'])
+                     || $this->userIsAdmin())
                     {
                         echo '<br />','<a href="',$this->href('deletepage',$comment['tag']),'">Supprimer ce commentaire</a>';
                     }
                     echo "</div>\n";
                 }
-                echo $this->Format($comment["body"]),"\n" ;
-                echo "<div class=\"commentinfo\">\n-- ",$this->Format($comment["user"])," (".$comment["time"],")\n</div>\n" ;
+                echo $this->format($comment["body"]),"\n" ;
+                echo "<div class=\"commentinfo\">\n-- ",$this->format($comment["user"])," (".$comment["time"],")\n</div>\n" ;
                 echo "</div>\n" ;
             }
         }
 
         // display comment form
         echo "<div class=\"commentform\">\n" ;
-        if ($this->HasAccess("comment"))
+        if ($this->hasAccess("comment"))
         {
             ?>
                 Ajouter un commentaire &agrave; cette page:<br />
-                <?php echo  $this->FormOpen("addcomment"); ?>
+                <?php echo  $this->formOpen("addcomment"); ?>
                     <textarea name="body" rows="6" cols="65" style="width: 100%"></textarea><br />
                     <input type="submit" value="Ajouter Commentaire" accesskey="s" />
-                <?php echo  $this->FormClose(); ?>
+                <?php echo  $this->formClose(); ?>
             <?php
         }
         echo "</div>\n" ;
@@ -204,8 +204,8 @@ if ($HasAccessRead && (!$this->page || !$this->page["comment_on"]))
 }
 
 $content = ob_get_clean();
-echo $this->Header();
+echo $this->header();
 echo $content;
-echo $this->Footer();
+echo $this->footer();
 
 ?>

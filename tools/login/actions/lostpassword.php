@@ -47,7 +47,7 @@ if (isset($_POST['subStep']) && !isset($_GET['a'])) { // Sous-etape
                 $error = false;
                 $step = 'recoverSuccess';
                 if (updateUserPassword($_POST['userID'], $_POST['pw0'], $_POST['key'])) { // il y encore un controle ici
-                    $this->SetUser($this->LoadUser($_POST['userID'])); // on s'identitifie
+                    $this->setUser($this->loadUser($_POST['userID'])); // on s'identitifie
                 }
             }
             break;
@@ -69,11 +69,11 @@ echo '<h4>'._t('LOGIN_CHANGE_PASSWORD').'</h4>';
 switch ($step) {
     case 'userNotFound':
         echo '<div class="alert alert-danger">'._t('LOGIN_UNKNOWN_USER').'</div>'."\n"
-          .'<a href="'.$this->href('', $this->GetPageTag()).'" class="btn btn-default">'._t('LOGIN_BACK').'</a>';
+          .'<a href="'.$this->href('', $this->getPageTag()).'" class="btn btn-default">'._t('LOGIN_BACK').'</a>';
         break;
 
     case 'emailForm':
-        echo $this->FormOpen('', '', 'post', 'form-inline');
+        echo $this->formOpen('', '', 'post', 'form-inline');
         if ($error == true) {
             echo '<div class="alert alert-danger">'._t('LOGIN_ADD_EMAIL_TO_CONTINUE').'.</div>'."\n";
         } ?>
@@ -84,7 +84,7 @@ switch ($step) {
 <input type="hidden" name="subStep" value="1" />
 <button type="submit" class="btn btn-primary"><?php echo _t('LOGIN_SEND'); ?></button>
 <?php
-        echo $this->FormClose();
+        echo $this->formClose();
         break;
 
     case 'successPage':
@@ -97,7 +97,7 @@ switch ($step) {
         if ($error == true) {
             echo '<div class="alert alert-danger">'._t('LOGIN_PASSWORD_SHOULD_BE_IDENTICAL').'.</div>'."\n";
         }
-        echo $this->FormOpen();
+        echo $this->formOpen();
     ?>
 <div class="form-group">
   <label for="pw0"><?php echo _t('LOGIN_NEW_PASSWORD'); ?></label>
@@ -112,7 +112,7 @@ switch ($step) {
 <input type="hidden" name="key" value="<?php echo (!isset($_GET['email']) || $_GET['email'] == '') ? $_POST['key'] : $_GET['email']; ?>" />
 <button type="submit" class="btn btn-primary"><?php echo _t('LOGIN_SEND'); ?></button>
 <?php
-        echo $this->FormClose();
+        echo $this->formClose();
         break;
     case 'invalidKey':
         echo '<div class="alert alert-danger">'._t('LOGIN_INVALID_KEY').'.</div>'."\n";

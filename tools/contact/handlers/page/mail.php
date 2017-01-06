@@ -16,7 +16,7 @@ if ((isset($_POST['mail']) or $_POST['email']) && isset($_SERVER['HTTP_X_REQUEST
     $mail_sender = (isset($_POST['email'])) ? trim($_POST['email']) : false;
     if (isset($_GET['field']) and !empty($_GET['field'])) {
         $mail_receiver = '';
-        $val = baz_valeurs_fiche($this->GetPageTag());
+        $val = baz_valeurs_fiche($this->getPageTag());
         if (is_array($val) and isset($val[$_GET['field']])) {
             $mail_receiver = $val[$_GET['field']];
         }
@@ -32,7 +32,7 @@ if ((isset($_POST['mail']) or $_POST['email']) && isset($_SERVER['HTTP_X_REQUEST
     // dans le cas d'une page wiki envoyee, on formate le message en html et en txt
     if (isset($_POST['type']) and $_POST['type'] == 'mail') {
         $subject = ((isset($_POST['subject'])) ? stripslashes($_POST['subject']) : false);
-        $message_html = html_entity_decode(_convert($this->Format($this->page["body"]), YW_CHARSET));
+        $message_html = html_entity_decode(_convert($this->format($this->page["body"]), YW_CHARSET));
         $message_txt = strip_tags(_convert($message_html, YW_CHARSET));
     } else {
         // pour un envoi de mail classique, le message en txt
@@ -98,7 +98,7 @@ if ((isset($_POST['mail']) or $_POST['email']) && isset($_SERVER['HTTP_X_REQUEST
             </button>
             <input type="hidden" name="mail" value="'.htmlspecialchars($_GET['field']).'">
         </form>';
-    } elseif ($this->GetUser()) {
+    } elseif ($this->getUser()) {
         //sinon on affiche le formulaire d'envoi de mail
         //si on est identifie
         //on verifie si l'on est bien identifie comme admin, pour eviter le spam
@@ -131,11 +131,11 @@ if ((isset($_POST['mail']) or $_POST['email']) && isset($_SERVER['HTTP_X_REQUEST
         //on affiche le formulaire d'identification sinon
         $output .= '<div class="alert alert-danger">' . _t('CONTACT_HANDLER_MAIL_FOR_CONNECTED') . '<br />'
             . _t('CONTACT_LOGIN_IF_CONNECTED') . '</div>' . "\n";
-        $output .= $this->Format('{{login}}') . "\n";
+        $output .= $this->format('{{login}}') . "\n";
     }
 
     //affichage a l'ecran
-    echo $this->Header();
+    echo $this->header();
     echo "<div class=\"page\">\n$output\n<hr class=\"hr_clear\" />\n</div>\n";
-    echo $this->Footer();
+    echo $this->footer();
 }

@@ -46,28 +46,28 @@ function AddJavascriptFile($file)
     return;
 }
 
-function LoadRecentlyChanged($limit = 50)
+function loadRecentlyChanged($limit = 50)
 {
     $limit= (int) $limit;
-    if ($pages = $this->LoadAll("select id, tag, time, user, owner from ".$this->config["table_prefix"]."pages where latest = 'Y' and comment_on =  '' order by time desc limit $limit")) {
+    if ($pages = $this->loadAll("select id, tag, time, user, owner from ".$this->config["table_prefix"]."pages where latest = 'Y' and comment_on =  '' order by time desc limit $limit")) {
         return $pages;
     }
 }
 
 
-function GetMethod()
+function getMethod()
 {
     if ($this->method=='iframe') {
         return 'show';
     } else {
-        return Wiki::GetMethod();
+        return Wiki::getMethod();
     }
 }
 
 
 function GetMetaDatas($pagetag)
 {
-    $metadatas = $this->GetTripleValue($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', '', '', '');
+    $metadatas = $this->getTripleValue($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', '', '', '');
     if (!empty($metadatas)) {
         if (YW_CHARSET != 'UTF-8') {
             return array_map('utf8_decode', json_decode($metadatas, true));
@@ -86,14 +86,14 @@ function SaveMetaDatas($pagetag, $metadatas)
 
     if ($former_metadatas) {
         $metadatas = array_merge($former_metadatas, $metadatas);
-        $this->DeleteTriple($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', null, '', '');
+        $this->deleteTriple($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', null, '', '');
     }
     if (YW_CHARSET != 'UTF-8') {
         $metadatas = json_encode(array_map("utf8_encode", $metadatas));
     } else {
         $metadatas = json_encode($metadatas);
     }
-    return $this->InsertTriple($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', $metadatas, '', '');
+    return $this->insertTriple($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', $metadatas, '', '');
 }
 
 // templates avec cache

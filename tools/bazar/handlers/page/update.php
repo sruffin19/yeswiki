@@ -28,18 +28,18 @@ if (!defined("WIKINI_VERSION")) {
     die ("acc&egrave;s direct interdit");
 }
 
-if ($this->UserIsInGroup('admins')) {
+if ($this->userIsInGroup('admins')) {
     $sql = 'SELECT bl_label_liste, blv_label  FROM '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste=bl_id_liste ORDER BY blv_ce_liste, blv_valeur';
-    $tab = $this->LoadAll($sql);
+    $tab = $this->loadAll($sql);
     $anciennomliste ='';
     foreach ($tab as $ligne) {
         if ($ligne['bl_label_liste']!=$anciennomliste) {
             if (is_array($valeur)) {
                 echo $nomwikiliste.' '.json_encode($valeur).'<br /><br />';
                 //on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
-                $GLOBALS["wiki"]->SavePage($nomwikiliste, json_encode($valeur));
+                $GLOBALS["wiki"]->savePage($nomwikiliste, json_encode($valeur));
                 //on cree un triple pour spécifier que la page wiki créée est une liste
-                $GLOBALS["wiki"]->InsertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
+                $GLOBALS["wiki"]->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
             }
             $valeur = NULL;
             $valeur = array();

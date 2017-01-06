@@ -2,7 +2,7 @@
 public function loadPage($tag, $time = "", $cache = 1)
 {
     // retrieve from cache
-    if (!$time && $cache && (($cachedPage = $this->GetCachedPage($tag)) !== false)) {
+    if (!$time && $cache && (($cachedPage = $this->getCachedPage($tag)) !== false)) {
         if ($cachedPage and !isset($cachedPage["metadatas"])) {
             $cachedPage["metadatas"] = $this->GetMetaDatas($tag);
         }
@@ -10,13 +10,13 @@ public function loadPage($tag, $time = "", $cache = 1)
     } else {
         // load page
         $sql = 'SELECT * FROM ' . $this->config['table_prefix'] . 'pages' . " WHERE tag = '" . mysqli_real_escape_string($this->dblink, $tag) . "' AND " . ($time ? "time = '" . mysqli_real_escape_string($this->dblink, $time) . "'" : "latest = 'Y'") . " LIMIT 1";
-        $page = $this->LoadSingle($sql);
+        $page = $this->loadSingle($sql);
         // si la page existe, on charge les meta-donnees
         if ($page) {
             $page["metadatas"] = $this->GetMetaDatas($tag);
         }
 
-        $type = $this->GetTripleValue($tag, 'http://outils-reseaux.org/_vocabulary/type', '', '');
+        $type = $this->getTripleValue($tag, 'http://outils-reseaux.org/_vocabulary/type', '', '');
         if ($type == 'fiche_bazar') {
             $page = $this->checkBazarAcls($page, $tag);
         }
@@ -26,7 +26,7 @@ public function loadPage($tag, $time = "", $cache = 1)
         }
         // cache result
         if (!$time) {
-            $this->CachePage($page, $tag);
+            $this->cachePage($page, $tag);
         }
     }
     return $page;
@@ -35,11 +35,11 @@ public function loadPage($tag, $time = "", $cache = 1)
 function checkBazarOwner($page, $tag)
 {
     // check if user is logged in
-    if (!$this->GetUser()) {
+    if (!$this->getUser()) {
         return false;
     }
     // check if user is owner
-    if ($page["owner"] == $this->GetUserName()) {
+    if ($page["owner"] == $this->getUserName()) {
         return true;
     }
 }
@@ -68,10 +68,10 @@ function checkBazarAcls($page, $tag)
             $fieldname = array();
             foreach ($val_formulaire['template'] as $line) {
                 if (isset($line[11]) && $line[11] != '') {
-                    if ($this->CheckAcl($line[11]) == "%") {
-                        $line[11] = $this->GetUserName();
+                    if ($this->checkACL($line[11]) == "%") {
+                        $line[11] = $this->getUserName();
                     }
-                    if (!$this->CheckACL($line[11])) {
+                    if (!$this->checkACL($line[11])) {
                          // On memorise les champs non autorise
                         $fieldname[] = $line[1];
                     }

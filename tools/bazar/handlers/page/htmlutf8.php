@@ -25,11 +25,11 @@ if (!defined("WIKINI_VERSION")) {
     die ("acc&egrave;s direct interdit");
 }
 
-if ($this->HasAccess("read")) {
+if ($this->hasAccess("read")) {
     if (!$this->page) {
         return;
     } else {
-        echo '<div class="page">'."\n".utf8_encode($this->Format($this->page["body"]))."\n".'</div>'."\n";
+        echo '<div class="page">'."\n".utf8_encode($this->format($this->page["body"]))."\n".'</div>'."\n";
     }
 } else {
     return;

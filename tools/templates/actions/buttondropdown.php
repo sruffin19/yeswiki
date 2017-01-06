@@ -5,39 +5,39 @@ if (!defined('WIKINI_VERSION')) {
 }
 
 // texte genere a l'interieur du bouton
-$text = $this->GetParameter('text');
+$text = $this->getParameter('text');
 
 // titre au survol du bouton et dans la boite modale associée
-$title = $this->GetParameter('title');
+$title = $this->getParameter('title');
 
 // mettre un petit triangle pour indiquer que c'est déroulant
-$caret = $this->GetParameter('caret');
+$caret = $this->getParameter('caret');
 if ($caret != '0') {
     $caret = '1';
 }
 
 // icone du bouton
-$icon = $this->GetParameter('icon');
+$icon = $this->getParameter('icon');
 if (!empty($icon)) {
     $icon = '<i class="icon-'.$icon.' glyphicon glyphicon-'.$icon.'"></i>';
 }
 
 // classe css supplémentaire l'ensemble du
-$class = $this->GetParameter('class');
+$class = $this->getParameter('class');
 
 // classe css supplémentaire pour changer le look des boutons
-$btnclass = $this->GetParameter('btnclass');
+$btnclass = $this->getParameter('btnclass');
 $btnclass = 'btn '.$btnclass;
 if (!strstr($btnclass, 'btn-')) {
     $btnclass .= ' btn-default';
 }
 
-$nobtn = $this->GetParameter('nobtn');
+$nobtn = $this->getParameter('nobtn');
 if (!empty($nobtn) && $nobtn == '1') {
     $btnclass = str_replace(array('btn ', 'btn-default'), array('', ''), $btnclass);
 }
 
-$pagetag = $this->GetPageTag();
+$pagetag = $this->getPageTag();
 
 // teste s'il y a bien un element de fermeture associé avant d'ouvrir une balise
 if (!isset($GLOBALS['check_'.$pagetag]['buttondropdown'])) {

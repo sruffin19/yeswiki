@@ -35,9 +35,9 @@ if ($type == 'fiche_bazar') {
     if (isset($_GET['time'])) {
         $replace = '<input type="hidden" name="time" value="'.htmlspecialchars($_GET['time'], ENT_COMPAT, YW_CHARSET).'">'."\n".$replace;
     }
-    $plugin_output_new = preg_replace(
+    $pluginOutputNew = preg_replace(
         '/\<input type=\"hidden\" name=\"body\" value=\".*\" \/\>/Uis',
         $replace,
-        $plugin_output_new
+        $pluginOutputNew
     );
 }

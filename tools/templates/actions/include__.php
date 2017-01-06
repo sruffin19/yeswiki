@@ -7,20 +7,20 @@ if (!defined('WIKINI_VERSION')) {
 include_once 'tools/templates/libs/templates.functions.php';
 
 // si la page inclue n'existe pas, on propose de la créer
-if (!$incPage = $this->LoadPage($incPageName)) {
+if (!$incPage = $this->loadPage($incPageName)) {
     // on passe en parametres GET les valeurs du template de la page de provenance
     // pour avoir le même graphisme dans la page créée
     $query_string = 'theme='.urlencode($this->config['favorite_theme']).
         '&amp;squelette='.urlencode($this->config['favorite_squelette']).
         '&amp;style='.urlencode($this->config['favorite_style']);
 
-    $plugin_output_new = '<div class="'.$class.'">'."\n".
+    $pluginOutputNew = '<div class="'.$class.'">'."\n".
         '<a class="yeswiki-editable" href="'.$this->href('edit', $incPageName, $query_string).'">'.
         '<i class="glyphicon glyphicon-pencil icon-pencil"></i> '._t('TEMPLATE_EDIT').' '.$incPageName.'</a>'."\n".
         '</div>'."\n";
 } else {
     // sinon, on remplace les liens vers les NomWikis n'existant pas
-    $plugin_output_new = replace_missingpage_links($plugin_output_new);
+    $pluginOutputNew = replace_missingpage_links($pluginOutputNew);
 }
 
 // si le lien correspond à l'url, on rajoute une classe "actif"
@@ -31,43 +31,43 @@ if (!empty($actif) && $actif == '1') {
         $page_active = $oldpage;
     }
     // d'abord les liens avec des attributs class
-    $plugin_output_new = preg_replace(
+    $pluginOutputNew = preg_replace(
         '~<a href="'.preg_quote($this->config['base_url'].$page_active).'" class="(.*)"~Ui',
         '<a class="active-link $1" href="'.$this->config['base_url'].$page_active.'"',
-        $plugin_output_new
+        $pluginOutputNew
     );
 
     // ensuite les liens restants (ceux avec une classe avant ne sont pas pris en compte)
-    $plugin_output_new = str_ireplacement(
+    $pluginOutputNew = str_ireplacement(
         '<a href="'.$this->config['base_url'].$page_active.'"',
         '<a class="active-link" href="'.$this->config['base_url'].$page_active.'"',
-        $plugin_output_new
+        $pluginOutputNew
     );
 }
 
 // rajoute le javascript pour le double clic si le parametre est activé et les droits en écriture existent
-if (!empty($dblclic) && $dblclic == '1' && $this->HasAccess('write', $incPageName)) {
-    $actiondblclic = ' ondblclick="document.location=\''.$this->Href('edit', $incPageName).'\';"';
+if (!empty($dblclic) && $dblclic == '1' && $this->hasAccess('write', $incPageName)) {
+    $actiondblclic = ' ondblclick="document.location=\''.$this->href('edit', $incPageName).'\';"';
 } else {
     $actiondblclic = '';
 }
-$plugin_output_new = str_replace('<div class="include ', '<div'.$actiondblclic.' class="', $plugin_output_new);
+$pluginOutputNew = str_replace('<div class="include ', '<div'.$actiondblclic.' class="', $pluginOutputNew);
 
 // on enleve le préfixe include_ des classes pour que le parametre passé
 // et le nom de classe CSS soient bien identiques
-$plugin_output_new = str_replace('include_', '', $plugin_output_new);
+$pluginOutputNew = str_replace('include_', '', $pluginOutputNew);
 
 // on ajoute pour le menu du haut la classe nav de bootstrap
 if (($incPageName == 'PageMenuHaut' || strstr($class, 'topnavpage')) && !strstr($class, 'horizontal-dropdown-menu')) {
-    $plugin_output_new = preg_replace('/\<ul\>/Ui', '<ul class="nav navbar-nav">', $plugin_output_new, 1);
+    $pluginOutputNew = preg_replace('/\<ul\>/Ui', '<ul class="nav navbar-nav">', $pluginOutputNew, 1);
 
     //TODO: a faire pour toutes les pages ou juste le menu???
     if (YW_CHARSET != 'ISO-8859-1' && YW_CHARSET != 'ISO-8859-15') {
-        $plugin_output_new = mb_convert_encoding($plugin_output_new, 'HTML-ENTITIES', 'UTF-8');
+        $pluginOutputNew = mb_convert_encoding($pluginOutputNew, 'HTML-ENTITIES', 'UTF-8');
     }
 
     $dom = new DOMDocument();
-    @$dom->loadHTML($plugin_output_new);
+    @$dom->loadHTML($pluginOutputNew);
     $xpath = new DOMXpath($dom);
 
     $dropdowns = $xpath->query('*/div/ul/li/ul');
@@ -119,7 +119,7 @@ if (($incPageName == 'PageMenuHaut' || strstr($class, 'topnavpage')) && !strstr(
             $activelink->parentNode->setAttribute('class', $class.' active');
         }
     }
-    $plugin_output_new = preg_replace(
+    $pluginOutputNew = preg_replace(
         '/^<!DOCTYPE.+?>/',
         '',
         str_replace(
@@ -130,15 +130,15 @@ if (($incPageName == 'PageMenuHaut' || strstr($class, 'topnavpage')) && !strstr(
     )."\n";
 } elseif (strstr($class, 'menu-unstyled')) {
     // add style to remove bullets on all ul
-    $plugin_output_new = preg_replace('/\<ul\>/Ui', '<ul class="list-unstyled">', $plugin_output_new);
+    $pluginOutputNew = preg_replace('/\<ul\>/Ui', '<ul class="list-unstyled">', $pluginOutputNew);
 
     // remove list-unstyled class for level 2 ul
-    $plugin_output_new = preg_replace('/\<\/a>\s+<ul class="list-unstyled">/Ui', "</a>\n<ul>", $plugin_output_new);
+    $pluginOutputNew = preg_replace('/\<\/a>\s+<ul class="list-unstyled">/Ui', "</a>\n<ul>", $pluginOutputNew);
 }
 
 // on rajoute une div clear pour mettre le flow css en dessous des éléments flottants
-$plugin_output_new = (!empty($clear) && $clear == '1') ?
-    $plugin_output_new.'<div class="clearfix"></div>'."\n" :
-    $plugin_output_new;
+$pluginOutputNew = (!empty($clear) && $clear == '1') ?
+    $pluginOutputNew.'<div class="clearfix"></div>'."\n" :
+    $pluginOutputNew;
 
-$plugin_output_new = postFormat($plugin_output_new);
+$pluginOutputNew = postFormat($pluginOutputNew);

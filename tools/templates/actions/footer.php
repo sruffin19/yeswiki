@@ -21,7 +21,7 @@ if ($act = preg_match_all("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_foo
         foreach ($valeur as $val) {
             if (isset($matches[2][$j]) && $matches[2][$j]!='') {
                 $action= $matches[2][$j];
-                $template_footer = str_replace('{{'.$action.'}}', $this->Format('{{'.$action.'}}', 'action'), $template_footer);
+                $template_footer = str_replace('{{'.$action.'}}', $this->format('{{'.$action.'}}', 'action'), $template_footer);
             }
             $j++;
         }
@@ -32,7 +32,7 @@ if ($act = preg_match_all("/".'(\\{\\{)'.'(.*?)'.'(\\}\\})'."/is", $template_foo
 echo $template_footer;
 
 // on affiche les requetes SQL et le temps de chargement en mode debug
-if ($this->GetConfigValue('debug')=='yes') {
+if ($this->getConfigValue('debug')=='yes') {
     $debug_log_sql_queries = '';
     $T_SQL=0;
     foreach ($this->queryLog as $query) {

@@ -40,8 +40,8 @@ if (!defined("WIKINI_VERSION"))
 header('Content-type: application/json; charset=UTF-8');
 
 // on teste si on a le droit d'accés aux meta-données
-if ($this->HasAccess("read")) {
-    echo json_encode(array('result' => $this->GetMetaDatas($this->GetPageTag())));
+if ($this->hasAccess("read")) {
+    echo json_encode(array('result' => $this->GetMetaDatas($this->getPageTag())));
 } else {
     echo json_encode(array('result' => 'ERREUR : pas les droits d\'acc&eacute;s.'));
 }

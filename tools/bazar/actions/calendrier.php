@@ -15,7 +15,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 // recuperation des parametres de l'action
-$categorie_nature = $this->GetParameter("categorienature");
+$categorie_nature = $this->getParameter("categorienature");
 if (!empty($categorie_nature)) {
     $GLOBALS['_BAZAR_']['categorie_nature'] = $categorie_nature;
 }
@@ -23,7 +23,7 @@ if (!empty($categorie_nature)) {
 else {
     $GLOBALS['_BAZAR_']['categorie_nature'] = 'toutes';
 }
-$id_typeannonce = $this->GetParameter("idtypeannonce");
+$id_typeannonce = $this->getParameter("idtypeannonce");
 if (!empty($id_typeannonce)) {
     $GLOBALS['_BAZAR_']['id_typeannonce'] = $id_typeannonce;
 }
@@ -33,7 +33,7 @@ else {
 }
 
 // on recupere les parametres pour une requete specifique
-$query = $this->GetParameter("query");
+$query = $this->getParameter("query");
 if (!empty($query)) {
     $tabquery = array();
     $tableau = array();
@@ -47,7 +47,7 @@ if (!empty($query)) {
     $tabquery = '';
 }
 
-$minical = $this->GetParameter('minical');
+$minical = $this->getParameter('minical');
 
 $tableau_resultat = baz_requete_recherche_fiches($tabquery, '', $GLOBALS['_BAZAR_']['id_typeannonce'], $GLOBALS['_BAZAR_']['categorie_nature']);
 $js = '';

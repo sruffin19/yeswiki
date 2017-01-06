@@ -26,7 +26,7 @@ if (!defined('WIKINI_VERSION')) {
 }
 
 // On teste si l'utilisateur peut lire la page
-if (!$this->HasAccess('read')) {
+if (!$this->hasAccess('read')) {
     return;
 } else {
     // On teste si la page existe
@@ -83,9 +83,9 @@ if (!$this->HasAccess('read')) {
 
         //
         // découpe la page
-        $this->RegisterInclusion($this->GetPageTag());
+        $this->registerInclusion($this->getPageTag());
         $body_f = $this->format($this->page['body']);
-        $this->UnregisterLastInclusion();
+        $this->unregisterLastInclusion();
         $body = preg_split('/(.*<h2>.*<\/h2>)/', $body_f, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         // Informations de débogage
@@ -102,7 +102,7 @@ if (!$this->HasAccess('read')) {
             $major = '1';
         }
 
-        $user = $this->GetUser(); // echo $this->GetUser();
+        $user = $this->getUser(); // echo $this->getUser();
 
         // On teste toutes les paramétres du handler "slide_show" ; s'il n'y en a pas, c'est le paramètre "slide=1" qui est invoqué par défaut
 
@@ -122,7 +122,7 @@ if (!$this->HasAccess('read')) {
             echo
             "<html>\n\n\n",
             "<head>\n",
-            '<title>', $this->GetWakkaName(), ':', $this->GetPageTag(), "</title>\n",
+            '<title>', $this->getWakkaName(), ':', $this->getPageTag(), "</title>\n",
             "<meta name=\"robots\" content=\"noindex, nofollow\" />\n",
             "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\" />\n";
             echo

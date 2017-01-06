@@ -23,8 +23,8 @@ if(!defined('WIKINI_VERSION')){
 }
 
 $res = $this->action('backlinks');
-echo $this->Header();
+echo $this->header();
 echo "<div class=\"page\" style=\"padding: 1em\">\n";
 echo $res;
 echo "\n</div>\n";
-echo $this->Footer();
+echo $this->footer();

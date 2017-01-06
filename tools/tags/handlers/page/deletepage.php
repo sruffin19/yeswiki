@@ -26,50 +26,50 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-if ($this->UserIsOwner() || $this->UserIsAdmin()) {
+if ($this->userIsOwner() || $this->userIsAdmin()) {
     if (isset($_GET['eraselink']) && $_GET['eraselink'] == 'oui') {
-        $this->Query("DELETE FROM " . $this->config["table_prefix"] . "links WHERE to_tag = '"
-          . $this->GetPageTag() . "'");
+        $this->query("DELETE FROM " . $this->config["table_prefix"] . "links WHERE to_tag = '"
+          . $this->getPageTag() . "'");
     }
 
-    if ($this->IsOrphanedPage($this->GetPageTag())) {
-        $tag = $this->GetPageTag();
+    if ($this->isOrphanedPage($this->getPageTag())) {
+        $tag = $this->getPageTag();
         if (!isset($_GET['confirme']) || !$_GET['confirme'] == 'oui') {
-            $msg = '<form action="' . $this->Href('deletepage', "", "confirme=oui");
+            $msg = '<form action="' . $this->href('deletepage', "", "confirme=oui");
             $msg.= '" method="post" style="display: inline">' . "\n";
-            $msg.= 'Voulez-vous vraiment supprimer d&eacute;finitivement la page ' . $this->Link($tag) . "&nbsp;?\n";
+            $msg.= 'Voulez-vous vraiment supprimer d&eacute;finitivement la page ' . $this->link($tag) . "&nbsp;?\n";
             $msg.= '<input type="submit" value="Oui" ';
             $msg.= 'style="vertical-align: middle; display: inline" />' . "\n";
             $msg.= "</form>\n";
-            $msg.= '<form action="' . $this->Href() . '" method="post" style="display: inline">' . "\n";
+            $msg.= '<form action="' . $this->href() . '" method="post" style="display: inline">' . "\n";
             $msg.= '<input type="submit" value="Non" style="vertical-align: middle; display: inline" />' . "\n";
             $msg.= "</form></span>\n";
         } else {
-            $this->DeleteOrphanedPage($tag);
-            $this->Query("DELETE FROM " . $this->config["table_prefix"] . "triples "
-              ."WHERE resource = '" . $this->GetPageTag() . "'");
-            $this->LogAdministrativeAction($this->GetUserName(), "Suppression de la page ->\"\"" . $tag . "\"\"");
+            $this->deleteOrphanedPage($tag);
+            $this->query("DELETE FROM " . $this->config["table_prefix"] . "triples "
+              ."WHERE resource = '" . $this->getPageTag() . "'");
+            $this->logAdministrativeAction($this->getUserName(), "Suppression de la page ->\"\"" . $tag . "\"\"");
             $msg = "La page ${tag} a d&eacute;finitivement &eacute;t&eacute; supprim&eacute;e";
         }
     } else {
         $msg = "<p><em>Cette page n'est pas orpheline.</em></p>\n";
-        $linkedFrom = $this->LoadAll("SELECT DISTINCT from_tag " . "FROM " . $this->config["table_prefix"] . "links "
-          . "WHERE to_tag = '" . $this->GetPageTag() . "'");
-        $msg.= "<p>Pages ayant un lien vers " . $this->ComposeLinkToPage($this->tag, "", "", 0) . " :</p>\n";
+        $linkedFrom = $this->loadAll("SELECT DISTINCT from_tag " . "FROM " . $this->config["table_prefix"] . "links "
+          . "WHERE to_tag = '" . $this->getPageTag() . "'");
+        $msg.= "<p>Pages ayant un lien vers " . $this->composeLinkToPage($this->tag, "", "", 0) . " :</p>\n";
         $msg.= "<ul>\n";
         foreach ($linkedFrom as $page) {
-            $msg.= "<li>" . $this->ComposeLinkToPage($page["from_tag"], "", "", 0) . "</li>\n";
+            $msg.= "<li>" . $this->composeLinkToPage($page["from_tag"], "", "", 0) . "</li>\n";
         }
 
         $msg.= "</ul>\n";
-        $msg.= '<form action="' . $this->Href('deletepage', "", "confirme=oui&eraselink=oui");
+        $msg.= '<form action="' . $this->href('deletepage', "", "confirme=oui&eraselink=oui");
         $msg.= '" method="post" style="display: inline">' . "\n";
         $msg.= 'Voulez-vous vraiment supprimer d&eacute;finitivement la page '
           .'malgr&eacute; la pr&eacute;sence de liens ? ' . "\n";
         $msg.= '<input type="submit" value="Oui" ';
         $msg.= 'style="vertical-align: middle; display: inline" />' . "\n";
         $msg.= "</form>\n";
-        $msg.= '<form action="' . $this->Href() . '" method="post" style="display: inline">' . "\n";
+        $msg.= '<form action="' . $this->href() . '" method="post" style="display: inline">' . "\n";
         $msg.= '<input type="submit" value="Non" style="vertical-align: middle; display: inline" />' . "\n";
         $msg.= "</form></span>\n";
     }
@@ -77,8 +77,8 @@ if ($this->UserIsOwner() || $this->UserIsAdmin()) {
     $msg = "<p><em>Vous n'&ecirc;tes pas le propri&eacute;taire de cette page.</em></p>\n";
 }
 
-echo $this->Header();
+echo $this->header();
 echo "<div class=\"page\">\n";
 echo $msg;
 echo "</div>\n";
-echo $this->Footer();
+echo $this->footer();

@@ -35,10 +35,10 @@ if (!defined("WIKINI_VERSION"))
 }
 
 // only claim ownership if this page has no owner, and if user is logged in.
-if ($this->page && !$this->GetPageOwner() && $this->GetUser())
+if ($this->page && !$this->getPageOwner() && $this->getUser())
 {
-    $this->SetPageOwner($this->GetPageTag(), $this->GetUserName());
-    $this->SetMessage("Vous &ecirc;tes maintenant le propri&eacute;taire de cette page");
+    $this->setPageOwner($this->getPageTag(), $this->getUserName());
+    $this->setMessage("Vous &ecirc;tes maintenant le propri&eacute;taire de cette page");
 }
 
-$this->Redirect($this->href());
+$this->redirect($this->href());

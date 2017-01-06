@@ -5,7 +5,7 @@ if (!defined("WIKINI_VERSION"))
 }
 
 // valeur de la progressbar
-$val = $this->GetParameter('val');
+$val = $this->getParameter('val');
 if (empty($val)) {
     $error = ' param&egrave;tre "val" obligatoire.';
 } elseif (!is_numeric($val) || $val<0 || $val > 100) {
@@ -13,7 +13,7 @@ if (empty($val)) {
 }
 
 // classe css supplémentaire pour changer le look
-$class = $this->GetParameter('class');
+$class = $this->getParameter('class');
 $class = 'progressbar progress '.$class;
 
 

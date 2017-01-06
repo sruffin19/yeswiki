@@ -33,29 +33,29 @@ if (!function_exists('champCompare')) {
 }
 
 //recuperation des parametres wikini
-$categorie_nature = $this->GetParameter("categorienature");
+$categorie_nature = $this->getParameter("categorienature");
 
 // permet de reuperer la valeur passée en parametres de l'action ici {{bazarliste categorienature="actus"}}
 // va mettre dans la variable $categorie_nature la valeur "actus"
 if (empty($categorie_nature)) { // dans le cas ou il n'y a pas de valeur précisée, alors il les prend toutes
     $categorie_nature = 'toutes';
 }
-$id_typeannonce = $this->GetParameter("idtypeannonce");
+$id_typeannonce = $this->getParameter("idtypeannonce");
 if (empty($id_typeannonce)) {
     $id_typeannonce = 'toutes';
 }
-$GLOBALS['ordre'] = $this->GetParameter("ordre");
+$GLOBALS['ordre'] = $this->getParameter("ordre");
 if (empty($GLOBALS['ordre'])) {
     $GLOBAL['ordre'] = 'asc';
 }
 
-$template = $this->GetParameter("template");
+$template = $this->getParameter("template");
 if (empty($template)) {
     $template = BAZ_TEMPLATE_LISTE_DEFAUT;
 }
 
 // identifiant de la base de donnée pour la liste
-$id = $this->GetParameter("id");
+$id = $this->getParameter("id");
 if (empty($id)) {
     exit('<div class="alert alert-danger">Error action bazarlistecategorie: parameter "id" missing.</div>');
 } else {
@@ -63,7 +63,7 @@ if (empty($id)) {
 }
 
 // NomWiki de la liste
-$list = $this->GetParameter("list");
+$list = $this->getParameter("list");
 if (empty($list)) {
     echo '<div class="alert alert-danger">Error action bazarlistecategorie: parameter "list" missing.</div>';
 } else {

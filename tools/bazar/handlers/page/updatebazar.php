@@ -26,21 +26,21 @@ if (!defined("WIKINI_VERSION")) {
 
 $output = '';
 
-if ($this->UserIsInGroup('admins')) {
+if ($this->userIsInGroup('admins')) {
     $req = 'SHOW TABLES FROM '.$this->config['mysql_database'].' LIKE "'.BAZ_PREFIXE.'liste%"';
-    $tabnature = $this->LoadAll($req);
+    $tabnature = $this->loadAll($req);
     if (is_array($tabnature)) {
         $sql = 'SELECT bl_label_liste, blv_valeur, blv_label  FROM '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs WHERE blv_ce_liste=bl_id_liste AND blv_label!="Choisir..." ORDER BY blv_ce_liste, blv_valeur';
-        $tab = $this->LoadAll($sql);
+        $tab = $this->loadAll($sql);
         $anciennomliste ='';$valeur = NULL;
         foreach ($tab as $ligne) {
             if ($ligne['bl_label_liste']!=$anciennomliste) {
                 if (is_array($valeur)) {
                     $output .= $nomwikiliste.' '.json_encode($valeur).'<hr />';
                     //on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
-                    $GLOBALS["wiki"]->SavePage($nomwikiliste, json_encode($valeur));
+                    $GLOBALS["wiki"]->savePage($nomwikiliste, json_encode($valeur));
                     //on cree un triple pour spécifier que la page wiki créée est une liste
-                    $GLOBALS["wiki"]->InsertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
+                    $GLOBALS["wiki"]->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
                 }
                 $valeur = NULL;
                 $valeur = array();
@@ -56,7 +56,7 @@ if ($this->UserIsInGroup('admins')) {
         if ($output != '') $output = '<div class="info_box">Ces pages suivantes ont étés rajoutées:</div><div style="overflow:auto;width:100%;height:200px;">'.$output.'</div>'."\n";
 
         //on efface les tables qui servent plus
-        $this->Query('DROP TABLE '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs');
+        $this->query('DROP TABLE '.BAZ_PREFIXE.'liste, '.BAZ_PREFIXE.'liste_valeurs');
     }
     $repertoire = 'tools/bazar/install/formulaire/';
     $dir = opendir($repertoire); $tab_formulaire = array();
@@ -74,6 +74,6 @@ if ($this->UserIsInGroup('admins')) {
     $output .= '<div class="error_box">Seuls les admins peuvent lancer cette op&eacute;ration.</div>';
 }
 
-echo $this->Header();
+echo $this->header();
 echo "<div class=\"page\">\n$output\n<hr class=\"hr_clear\" />\n</div>\n";
-echo $this->Footer();
+echo $this->footer();

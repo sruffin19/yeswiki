@@ -5,9 +5,9 @@ if (!defined("WIKINI_VERSION"))
             die ("acc&egrave;s direct interdit");
 }
 
-$dblclic = $this->GetParameter('doubleclic');
-$actif = $this->GetParameter('actif');
-$pageincluded = $this->GetParameter('page');
+$dblclic = $this->getParameter('doubleclic');
+$actif = $this->getParameter('actif');
+$pageincluded = $this->getParameter('page');
 
 // if metadata exists to change included page, we take the value of it
 if (isset($this->page["metadatas"][$pageincluded])) {
@@ -15,8 +15,8 @@ if (isset($this->page["metadatas"][$pageincluded])) {
     $this->parameter["page"] = $pageincluded;
 }
 
-$clear = $this->GetParameter('clear');
-$class = $this->GetParameter('class');
+$clear = $this->getParameter('clear');
+$class = $this->getParameter('class');
 if (empty($class)) {
     $this->parameter['class'] = 'include';
     $class = 'include';

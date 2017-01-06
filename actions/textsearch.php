@@ -30,15 +30,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 // label é afficher devant la zone de saisie
-$label = $this->GetParameter('label', _t('WHAT_YOU_SEARCH').'&nbsp;: ');
+$label = $this->getParameter('label', _t('WHAT_YOU_SEARCH').'&nbsp;: ');
 // largeur de la zone de saisie
-$size = $this->GetParameter('size', '40');
+$size = $this->getParameter('size', '40');
 // texte du bouton
-$button = $this->GetParameter('button', _t('SEARCH'));
+$button = $this->getParameter('button', _t('SEARCH'));
 // texte é chercher
-$phrase = $this->GetParameter('phrase', false);
+$phrase = $this->getParameter('phrase', false);
 // séparateur entre les éléments trouvés
-$separator = $this->GetParameter('separator', false);
+$separator = $this->getParameter('separator', false);
 
 // se souvenir si c'était :
 // -- un paramétre de l'action : {{textsearch phrase="Test"}}
@@ -53,7 +53,7 @@ if (!$phrase && isset($_GET['phrase'])) $phrase = $_GET['phrase'];
 // dans le cas contraire, présenter une zone de saisie
 if (!$paramPhrase)
 {
-    echo $this->FormOpen('', '', 'get');
+    echo $this->formOpen('', '', 'get');
     echo '<div class="input-prepend input-append input-group input-group-lg">
             <span class="add-on input-group-addon"><i class="glyphicon glyphicon-search icon-search"></i></span>
       <input name="phrase" type="text" class="form-control" placeholder="'.(($label) ? $label : '').'" size="', $size, '" value="', htmlspecialchars($phrase, ENT_COMPAT, YW_CHARSET), '" >
@@ -61,7 +61,7 @@ if (!$paramPhrase)
         <input type="submit" class="btn btn-primary btn-lg" value="', $button, '" />
       </span>
     </div><!-- /input-group --><br>';
-    echo "\n", $this->FormClose();
+    echo "\n", $this->formClose();
 }
 
 if ($phrase)
@@ -81,7 +81,7 @@ if ($phrase)
         foreach ($results as $i => $page)
         {
             if ($i > 0) echo $separator;
-            echo $this->ComposeLinkToPage($page['tag']);
+            echo $this->composeLinkToPage($page['tag']);
         }
         if (!$paramPhrase)
         {
@@ -94,7 +94,7 @@ if ($phrase)
             '<ol>', "\n";
         foreach ($results as $i => $page)
         {
-            echo "<li>", $this->ComposeLinkToPage($page["tag"]), "</li>\n";
+            echo "<li>", $this->composeLinkToPage($page["tag"]), "</li>\n";
         }
         echo "</ol>\n";
         }

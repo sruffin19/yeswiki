@@ -34,7 +34,7 @@ if (!defined("WIKINI_VERSION"))
 
 // on supprime la vieille gestion des commentaires
 $string = '/\<div class="commentsheader"\>.*\<\/div\>/Uis';
-$plugin_output_new = preg_replace($string, '', $plugin_output_new);
+$pluginOutputNew = preg_replace($string, '', $pluginOutputNew);
 
 $output = '';
 
@@ -42,17 +42,17 @@ if ($GLOBALS["open_comments"][$tag]) {
     if ($HasAccessRead && (!$this->page || !$this->page["comment_on"]))
     {
         // load comments for this page
-        $comments = $this->LoadComments($this->tag);
+        $comments = $this->loadComments($this->tag);
 
         // store comments display in session
-        $tag = $this->GetPageTag();
+        $tag = $this->getPageTag();
 
         // display comments!
         include_once('tools/tags/libs/tags.functions.php');
         $gestioncommentaire = '<div id="yeswiki-comments-'.$tag.'" class="yeswiki-page-comments accordion hide">
     <div class="accordion-group">
         <div class="accordion-heading">';
-        if (($this->UserIsOwner()) || ($this->UserIsAdmin())) {
+        if (($this->userIsOwner()) || ($this->userIsAdmin())) {
             $gestioncommentaire .= '<a class="btn btn-danger pull-right" href="'.$this->href('closecomments').'" title="'._t('TAGS_DESACTIVATE_COMMENTS_ON_THIS_PAGE').'">'._t('TAGS_DESACTIVATE_COMMENTS').'</a>'."\n";
         }
 
@@ -69,7 +69,7 @@ if ($GLOBALS["open_comments"][$tag]) {
 }
 else //commentaire pas ouverts
 {
-    if (($this->UserIsOwner()) || ($this->UserIsAdmin()))
+    if (($this->userIsOwner()) || ($this->userIsAdmin()))
     {
         //TODO: le rajouter aux droits acls wiki plutot que les afficher ici
         $output .= '<div class="well well-small hide"><i class="icon-comment"></i>&nbsp;'._t('TAGS_COMMENTS_DESACTIVATED').' '."\n".'<a class="btn btn-success pull-right" href="'.$this->href('opencomments').'" title="'._t('TAGS_ACTIVATE_COMMENTS_ON_THIS_PAGE').'">'._t('TAGS_ACTIVATE_COMMENTS').'</a><div class="clearfix"></div></div>'."\n";
@@ -79,7 +79,7 @@ else //commentaire pas ouverts
 // on affiche la liste des mots cles disponibles pour cette page
 if (!CACHER_MOTS_CLES && (!isset($type) || !(isset($type) && $type == 'fiche_bazar')))
 {
-    $tabtagsexistants = $this->GetAllTags($this->GetPageTag());
+    $tabtagsexistants = $this->GetAllTags($this->getPageTag());
     $tagspage = array();
     foreach ($tabtagsexistants as $tab)
     {
@@ -92,13 +92,13 @@ if (!CACHER_MOTS_CLES && (!isset($type) || !(isset($type) && $type == 'fiche_baz
         foreach ($tagspage as $tag)
         {
             $tag = stripslashes($tag);
-            $tagsexistants .= '&nbsp;<a class="tag-label label label-info" href="'.$this->href('listpages',$this->GetPageTag(),'tags='.urlencode($tag)).'" title="'._t('TAGS_SEE_ALL_PAGES_WITH_THIS_TAGS').'">'.$tag.'</a>';
+            $tagsexistants .= '&nbsp;<a class="tag-label label label-info" href="'.$this->href('listpages',$this->getPageTag(),'tags='.urlencode($tag)).'" title="'._t('TAGS_SEE_ALL_PAGES_WITH_THIS_TAGS').'">'.$tag.'</a>';
         }
         $output .= '<i class="icon icon-tags"></i>'."\n".$tagsexistants."\n";
     }
 }
 
-$plugin_output_new = str_replace('    <script src="tools/tags/libs/tag.js"></script>'."\n", '', $plugin_output_new);
-$plugin_output_new = str_replace('</body>', '    <script src="tools/tags/libs/tag.js"></script>'."\n".'</body>', $plugin_output_new);
+$pluginOutputNew = str_replace('    <script src="tools/tags/libs/tag.js"></script>'."\n", '', $pluginOutputNew);
+$pluginOutputNew = str_replace('</body>', '    <script src="tools/tags/libs/tag.js"></script>'."\n".'</body>', $pluginOutputNew);
 
-$plugin_output_new = preg_replace ('/\<hr class=\"hr_clear\" \/\>/', '<hr class="hr_clear" />'."\n".$output, $plugin_output_new);
+$pluginOutputNew = preg_replace ('/\<hr class=\"hr_clear\" \/\>/', '<hr class="hr_clear" />'."\n".$output, $pluginOutputNew);

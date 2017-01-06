@@ -324,7 +324,7 @@ class WikiniFormatter
                     }
 
                     $output = "<div class=\"code\">";
-                    $output .= $wiki->Format(trim($code), $formatter);
+                    $output .= $wiki->format(trim($code), $formatter);
                     $output .= "</div>\n";
 
                     return $output;
@@ -346,7 +346,7 @@ class WikiniFormatter
                     if ($url)
                     {
                         $url .= "/wakka.php?wiki=".$text."/raw";
-                        return $wiki->Format($wiki->Format($url, "raw"), "wakka");
+                        return $wiki->format($wiki->format($url, "raw"), "wakka");
                     }
                     else
                     {
@@ -376,7 +376,7 @@ class WikiniFormatter
                         // filter ]] because there are none here
                         // by construct)
                         $text = isset($text) ? preg_replace("/@@|££|\[\[/", "", $text) : '';
-                        return $result.$wiki->Link($url, "", $text);
+                        return $result.$wiki->link($url, "", $text);
                     }
                     else
                     { // if there is no URL, return at least the text
@@ -402,12 +402,12 @@ class WikiniFormatter
                 // interwiki links!
                 elseif (preg_match('`^' . WN_INTERWIKI_LINK . '$`', $thing))
                 {
-                    return $wiki->Link($thing);
+                    return $wiki->link($thing);
                 }
                 // wiki links!
                 elseif (preg_match('`^' . WN_WIKI_LINK . '`', $thing))
                 {
-                    return $wiki->Link($thing);
+                    return $wiki->link($thing);
                 }
                 // separators
                 elseif (preg_match("/-{4,}/", $thing, $matches))

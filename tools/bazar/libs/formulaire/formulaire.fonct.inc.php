@@ -827,7 +827,7 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
     } elseif ($mode == 'requete') {
         //on supprime les tags existants
         if (!isset($GLOBALS['delete_tags'])) {
-            $GLOBALS['wiki']->DeleteTriple($valeurs_fiche['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', null, '', '');
+            $GLOBALS['wiki']->deleteTriple($valeurs_fiche['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', null, '', '');
             $GLOBALS['delete_tags'] = true;
         }
 
@@ -838,7 +838,7 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
         foreach ($tags as $tag) {
             trim($tag);
             if ($tag != '') {
-                $GLOBALS['wiki']->InsertTriple($valeurs_fiche['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', _convert($tag, YW_CHARSET, true), '', '');
+                $GLOBALS['wiki']->insertTriple($valeurs_fiche['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', _convert($tag, YW_CHARSET, true), '', '');
             }
         }
 
@@ -856,7 +856,7 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
                 sort($tabtagsexistants);
                 $tagsexistants = '';
                 foreach ($tabtagsexistants as $tag) {
-                    $tagsexistants.= '<a class="tag-label label label-info" href="' . $GLOBALS['wiki']->href('listpages', $GLOBALS['wiki']->GetPageTag(), 'tags=' . urlencode(trim($tag))) . '" title="' . _t('TAGS_SEE_ALL_PAGES_WITH_THIS_TAGS') . '">' . $tag . '</a>
+                    $tagsexistants.= '<a class="tag-label label label-info" href="' . $GLOBALS['wiki']->href('listpages', $GLOBALS['wiki']->getPageTag(), 'tags=' . urlencode(trim($tag))) . '" title="' . _t('TAGS_SEE_ALL_PAGES_WITH_THIS_TAGS') . '">' . $tag . '</a>
                     </li>' . "\n";
                 }
                 $html.= $tagsexistants . "\n";
@@ -987,10 +987,10 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
         $nomwiki = (isset($valeurs_fiche['nomwiki']) && !empty($valeurs_fiche['nomwiki'])) ?
             $valeurs_fiche['nomwiki'] : $valeurs_fiche[$tableau_template[1]];
 
-        if (!$GLOBALS['wiki']->IsWikiName($nomwiki)) {
+        if (!$GLOBALS['wiki']->isWikiName($nomwiki)) {
             $nomwiki = genere_nom_wiki($valeurs_fiche[$tableau_template[1]], 0);
             // si le user existe, on ajoute un nombre
-            while ($GLOBALS['wiki']->LoadUser($nomwiki)) {
+            while ($GLOBALS['wiki']->loadUser($nomwiki)) {
                 $nomwiki = genere_nom_wiki($valeurs_fiche[$tableau_template[1]]);
             }
         }
@@ -998,7 +998,7 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
         // indicateur pour la gestion des droits associee a la fiche.
         $GLOBALS['utilisateur_wikini'] = $nomwiki;
 
-        if (!$GLOBALS['wiki']->LoadUser($nomwiki)) {
+        if (!$GLOBALS['wiki']->loadUser($nomwiki)) {
             $requeteinsertionuserwikini = 'INSERT INTO ' . $GLOBALS['wiki']->config["table_prefix"] . "users SET " . "signuptime = now(), " . "name = '" . mysqli_real_escape_string($GLOBALS['wiki']->dblink, $nomwiki) . "', " . "email = '" . mysqli_real_escape_string($GLOBALS['wiki']->dblink, $valeurs_fiche[$tableau_template[2]]) . "', " . "password = md5('" . mysqli_real_escape_string($GLOBALS['wiki']->dblink, $valeurs_fiche['mot_de_passe_wikini']) . "')";
             $resultat = $GLOBALS['wiki']->query($requeteinsertionuserwikini);
             if ($sendmail) {
@@ -1026,7 +1026,7 @@ function utilisateur_wikini(&$formtemplate, $tableau_template, $mode, $valeurs_f
             $html .= '<div class="BAZ_rubrique" data-id="nomwiki">' . "\n" . '<span class="BAZ_label">'._t('BAZ_GIVEN_ID').' :</span>' . "\n";
             $html .= '<span class="BAZ_texte"> ';
             $html .= $valeurs_fiche['nomwiki'];
-            if ($GLOBALS['wiki']->GetUser() and ($GLOBALS['wiki']->GetUserName() == $valeurs_fiche['nomwiki'])) {
+            if ($GLOBALS['wiki']->getUser() and ($GLOBALS['wiki']->getUserName() == $valeurs_fiche['nomwiki'])) {
                 $html .= ' <a class="btn btn-xs btn-default" href="'.$GLOBALS['wiki']->href('edit', $valeurs_fiche['nomwiki']).'"><i class="glyphicon glyphicon-pencil"></i> '._t('BAZ_EDIT_MY_ENTRY').'</a> <a  class="btn btn-xs btn-default" href="'.$GLOBALS['wiki']->href('', 'ParametresUtilisateur').'"><i class="glyphicon glyphicon-lock"></i> '._t('BAZ_CHANGE_PWD').'</a>';
             }
             $html .= '</span>' . "\n" . '</div> <!-- /.BAZ_rubrique -->' . "\n";
@@ -1193,7 +1193,7 @@ function champs_mail(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
                 $GLOBALS['wiki']->addJavascriptFile('tools/contact/libs/contact.js');
                 $title = 'Contacter par mail '.htmlspecialchars($valeurs_fiche['bf_titre']);
                 $html .= '<span class="BAZ_texte"><a class="btn btn-default modalbox" title="'.$title.'" href="'
-                  .$GLOBALS['wiki']->href('mail', $GLOBALS['wiki']->GetPageTag(), 'field='.$tableau_template[1]).'"><i class="glyphicon glyphicon-envelope"></i> '.$title;
+                  .$GLOBALS['wiki']->href('mail', $GLOBALS['wiki']->getPageTag(), 'field='.$tableau_template[1]).'"><i class="glyphicon glyphicon-envelope"></i> '.$title;
                 $html .=  '</a></span>' . "\n" . '</div> <!-- /.BAZ_rubrique -->' . "\n";
             } else {
                 $html.= '<span class="BAZ_texte"><a href="mailto:' . $valeurs_fiche[$tableau_template[1]] . '" class="BAZ_lien_mail">';
@@ -1350,12 +1350,12 @@ function textelong(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
             if ($formatage == 'wiki-textarea') {
                 $containsattach = (strpos($valeurs_fiche[$identifiant], '{{attach') !== false);
                 if ($containsattach) {
-                    $oldpage = $GLOBALS['wiki']->GetPageTag();
+                    $oldpage = $GLOBALS['wiki']->getPageTag();
                     $oldpagearray = $GLOBALS['wiki']->page;
                     $GLOBALS['wiki']->tag = $valeurs_fiche['id_fiche'];
-                    $GLOBALS['wiki']->page = $GLOBALS['wiki']->LoadPage($GLOBALS['wiki']->tag);
+                    $GLOBALS['wiki']->page = $GLOBALS['wiki']->loadPage($GLOBALS['wiki']->tag);
                 }
-                $html.= $GLOBALS['wiki']->Format($valeurs_fiche[$identifiant]);
+                $html.= $GLOBALS['wiki']->format($valeurs_fiche[$identifiant]);
                 if ($containsattach) {
                     $GLOBALS['wiki']->tag = $oldpage;
                     $GLOBALS['wiki']->page = $oldpagearray;
@@ -1476,7 +1476,7 @@ function fichier(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
                 }
             }
             if (file_exists(BAZ_CHEMIN_UPLOAD . $valeurs_fiche[$type . $identifiant])) {
-                $lien_supprimer = $GLOBALS['wiki']->href('edit', $GLOBALS['wiki']->GetPageTag());
+                $lien_supprimer = $GLOBALS['wiki']->href('edit', $GLOBALS['wiki']->getPageTag());
                 $lien_supprimer.= ($GLOBALS['wiki']->config["rewrite_mode"] ? "?" : "&") . 'delete_file=' . $valeurs_fiche[$type . $identifiant];
 
                 $html = '<div class="control-group form-group">
@@ -1684,7 +1684,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
                 $valeur = json_encode($valeur);
 
                 //on sauve les valeurs d'une fiche dans une PageWiki, pour garder l'historique
-                $GLOBALS["wiki"]->SavePage($valeurs_fiche['id_fiche'], $valeur);
+                $GLOBALS["wiki"]->savePage($valeurs_fiche['id_fiche'], $valeur);
 
                 //on affiche les infos sur l'effacement du fichier, et on reinitialise la variable pour le fichier pour faire apparaitre le formulaire d'ajout par la suite
                 $info = '<div class="alert alert-info">' . _t('BAZ_FICHIER') . $nomimg . _t('BAZ_A_ETE_EFFACE') . '</div>' . "\n";
@@ -1719,7 +1719,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
                 // apercu de l'image
                 $inputhtml .= '<div class="row"><div class="col-xs-3">';
 
-                $lien_supprimer = $GLOBALS['wiki']->href('edit', $GLOBALS['wiki']->GetPageTag());
+                $lien_supprimer = $GLOBALS['wiki']->href('edit', $GLOBALS['wiki']->getPageTag());
                 $lien_supprimer.= ($GLOBALS['wiki']->config["rewrite_mode"] ? "?" : "&") . 'suppr_image=' . $valeurs_fiche[$type . $identifiant];
                 $lien_supprimer_image = '<a class="btn btn-sm btn-block btn-danger" href="' . str_replace('&', '&amp;', $lien_supprimer) . '" onclick="javascript:return confirm(\'' . _t('BAZ_CONFIRMATION_SUPPRESSION_IMAGE') . '\');" ><i class="glyphicon glyphicon-trash"></i> ' . _t('BAZ_SUPPRIMER_IMAGE') . '</a>' . "\n";
                 $inputhtml .= '<label class="btn btn-block btn-default"><i class="glyphicon glyphicon-pencil"></i>
@@ -1750,7 +1750,7 @@ function image(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
                 }
                 $valeur = json_encode($valeur);
                 //on sauve les valeurs d'une fiche dans une PageWiki, pour garder l'historique
-                $GLOBALS["wiki"]->SavePage($valeurs_fiche['id_fiche'], $valeur);
+                $GLOBALS["wiki"]->savePage($valeurs_fiche['id_fiche'], $valeur);
             }
         } else {
             //cas ou il n'y a pas d'image dans la base de donnees, on affiche le formulaire d'envoi d'image
@@ -1873,16 +1873,16 @@ function acls(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
         if ($comment == 'user' or $comment == '#') {
             $comment = $valeurs_fiche['nomwiki'];
         }
-        // hack pour que SavePage ne re-ecrit pas les droits avec les valeurs par défaut
+        // hack pour que savePage ne re-ecrit pas les droits avec les valeurs par défaut
         $GLOBALS['wiki']->pageCache[$valeurs_fiche['id_fiche']]['body'] = $valeurs_fiche;
         $GLOBALS['wiki']->pageCache[$valeurs_fiche['id_fiche']]['tag'] = $valeurs_fiche['id_fiche'];
         $GLOBALS['wiki']->pageCache[$valeurs_fiche['id_fiche']]['owner'] = $valeurs_fiche['createur'];
         $GLOBALS['wiki']->pageCache[$valeurs_fiche['id_fiche']]['comment_on'] = '';
 
         // on sauve les acls
-        $GLOBALS['wiki']->SaveAcl($valeurs_fiche['id_fiche'], 'read', $read);
-        $GLOBALS['wiki']->SaveAcl($valeurs_fiche['id_fiche'], 'write', $write);
-        $GLOBALS['wiki']->SaveAcl($valeurs_fiche['id_fiche'], 'comment', $comment);
+        $GLOBALS['wiki']->saveAcl($valeurs_fiche['id_fiche'], 'read', $read);
+        $GLOBALS['wiki']->saveAcl($valeurs_fiche['id_fiche'], 'write', $write);
+        $GLOBALS['wiki']->saveAcl($valeurs_fiche['id_fiche'], 'comment', $comment);
     }
 }
 
@@ -1918,7 +1918,7 @@ function titre(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
                     //on récupere le premier chiffre (l'identifiant de la liste)
                     preg_match_all('/[0-9]{1,4}/', $var, $matches);
                     $req = 'SELECT blv_label FROM ' . BAZ_PREFIXE . 'liste_valeurs WHERE blv_ce_liste=' . $matches[0][0] . ' AND blv_valeur=' . $valeurs_fiche[$var] . ' AND blv_ce_i18n="fr-FR"';
-                    $label = $GLOBALS['wiki']->LoadSingle($req);
+                    $label = $GLOBALS['wiki']->loadSingle($req);
                     $valeurs_fiche['bf_titre'] = str_replace('{{' . $var . '}}', ($label[0] != null) ? $label[0] : '', $valeurs_fiche['bf_titre']);
                 } else {
                     $valeurs_fiche['bf_titre'] = str_replace('{{' . $var . '}}', $valeurs_fiche[$var], $valeurs_fiche['bf_titre']);
@@ -2402,7 +2402,7 @@ function checkboxfiche(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
     if (!isset($tableau_template[1])) {
-        return $GLOBALS['wiki']->Format('//Erreur sur listefiches : pas d\'identifiant de type de fiche passé...//');
+        return $GLOBALS['wiki']->format('//Erreur sur listefiches : pas d\'identifiant de type de fiche passé...//');
     }
     if (isset($tableau_template[6]) && $tableau_template[6] == 'checkbox') {
         $typefiche = 'checkboxfiche';
@@ -2431,7 +2431,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
     }
     if (isset($valeurs_fiche['id_fiche']) && $mode == 'saisie') {
         $actionbazarliste = '{{bazarliste id="' . $tableau_template[1] . '" query="' . $query . '" nb="' . $nb . '" ordre="' . $ordre . '" template="' . $template . '"}}';
-        $html = $GLOBALS['wiki']->Format($actionbazarliste);
+        $html = $GLOBALS['wiki']->format($actionbazarliste);
 
         //ajout lien nouvelle saisie
         $url_checkboxfiche = clone ($GLOBALS['_BAZAR_']['url']);
@@ -2470,7 +2470,7 @@ function listefiches(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
         }
     } elseif ($mode == 'html') {
         $actionbazarliste = '{{bazarliste idtypeannonce="' . $tableau_template[1] . '" query="' . $query . '" ordre="' . $ordre . '" template="' . $template . '"}}';
-        $html = '<span class="BAZ_texte">'.$GLOBALS['wiki']->Format($actionbazarliste).'</span>';
+        $html = '<span class="BAZ_texte">'.$GLOBALS['wiki']->format($actionbazarliste).'</span>';
 
         return $html;
     }
@@ -2486,11 +2486,11 @@ function listefichesliees(&$formtemplate, $tableau_template, $mode, $valeurs_fic
 function bookmarklet(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
 {
     if ($mode == 'html') {
-        if ($GLOBALS['wiki']->GetMethod() == 'iframe') {
+        if ($GLOBALS['wiki']->getMethod() == 'iframe') {
             return '<a class="btn btn-danger pull-right" href="javascript:window.close();"><i class="glyphicon glyphicon-remove icon-remove icon-white"></i>&nbsp;Fermer cette fen&ecirc;tre</a>';
         }
     } elseif ($mode == 'saisie') {
-        if ($GLOBALS['wiki']->GetMethod() != 'iframe') {
+        if ($GLOBALS['wiki']->getMethod() != 'iframe') {
             $url_bookmarklet = clone ($GLOBALS['_BAZAR_']['url']);
             $url_bookmarklet->removeQueryString('id_fiche');
             $url_bookmarklet->addQueryString('vue', BAZ_VOIR_SAISIR);

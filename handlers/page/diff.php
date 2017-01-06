@@ -65,7 +65,7 @@ ob_start();
 <div class="page">
 <?php
 
-if ($this->HasAccess("read"))
+if ($this->hasAccess("read"))
 {
 
 // If asked, call original diff
@@ -74,8 +74,8 @@ if ($this->HasAccess("read"))
 
         /* NOTE: This is a really cheap way to do it. I think it may be more intelligent to write the two pages to temporary files and run /usr/bin/diff over them. Then again, maybe not.        */
         // load pages
-          $pageA = $this->LoadPageById($_REQUEST["a"]);
-          $pageB = $this->LoadPageById($_REQUEST["b"]);
+          $pageA = $this->loadPageById($_REQUEST["a"]);
+          $pageB = $this->loadPageById($_REQUEST["b"]);
 
         // prepare bodies
           $bodyA = explode("\n", $pageA["body"]);
@@ -87,20 +87,20 @@ if ($this->HasAccess("read"))
 
           $output .= "<b>Comparaison de <a href=\"".$this->href("", "", "time=".urlencode($pageA["time"]))."\">".$pageA["time"]."</a> &agrave; <a href=\"".$this->href("", "", "time=".urlencode($pageB["time"]))."\">".$pageB["time"]."</a></b><br />\n";
 
-          $this->RegisterInclusion($this->GetPageTag());
+          $this->registerInclusion($this->getPageTag());
           if ($added)
           {
             // remove blank lines
             $output .= "<br />\n<b>Ajouts:</b><br />\n";
-            $output .= "<div class=\"additions\">".$this->Format(implode("\n", $added))."</div>";
+            $output .= "<div class=\"additions\">".$this->format(implode("\n", $added))."</div>";
           }
 
           if ($deleted)
           {
             $output .= "<br />\n<b>Suppressions:</b><br />\n";
-            $output .= "<div class=\"deletions\">".$this->Format(implode("\n", $deleted))."</div>";
+            $output .= "<div class=\"deletions\">".$this->format(implode("\n", $deleted))."</div>";
           }
-          $this->UnregisterLastInclusion();
+          $this->unregisterLastInclusion();
 
           if (!$added && !$deleted)
           {
@@ -114,8 +114,8 @@ if ($this->HasAccess("read"))
 
     // load pages
 
-        $pageA = $this->LoadPageById($_REQUEST["b"]);
-        $pageB = $this->LoadPageById($_REQUEST["a"]);
+        $pageA = $this->loadPageById($_REQUEST["b"]);
+        $pageB = $this->loadPageById($_REQUEST["a"]);
 
         // extract text from bodies
         $textA = _convert($pageA["body"], "ISO-8859-15");
@@ -204,7 +204,7 @@ if ($this->HasAccess("read"))
 
           $sideB->copy_until_ordinal($count_total_right,$output);
           $sideB->copy_whitespace($output);
-          $out=$this->Format($output);
+          $out=$this->format($output);
           echo _convert($out, 'ISO-8859-15');
 
     }
@@ -219,6 +219,6 @@ else{
 <?php
 
 $content = ob_get_clean();
-echo $this->Header();
+echo $this->header();
 echo $content;
-echo $this->Footer();
+echo $this->footer();

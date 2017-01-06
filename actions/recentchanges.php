@@ -31,11 +31,11 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 // Which is the max number of pages to be shown ?
-if ($max = $this->GetParameter("max"))
+if ($max = $this->getParameter("max"))
 {
     if ($max=="last") $max=50; else $last = (int) $max;
 }
-elseif ($user = $this->GetUser())
+elseif ($user = $this->getUser())
 {
     $max = $user["changescount"];
 }
@@ -45,14 +45,14 @@ else
 }
 
 // Show recently changed pages
-if ($pages = $this->LoadRecentlyChanged($max))
+if ($pages = $this->loadRecentlyChanged($max))
 {
-    if ($this->GetParameter("max"))
+    if ($this->getParameter("max"))
     {
         foreach ($pages as $i => $page)
         {
             // echo entry
-            echo "(",$page["time"],") (",$this->ComposeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->Format($page["user"]),"<br />\n" ;
+            echo "(",$page["time"],") (",$this->composeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->composeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->format($page["user"]),"<br />\n" ;
         }
     }
     else
@@ -69,7 +69,7 @@ if ($pages = $this->LoadRecentlyChanged($max))
                 $curday = $day;
             }
             // echo entry
-            echo "&nbsp;&nbsp;&nbsp;(",$time,") (",$this->ComposeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->ComposeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->Format($page["user"]),"<br />\n" ;
+            echo "&nbsp;&nbsp;&nbsp;(",$time,") (",$this->composeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->composeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->format($page["user"]),"<br />\n" ;
         }
     }
 }

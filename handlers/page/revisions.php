@@ -40,12 +40,12 @@ ob_start();
 <div class="page">
 <?php
 // load revisions for this pageif
-if ($this->HasAccess("read"))
+if ($this->hasAccess("read"))
 {
     if (!isset($output)) $output = '';
-    if ($pages = $this->LoadRevisions($this->tag))
+    if ($pages = $this->loadRevisions($this->tag))
     {
-        $output .= $this->FormOpen("diff", "", "get");
+        $output .= $this->formOpen("diff", "", "get");
         $output .= "<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\">\n";
         $output .= "<tr>\n";
         $output .= "<td><input type=\"submit\" value=\"Voir Diff&eacute;rences\" /></td>";
@@ -53,7 +53,7 @@ if ($this->HasAccess("read"))
         $output .= "</tr>\n";
         $output .= "</table>\n";
         $output .= "<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\">\n";
-        if ($user = $this->GetUser())
+        if ($user = $this->getUser())
         {
             $max = $user["revisioncount"];
         }
@@ -72,11 +72,11 @@ if ($this->HasAccess("read"))
                 $output .= "<td><input type=\"radio\" name=\"a\" value=\"".$page["id"]."\" ".($c == 1 ? "checked=\"checked\"" : "")." /></td>";
                 $output .= "<td><input type=\"radio\" name=\"b\" value=\"".$page["id"]."\" ".($c == 2 ? "checked=\"checked\"" : "")." /></td>";
                 $output .= "<td>&nbsp;<a href=\"".$this->href("show")."&amp;time=".urlencode($page["time"])."\">".$page["time"]."</a></td>";
-                $output .= "<td>&nbsp;par ".$this->Format($page["user"])."</td>";
+                $output .= "<td>&nbsp;par ".$this->format($page["user"])."</td>";
                 $output .= "</tr>\n";
             }
         }
-        $output .= "</table>\n".$this->FormClose()."\n";
+        $output .= "</table>\n".$this->formClose()."\n";
     }
     echo $output ;
 }
@@ -89,8 +89,8 @@ else
 <?php
 
 $content = ob_get_clean();
-echo $this->Header();
+echo $this->header();
 echo $content;
-echo $this->Footer();
+echo $this->footer();
 
 ?>

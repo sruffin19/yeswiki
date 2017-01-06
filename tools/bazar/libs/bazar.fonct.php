@@ -174,7 +174,7 @@ function baz_afficher_liste_fiches_utilisateur()
 function baz_afficher_formulaire_import()
 {
     $output = '';
-    if ($GLOBALS['wiki']->UserIsAdmin()) {
+    if ($GLOBALS['wiki']->userIsAdmin()) {
         $id_typeannonce = isset($_REQUEST['id_typeannonce']) ?
         $_REQUEST['id_typeannonce'] : '';
         $output .= '<form method="post" action="'.$GLOBALS['_BAZAR_']['url']->getUrl().'" '.
@@ -393,13 +393,13 @@ function baz_afficher_formulaire_import()
                                 date('Y-m-d H:i:s', time());
                                 $valeur['date_maj_fiche'] =
                                 date('Y-m-d H:i:s', time());
-                                if ($GLOBALS['wiki']->UserIsAdmin()) {
+                                if ($GLOBALS['wiki']->userIsAdmin()) {
                                     $valeur['statut_fiche'] = 1;
                                 } else {
                                     $valeur['statut_fiche'] =
                                     BAZ_ETAT_VALIDATION;
                                 }
-                                $user = $GLOBALS['wiki']->GetUser();
+                                $user = $GLOBALS['wiki']->getUser();
                                 if ($user) {
                                     $valeur['createur'] = $user['name'];
                                 } else {
@@ -521,7 +521,7 @@ function baz_afficher_formulaire_import()
             $output .=
             '<div class="alert alert-success">'.
             _t('BAZ_NOMBRE_FICHE_IMPORTE').' '.$nb.'</div>'."\n".
-            $GLOBALS['wiki']->Format($importlist);
+            $GLOBALS['wiki']->format($importlist);
         } else {
             // Affichage par defaut
             //On choisit un type de fiches pour parser le csv en consequence
@@ -697,9 +697,9 @@ function baz_afficher_formulaire_export()
 
     $output .=
     '<form method="post" class="form-horizontal" action="'.$GLOBALS['wiki']
-        ->Href()
-    .(($GLOBALS['wiki']->GetMethod() != 'show') ?
-        '/'.$GLOBALS['wiki']->GetMethod() :
+        ->href()
+    .(($GLOBALS['wiki']->getMethod() != 'show') ?
+        '/'.$GLOBALS['wiki']->getMethod() :
         '&amp;'.BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_EXPORTER).'">'."\n";
 
     //s'il y a plus d'un choix possible, on propose
@@ -828,7 +828,7 @@ function baz_afficher_formulaire_export()
     $total = count($tableau_fiches);
     foreach ($tableau_fiches as $fiche) {
         // create date and latest date
-        $fiche_time_create = date_create_from_format('Y-m-d H:i:s', $GLOBALS['wiki']->GetPageCreateTime($fiche['tag']));
+        $fiche_time_create = date_create_from_format('Y-m-d H:i:s', $GLOBALS['wiki']->getPageCreateTime($fiche['tag']));
         $fiche_time_latest = date_create_from_format('Y-m-d H:i:s', $fiche['time']);
 
         $tab_valeurs = json_decode($fiche['body'], true);
@@ -1066,7 +1066,7 @@ function baz_formulaire($mode, $url = '', $valeurs = '')
                 foreach ($resultat as $ligne) {
                     $newurl = $GLOBALS['wiki']->href(
                         '',
-                        $GLOBALS['wiki']->GetPageTag(),
+                        $GLOBALS['wiki']->getPageTag(),
                         BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_SAISIR.'&amp;'.
                         BAZ_VARIABLE_ACTION.'='.BAZ_ACTION_NOUVEAU
                         .'&amp;id_typeannonce='.$ligne['bn_id_nature']
@@ -1134,10 +1134,10 @@ function baz_formulaire($mode, $url = '', $valeurs = '')
     if ($mode == BAZ_ACTION_MODIFIER_V) {
         if ($formtemplate->validate() && $_POST['antispam'] == 1
             && baz_a_le_droit('saisie_fiche', $GLOBALS['wiki']
-                ->GetPageOwner($_POST['id_fiche']))) {
+                ->getPageOwner($_POST['id_fiche']))) {
             $valeur = baz_mise_a_jour_fiche($_POST);
 
-            if ($GLOBALS['wiki']->GetPageTag() != $valeur['id_fiche']) {
+            if ($GLOBALS['wiki']->getPageTag() != $valeur['id_fiche']) {
                 // Redirection pour eviter la revalidation du formulaire
                 $GLOBALS['_BAZAR_']['url']->addQueryString('message', 'modif_ok');
                 $GLOBALS['_BAZAR_']['url']
@@ -1148,7 +1148,7 @@ function baz_formulaire($mode, $url = '', $valeurs = '')
                 header('Location: '.$GLOBALS['_BAZAR_']['url']
                         ->getURL());
             } else {
-                header('Location: '.$GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag()));
+                header('Location: '.$GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag()));
             }
         }
     }
@@ -1298,9 +1298,9 @@ function baz_requete_bazar_fiche($valpost)
     }
 
     //createur de la fiche
-    if ($GLOBALS['wiki']->GetPageOwner($valpost['id_fiche'])) {
-        $valpost['createur'] = $GLOBALS['wiki']->GetPageOwner($valpost['id_fiche']);
-    } elseif ($user = $GLOBALS['wiki']->GetUser()) {
+    if ($GLOBALS['wiki']->getPageOwner($valpost['id_fiche'])) {
+        $valpost['createur'] = $GLOBALS['wiki']->getPageOwner($valpost['id_fiche']);
+    } elseif ($user = $GLOBALS['wiki']->getUser()) {
         $valpost['createur'] = $user['name'];
     } else {
         $valpost['createur'] = _t('BAZ_ANONYME');
@@ -1311,7 +1311,7 @@ function baz_requete_bazar_fiche($valpost)
     $valpost['categorie_fiche'] = $form['bn_type_fiche'];
 
     // on récupérer la date de création si elle existe déjà, on l'initialise sinon
-    $datecreation = $GLOBALS['wiki']->LoadSingle(
+    $datecreation = $GLOBALS['wiki']->loadSingle(
         'SELECT MIN(time) as firsttime FROM '.BAZ_PREFIXE.
         "pages WHERE tag='".$valpost['id_fiche']."'"
     );
@@ -1319,7 +1319,7 @@ function baz_requete_bazar_fiche($valpost)
     $datecreation['firsttime'] : date('Y-m-d H:i:s', time());
 
     // statut fiche
-    if ($GLOBALS['wiki']->UserIsAdmin()) {
+    if ($GLOBALS['wiki']->userIsAdmin()) {
         $valpost['statut_fiche'] = '1';
     } else {
         $valpost['statut_fiche'] = BAZ_ETAT_VALIDATION;
@@ -1340,7 +1340,7 @@ function baz_requete_bazar_fiche($valpost)
         }
     }
 
-    if ($GLOBALS['wiki']->UserIsAdmin()) {
+    if ($GLOBALS['wiki']->userIsAdmin()) {
         $valpost['statut_fiche'] = '1';
     } else {
         $valpost['statut_fiche'] = BAZ_ETAT_VALIDATION;
@@ -1423,13 +1423,13 @@ function baz_insertion_fiche($valeur)
 
     // on change provisoirement d'utilisateur
     if (isset($GLOBALS['utilisateur_wikini'])) {
-        $olduser = $GLOBALS['wiki']->GetUser();
-        $GLOBALS['wiki']->LogoutUser();
+        $olduser = $GLOBALS['wiki']->getUser();
+        $GLOBALS['wiki']->logoutUser();
 
         // On s'identifie de facon a attribuer la propriete de la fiche a
         // l'utilisateur qui vient d etre cree
-        $user = $GLOBALS['wiki']->LoadUser($GLOBALS['utilisateur_wikini']);
-        $GLOBALS['wiki']->SetUser($user);
+        $user = $GLOBALS['wiki']->loadUser($GLOBALS['utilisateur_wikini']);
+        $GLOBALS['wiki']->setUser($user);
     }
 
     $ignoreAcls = true;
@@ -1438,7 +1438,7 @@ function baz_insertion_fiche($valeur)
     }
 
     // on sauve les valeurs d'une fiche dans une PageWiki, retourne 0 si succès
-    $saved = $GLOBALS['wiki']->SavePage(
+    $saved = $GLOBALS['wiki']->savePage(
         $valeur['id_fiche'],
         json_encode($valeur),
         '',
@@ -1448,7 +1448,7 @@ function baz_insertion_fiche($valeur)
     // on cree un triple pour specifier que la page wiki creee est une fiche
     // bazar
     if ($saved == 0) {
-        $GLOBALS['wiki']->InsertTriple(
+        $GLOBALS['wiki']->insertTriple(
             $valeur['id_fiche'],
             'http://outils-reseaux.org/_vocabulary/type',
             'fiche_bazar',
@@ -1459,9 +1459,9 @@ function baz_insertion_fiche($valeur)
 
     // on remet l'utilisateur initial
     if (isset($GLOBALS['utilisateur_wikini'])) {
-        $GLOBALS['wiki']->LogoutUser();
+        $GLOBALS['wiki']->logoutUser();
         if (!empty($olduser)) {
-            $GLOBALS['wiki']->SetUser($olduser, 1);
+            $GLOBALS['wiki']->setUser($olduser, 1);
         }
     }
 
@@ -1498,10 +1498,10 @@ function baz_insertion_fiche($valeur)
         $requeteadmins = 'SELECT value FROM '.$GLOBALS['wiki']
             ->config['table_prefix'].'triples '
         .'WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
-        $ligne = $GLOBALS['wiki']->LoadSingle($requeteadmins);
+        $ligne = $GLOBALS['wiki']->loadSingle($requeteadmins);
         $tabadmin = explode("\n", $ligne['value']);
         foreach ($tabadmin as $line) {
-            $admin = $GLOBALS['wiki']->LoadUser(trim($line));
+            $admin = $GLOBALS['wiki']->loadUser(trim($line));
             send_mail(BAZ_ADRESSE_MAIL_ADMIN, BAZ_ADRESSE_MAIL_ADMIN, $admin['email'], $sujet, $text, $html);
         }
     }
@@ -1516,7 +1516,7 @@ function baz_mise_a_jour_fiche($valeur)
 {
     $valeur = baz_requete_bazar_fiche($valeur);
     // on sauve les valeurs d'une fiche dans une PageWiki, pour garder l'historique
-    $GLOBALS['wiki']->SavePage($valeur['id_fiche'], json_encode($valeur));
+    $GLOBALS['wiki']->savePage($valeur['id_fiche'], json_encode($valeur));
 
     // Envoie d un mail aux administrateurs
     if (BAZ_ENVOI_MAIL_ADMIN) {
@@ -1551,10 +1551,10 @@ function baz_mise_a_jour_fiche($valeur)
         .
 
         'WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
-        $ligne = $GLOBALS['wiki']->LoadSingle($requeteadmins);
+        $ligne = $GLOBALS['wiki']->loadSingle($requeteadmins);
         $tabadmin = explode("\n", $ligne['value']);
         foreach ($tabadmin as $line) {
-            $admin = $GLOBALS['wiki']->LoadUser(trim($line));
+            $admin = $GLOBALS['wiki']->loadUser(trim($line));
             send_mail(BAZ_ADRESSE_MAIL_ADMIN, BAZ_ADRESSE_MAIL_ADMIN, $admin['email'], $sujet, $text, $html);
         }
     }
@@ -1579,8 +1579,8 @@ function baz_suppression($idfiche)
             }
 
             //on supprime les pages wiki crees
-            $GLOBALS['wiki']->DeleteOrphanedPage($idfiche);
-            $GLOBALS['wiki']->DeleteTriple($idfiche, 'http://outils-reseaux.org/_vocabulary/type', null, '', '');
+            $GLOBALS['wiki']->deleteOrphanedPage($idfiche);
+            $GLOBALS['wiki']->deleteTriple($idfiche, 'http://outils-reseaux.org/_vocabulary/type', null, '', '');
 
             //on nettoie l'url, on retourne a la consultation des fiches
             $GLOBALS['_BAZAR_']['url']->addQueryString('message', 'delete_ok');
@@ -2094,7 +2094,7 @@ function baz_valeurs_formulaire($idformulaire = '', $category = '')
             if (!empty($category)) {
                 $requete .= ' AND bn_type_fiche="'.$category.'"';
             }
-            $tab_resultat = $GLOBALS['wiki']->LoadSingle($requete);
+            $tab_resultat = $GLOBALS['wiki']->loadSingle($requete);
             if ($tab_resultat) {
                 foreach ($tab_resultat as $key => $value) {
                     $GLOBALS['_BAZAR_']['form'][$idformulaire][$key] =
@@ -2120,7 +2120,7 @@ function baz_valeurs_formulaire($idformulaire = '', $category = '')
             $requete .= ' WHERE bn_type_fiche="'.$category.'"';
         }
         $requete .= ' ORDER BY bn_label_nature ASC';
-        $tab_resultat = $GLOBALS['wiki']->LoadAll($requete);
+        $tab_resultat = $GLOBALS['wiki']->loadAll($requete);
         foreach ($tab_resultat as $key => $value) {
             $GLOBALS['_BAZAR_']['form'][$value['bn_id_nature']] =
             baz_valeurs_formulaire($value['bn_id_nature']);
@@ -2155,13 +2155,13 @@ function baz_formulaire_des_listes($mode, $valeursliste = '')
 
     $tab_formulaire['form_link'] = $GLOBALS['wiki']->href(
         '',
-        $GLOBALS['wiki']->GetPageTag(),
+        $GLOBALS['wiki']->getPageTag(),
         BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_LISTES.'&action='.$mode
         .(isset($_GET['idliste']) ? '&idliste='.$_GET['idliste'] : '')
     );
     $tab_formulaire['cancel_link'] = $GLOBALS['wiki']->href(
         '',
-        $GLOBALS['wiki']->GetPageTag(),
+        $GLOBALS['wiki']->getPageTag(),
         BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_LISTES
     );
 
@@ -2336,7 +2336,7 @@ function baz_gestion_formulaire()
                 $tab_forms['forms'][$ligne['bn_id_nature']]['description'] = $ligne['bn_description'];
                 $tab_forms['forms'][$ligne['bn_id_nature']]['category'] = $ligne['bn_type_fiche'];
                 $tab_forms['forms'][$ligne['bn_id_nature']]['can_edit'] = baz_a_le_droit('saisie_formulaire');
-                $tab_forms['forms'][$ligne['bn_id_nature']]['can_delete'] = $GLOBALS['wiki']->UserIsAdmin();
+                $tab_forms['forms'][$ligne['bn_id_nature']]['can_delete'] = $GLOBALS['wiki']->userIsAdmin();
             }
         }
         // on rajoute les bibliothèques js nécéssaires
@@ -2370,10 +2370,10 @@ function baz_gestion_listes()
         if (isset($_POST['imported-list'])) {
             foreach ($_POST['imported-list'] as $nomwikiliste => $value) {
                 // on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
-                $GLOBALS['wiki']->SavePage($nomwikiliste, $value);
+                $GLOBALS['wiki']->savePage($nomwikiliste, $value);
 
                 // on cree un triple pour specifier que la PageWiki creee est une liste
-                $GLOBALS['wiki']->InsertTriple(
+                $GLOBALS['wiki']->insertTriple(
                     $nomwikiliste,
                     'http://outils-reseaux.org/_vocabulary/type',
                     'liste',
@@ -2389,20 +2389,20 @@ function baz_gestion_listes()
         // requete pour obtenir l'id et le label des types d'annonces
         $requete = 'SELECT resource FROM '.$GLOBALS['wiki']->config['table_prefix'].'triples '
           .'WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste" ORDER BY resource';
-        $resultat = $GLOBALS['wiki']->LoadAll($requete);
+        $resultat = $GLOBALS['wiki']->loadAll($requete);
         $tab_lists = array('lists' => array());
         foreach ($resultat as $ligne) {
             $valeursliste = baz_valeurs_liste($ligne['resource']);
             $tab_lists['lists'][$ligne['resource']]['titre_liste'] =
             $valeursliste['titre_liste'];
             $tab_lists['lists'][$ligne['resource']]['can_edit'] =
-            $GLOBALS['wiki']->HasAccess(
+            $GLOBALS['wiki']->hasAccess(
                 'write',
                 $ligne['resource']
             );
             $tab_lists['lists'][$ligne['resource']]['can_delete'] =
-            $GLOBALS['wiki']->UserIsAdmin() ||
-            $GLOBALS['wiki']->UserIsOwner($ligne['resource']);
+            $GLOBALS['wiki']->userIsAdmin() ||
+            $GLOBALS['wiki']->userIsOwner($ligne['resource']);
             $elements_liste = '';
             foreach ($valeursliste['label'] as $val) {
                 preg_match_all('/<span data-lang="'.$GLOBALS['prefered_language'].'">(.*)<\/span>/Ui', $val, $matches);
@@ -2467,18 +2467,18 @@ function baz_gestion_listes()
         }
 
         //on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
-        $GLOBALS['wiki']->SavePage($nomwikiliste, json_encode($valeur));
+        $GLOBALS['wiki']->savePage($nomwikiliste, json_encode($valeur));
 
         //on cree un triple pour specifier que la PageWiki creee est une liste
-        $GLOBALS['wiki']->InsertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
+        $GLOBALS['wiki']->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
 
         //on redirige vers la page contenant toutes les listes, et on confirme par message la bonne saisie de la liste
-        $GLOBALS['wiki']->SetMessage(_t('BAZ_NOUVELLE_LISTE_ENREGISTREE'));
-        $GLOBALS['wiki']->Redirect(
-            $GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_LISTES, false)
+        $GLOBALS['wiki']->setMessage(_t('BAZ_NOUVELLE_LISTE_ENREGISTREE'));
+        $GLOBALS['wiki']->redirect(
+            $GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_LISTES, false)
         );
     } elseif ($_GET['action'] == BAZ_ACTION_MODIFIER_LISTE_V
-        && $GLOBALS['wiki']->HasAccess('write', $_POST['NomWiki'])) {
+        && $GLOBALS['wiki']->hasAccess('write', $_POST['NomWiki'])) {
         //il y a des donnees pour modifier une liste
         unset($_POST['valider']);
 
@@ -2515,24 +2515,24 @@ function baz_gestion_listes()
         --------------------- */
 
         //on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
-        $GLOBALS['wiki']->SavePage($_POST['NomWiki'], json_encode($valeur));
+        $GLOBALS['wiki']->savePage($_POST['NomWiki'], json_encode($valeur));
 
         //on redirige vers la page contenant toutes les listes, et on confirme par message la modification de la liste
-        $GLOBALS['wiki']->SetMessage(_t('BAZ_LISTE_MODIFIEE'));
-        $GLOBALS['wiki']->Redirect(
-            $GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_LISTES, false)
+        $GLOBALS['wiki']->setMessage(_t('BAZ_LISTE_MODIFIEE'));
+        $GLOBALS['wiki']->redirect(
+            $GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_LISTES, false)
         );
     } elseif ($_GET['action'] == BAZ_ACTION_SUPPRIMER_LISTE &&
         isset($_GET['idliste']) && $_GET['idliste'] != '' &&
-        ($GLOBALS['wiki']->UserIsAdmin() ||
-            $GLOBALS['wiki']->UserIsOwner($_GET['idliste']))) {
+        ($GLOBALS['wiki']->userIsAdmin() ||
+            $GLOBALS['wiki']->userIsOwner($_GET['idliste']))) {
         // il y a un id de liste a supprimer
-        $GLOBALS['wiki']->DeleteOrphanedPage($_GET['idliste']);
+        $GLOBALS['wiki']->deleteOrphanedPage($_GET['idliste']);
         $sql = 'DELETE FROM '.$GLOBALS['wiki']
             ->config['table_prefix'].'triples '.'WHERE resource = "'.
         htmlspecialchars($_GET['idliste'], ENT_COMPAT |
             ENT_HTML401, YW_CHARSET).'" ';
-        $GLOBALS['wiki']->Query($sql);
+        $GLOBALS['wiki']->query($sql);
 
         // Envoie d un mail aux administrateurs
         if (BAZ_ENVOI_MAIL_ADMIN) {
@@ -2541,7 +2541,7 @@ function baz_gestion_listes()
             $sujet = removeAccents('['.str_replace('http://', '', $lien).'] liste supprimee : '.$_GET['idliste']);
             $text =
             'IP utilisee : '.$_SERVER['REMOTE_ADDR'].' ('.
-            $GLOBALS['wiki']->GetUserName().')';
+            $GLOBALS['wiki']->getUserName().')';
             $texthtml = $text;
             $fichier = 'tools/bazar/presentation/styles/bazar.css';
             $style = file_get_contents($fichier);
@@ -2555,18 +2555,18 @@ function baz_gestion_listes()
                 ->config['table_prefix'].
 
             'triples WHERE resource="ThisWikiGroup:admins" AND property="http://www.wikini.net/_vocabulary/acls" LIMIT 1';
-            $ligne = $GLOBALS['wiki']->LoadSingle($requeteadmins);
+            $ligne = $GLOBALS['wiki']->loadSingle($requeteadmins);
             $tabadmin = explode("\n", $ligne['value']);
             foreach ($tabadmin as $line) {
-                $admin = $GLOBALS['wiki']->LoadUser(trim($line));
+                $admin = $GLOBALS['wiki']->loadUser(trim($line));
                 send_mail(BAZ_ADRESSE_MAIL_ADMIN, BAZ_ADRESSE_MAIL_ADMIN, $admin['email'], $sujet, $text, $html);
             }
         }
 
         //on redirige vers la page contenant toutes les listes, avec un message de confirmation
-        $GLOBALS['wiki']->SetMessage(_t('BAZ_LISTES_SUPPRIMEES'));
-        $GLOBALS['wiki']->Redirect(
-            $GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_LISTES, false)
+        $GLOBALS['wiki']->setMessage(_t('BAZ_LISTES_SUPPRIMEES'));
+        $GLOBALS['wiki']->redirect(
+            $GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag(), BAZ_VARIABLE_VOIR.'='.BAZ_VOIR_LISTES, false)
         );
     }
 
@@ -2581,12 +2581,12 @@ function baz_gestion_listes()
 function baz_valeurs_fiche($idfiche = '', $formtab = '')
 {
     if ($idfiche != '') {
-        $type_page = $GLOBALS['wiki']->GetTripleValue($idfiche, 'http://outils-reseaux.org/_vocabulary/type', '', '');
+        $type_page = $GLOBALS['wiki']->getTripleValue($idfiche, 'http://outils-reseaux.org/_vocabulary/type', '', '');
         //on verifie que la page en question est bien une page wiki
         if ($type_page == 'fiche_bazar') {
             // on recupere une autre version en cas de consultation de l'historique
             $time = isset($_REQUEST['time']) ? $_REQUEST['time'] : '';
-            $valjson = $GLOBALS['wiki']->LoadPage($idfiche, $time);
+            $valjson = $GLOBALS['wiki']->loadPage($idfiche, $time);
 
             $tab_valeurs_fiche = json_decode($valjson['body'], true);
 
@@ -2626,8 +2626,8 @@ function baz_valeurs_liste($idliste = '')
     if ($idliste != '') {
         if (!isset($GLOBALS['_BAZAR_']['lists'][$idliste])) {
             // on verifie que la page en question est bien une page wiki
-            if ($GLOBALS['wiki']->GetTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
-                $valjson = $GLOBALS['wiki']->LoadPage($idliste);
+            if ($GLOBALS['wiki']->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
+                $valjson = $GLOBALS['wiki']->loadPage($idliste);
                 $valeurs_fiche = json_decode($valjson['body'], true);
                 if (YW_CHARSET != 'UTF-8') {
                     $GLOBALS['_BAZAR_']['lists'][$idliste]['titre_liste'] = utf8_decode($valeurs_fiche['titre_liste']);
@@ -2667,7 +2667,7 @@ function baz_valeurs_liste($idliste = '')
         //requete pour obtenir l'id et le label des listes
         $requete = 'SELECT resource FROM '.$GLOBALS['wiki']->config['table_prefix'].'triples '
           .'WHERE property="http://outils-reseaux.org/_vocabulary/type" AND value="liste" ORDER BY resource';
-        $resultat = $GLOBALS['wiki']->LoadAll($requete);
+        $resultat = $GLOBALS['wiki']->loadAll($requete);
 
         foreach ($resultat as $ligne) {
             $GLOBALS['_BAZAR_']['lists'][$ligne['resource']] = baz_valeurs_liste($ligne['resource']);
@@ -2688,7 +2688,7 @@ function baz_nextId($table, $colonne_identifiant, $bdd)
 {
     $requete = 'SELECT MAX('.$colonne_identifiant.') AS maxi FROM '.
     $table;
-    $ligne = $GLOBALS['wiki']->LoadSingle($requete);
+    $ligne = $GLOBALS['wiki']->loadSingle($requete);
 
     if (count($ligne['maxi']) > 1) {
         die('<br />La table '.$table.' a un identifiant non unique<br />');
@@ -2873,7 +2873,7 @@ function baz_voir_fiche($danslappli, $idfiche)
     }
 
     // fake ->tag pour les images attachees
-    $oldpage = $GLOBALS['wiki']->GetPageTag();
+    $oldpage = $GLOBALS['wiki']->getPageTag();
     $GLOBALS['wiki']->tag = $idfiche;
 
 
@@ -2895,7 +2895,7 @@ function baz_voir_fiche($danslappli, $idfiche)
             if (isset($fichebazar['form']['template'][$i][11]) &&
                 $fichebazar['form']['template'][$i][11] != '' &&
                 !$GLOBALS['wiki']
-                ->CheckACL($fichebazar['form']['template'][$i][11])) {
+                ->checkACL($fichebazar['form']['template'][$i][11])) {
                 // Non autorise : non ne fait rien
             } else {
                 // Mauvais style de programmation ...
@@ -2946,7 +2946,7 @@ function baz_voir_fiche($danslappli, $idfiche)
                 $fichebazar['form']['template'][$i][11] != '') {
                 // Champ  acls  present
                 if (!$GLOBALS['wiki']
-                    ->CheckACL($fichebazar['form']['template'][$i][11])) {
+                    ->checkACL($fichebazar['form']['template'][$i][11])) {
                     // Non autorise : non ne fait rien
                 } else {
                     // Mauvais style de programmation ...
@@ -2979,10 +2979,10 @@ function baz_voir_fiche($danslappli, $idfiche)
         '<div class="BAZ_fiche_info well well-sm">'."\n";
 
         // obsolète : seul le createur ou un admin peut faire des actions sur la fiche
-        //if (baz_a_le_droit('saisie_fiche', $GLOBALS['wiki']->GetPageOwner($idfiche))) {
+        //if (baz_a_le_droit('saisie_fiche', $GLOBALS['wiki']->getPageOwner($idfiche))) {
         //
         // L'utilisateur a-t-il le droit en écriture ?
-        if ($GLOBALS['wiki']->HasAccess('write', $idfiche)) {
+        if ($GLOBALS['wiki']->hasAccess('write', $idfiche)) {
             $fichebazar['infos'] .=
                 '<div class="pull-right BAZ_actions_fiche">'."\n"
                 // lien modifier la fiche
@@ -2992,7 +2992,7 @@ function baz_voir_fiche($danslappli, $idfiche)
                 . _t('BAZ_MODIFIER')
                 .'</a>'."\n";
 
-            if ($GLOBALS['wiki']->UserIsAdmin() or $GLOBALS['wiki']->UserIsOwner()) {
+            if ($GLOBALS['wiki']->userIsAdmin() or $GLOBALS['wiki']->userIsOwner()) {
                 // lien supprimer la fiche
                 $fichebazar['infos'] .=
                 ' <a class="btn btn-xs btn-mini btn-danger" href="'
@@ -3039,13 +3039,13 @@ function baz_voir_fiche($danslappli, $idfiche)
         }
 
         // affichage du nom de la PageWiki de la fiche et de son proprietaire
-        $fichebazar['infos'] .= $GLOBALS['wiki']->Format($idfiche)
+        $fichebazar['infos'] .= $GLOBALS['wiki']->format($idfiche)
 
         .' <span class="category">('.$fichebazar['form']['bn_label_nature']
         .')</span>'
-        .(($GLOBALS['wiki']->GetPageOwner($idfiche) != '') ?
+        .(($GLOBALS['wiki']->getPageOwner($idfiche) != '') ?
             ', '._t('BAZ_ECRITE').' '
-            .$GLOBALS['wiki']->GetPageOwner($idfiche) : '');
+            .$GLOBALS['wiki']->getPageOwner($idfiche) : '');
 
         // affichage des infos et du lien pour la mise a jour de la fiche
         $fichebazar['infos'] .=
@@ -3086,7 +3086,7 @@ function baz_a_le_droit($demande = 'saisie_fiche', $id = '')
     $nomwiki = $GLOBALS['wiki']->getUser();
 
     //l'administrateur peut tout faire
-    if ($GLOBALS['wiki']->UserIsInGroup('admins')) {
+    if ($GLOBALS['wiki']->userIsInGroup('admins')) {
         return true;
     } else {
         if ($demande == 'supp_fiche') {
@@ -3203,7 +3203,7 @@ function genere_nom_wiki($nom, $occurence = 1)
     if ($occurence == 0) {
         // pour occurence = 0 on ne teste pas l'existance de la page
         return $nom;
-    } elseif (!is_array($GLOBALS['wiki']->LoadPage($nom))) {
+    } elseif (!is_array($GLOBALS['wiki']->loadPage($nom))) {
         // on verifie que la page n'existe pas deja : si c'est le cas on le retourne
         return $nom;
     } else {
@@ -3249,7 +3249,7 @@ function baz_rechercher($typeannonce = '', $categorienature = '')
     }
 
     // creation du lien pour le formulaire de recherche
-    $data['url'] = $GLOBALS['wiki']->href('', $GLOBALS['wiki']->GetPageTag());
+    $data['url'] = $GLOBALS['wiki']->href('', $GLOBALS['wiki']->getPageTag());
 
     // on recupere la liste des formulaires, a afficher dans une liste deroulante pour la recherche
     $tab_formulaires = baz_valeurs_formulaire($typeannonce, $categorienature);
@@ -3412,7 +3412,7 @@ function baz_requete_recherche_fiches(
     //preparation de la requete pour trouver les mots cles
     if (isset($searchstring) && trim($searchstring) != '' && $searchstring !=
         _t('BAZ_MOT_CLE')) {
-        $GLOBALS['wiki']->Query("SET sql_mode = 'NO_BACKSLASH_ESCAPES';");
+        $GLOBALS['wiki']->query("SET sql_mode = 'NO_BACKSLASH_ESCAPES';");
         $searchstring = str_replace(array('["', '"]'), '', json_encode(array($searchstring)));
         //$searchstring = removeAccents($searchstring);
         //decoupage des mots cles
@@ -3556,7 +3556,7 @@ function baz_requete_recherche_fiches(
     if (!isset($GLOBALS['_BAZAR_'][$reqid])) {
         // debug
         // echo '<hr><code style="width:100%;height:100px;">'.$requete.'</code><hr>';
-        $GLOBALS['_BAZAR_'][$reqid] = $GLOBALS['wiki']->LoadAll($requete);
+        $GLOBALS['_BAZAR_'][$reqid] = $GLOBALS['wiki']->loadAll($requete);
     }
     return $GLOBALS['_BAZAR_'][$reqid];
 }
@@ -3701,7 +3701,7 @@ function searchResultstoArray($tableau_fiches, $params, $formtab = '')
 {
     // tableau qui contiendra les fiches
     $fiches['fiches'] = array();
-    $exturl = $GLOBALS['wiki']->GetParameter('url');
+    $exturl = $GLOBALS['wiki']->getParameter('url');
     foreach ($tableau_fiches as $fiche) {
         if (isset($fiche['body'])) {
             $fiche = json_decode($fiche['body'], true);
@@ -4320,7 +4320,7 @@ function champCompare($a, $b)
  */
 function getParameter_boolean($wiki, $parameterName, $default = true)
 {
-    $p = $wiki->GetParameter($parameterName);
+    $p = $wiki->getParameter($parameterName);
     if (empty($p)) {
         $p = $default ;
     } elseif ($p == '0'
@@ -4342,12 +4342,12 @@ function getAllParameters($wiki)
 {
     $param = array();
 
-    $param['action'] = $wiki->GetParameter(BAZ_VARIABLE_ACTION);
+    $param['action'] = $wiki->getParameter(BAZ_VARIABLE_ACTION);
     if (isset($_GET[BAZ_VARIABLE_ACTION])) {
         $param['action'] = $_GET[BAZ_VARIABLE_ACTION];
     }
 
-    $param['vue'] = $wiki->GetParameter(BAZ_VARIABLE_VOIR);
+    $param['vue'] = $wiki->getParameter(BAZ_VARIABLE_VOIR);
     if (isset($_GET[BAZ_VARIABLE_VOIR])) {
         $param['vue'] = $_GET[BAZ_VARIABLE_VOIR];
     }
@@ -4357,26 +4357,26 @@ function getAllParameters($wiki)
     }
 
     // afficher le menu de vues bazar ?
-    $param['voirmenu'] = $wiki->GetParameter('voirmenu');
+    $param['voirmenu'] = $wiki->getParameter('voirmenu');
     if (empty($param['voirmenu']) && $param['voirmenu'] != '0') {
         $param['voirmenu'] = BAZ_VOIR_AFFICHER;
     }
 
     // autoriser qu'une catégorie de formulaire
-    $param['categorienature'] = $wiki->GetParameter('cat');
+    $param['categorienature'] = $wiki->getParameter('cat');
     if ($param['categorienature'] == 'toutes') {
         $param['categorienature'] = '';
     }
     // retrocompatibilite avec le parametre categorienature
     if (empty($param['categorienature'])) {
-        $param['categorienature'] = $wiki->GetParameter('categorienature');
+        $param['categorienature'] = $wiki->getParameter('categorienature');
         if ($param['categorienature'] == 'toutes') {
             $param['categorienature'] = '';
         }
     }
 
     // identifiant du formulaire (plusieures valeurs possibles, séparées par des virgules)
-    $param['idtypeannonce'] = $wiki->GetParameter('id');
+    $param['idtypeannonce'] = $wiki->getParameter('id');
     if (empty($param['idtypeannonce'])) {
         $param['idtypeannonce'] = isset($_GET['id']) ? $_GET['id'] : '';
     } else {
@@ -4386,7 +4386,7 @@ function getAllParameters($wiki)
     // retrocompatibilite avec le parametre idtypeannonce
     if (!is_array($param['idtypeannonce']) and empty($param['idtypeannonce'])) {
         // identifiant du formulaire (plusieures valuers possibles, séparées par des virgules)
-        $param['idtypeannonce'] = $wiki->GetParameter('idtypeannonce');
+        $param['idtypeannonce'] = $wiki->getParameter('idtypeannonce');
         if (empty($param['idtypeannonce'])) {
             $param['idtypeannonce'] = '';
         } else {
@@ -4397,14 +4397,14 @@ function getAllParameters($wiki)
 
     //on recupere les parameres pour une requete specifique
     if (isset($_GET['query'])) {
-        $param['query'] = $wiki->GetParameter('query');
+        $param['query'] = $wiki->getParameter('query');
         if (!empty($param['query'])) {
             $param['query'] .= '|'.$_GET['query'];
         } else {
             $param['query'] = $_GET['query'];
         }
     } else {
-        $param['query'] = $wiki->GetParameter('query');
+        $param['query'] = $wiki->getParameter('query');
     }
     if (!empty($param['query'])) {
         $tabquery = array();
@@ -4421,19 +4421,19 @@ function getAllParameters($wiki)
     $param['query'] = $tabquery;
 
     // ordre du tri (asc ou desc)
-    $param['ordre'] = $wiki->GetParameter('ordre');
+    $param['ordre'] = $wiki->getParameter('ordre');
     if (empty($param['ordre'])) {
         $param['ordre'] = 'asc';
     }
 
     // champ du formulaire utilisé pour le tri
-    $param['champ'] = $wiki->GetParameter('champ');
+    $param['champ'] = $wiki->getParameter('champ');
     if (empty($param['champ'])) {
         $param['champ'] = 'bf_titre'; // si pas de champ précisé, on triera par le titre
     }
 
     // template utilisé pour l'affichage
-    $param['template'] = isset($_GET['template']) ? $_GET['template'] : $wiki->GetParameter('template');
+    $param['template'] = isset($_GET['template']) ? $_GET['template'] : $wiki->getParameter('template');
     if (empty($param['template']) ||
         (!is_file('themes/tools/bazar/templates/'.$param['template']) &&
             !is_file('tools/bazar/presentation/templates/'.
@@ -4442,10 +4442,10 @@ function getAllParameters($wiki)
     }
 
     // nombre maximal de résultats à afficher
-    $param['nb'] = $wiki->GetParameter('nb');
+    $param['nb'] = $wiki->getParameter('nb');
 
     // classe css a ajouter en rendu des templates
-    $param['class'] = $wiki->GetParameter('class');
+    $param['class'] = $wiki->getParameter('class');
 
     // ajout des options pour gerer la fiche (modifier, droits, etc,.. )
     $param['barregestion'] = getParameter_boolean($wiki, 'barregestion', true);
@@ -4461,7 +4461,7 @@ function getAllParameters($wiki)
     //    plusieures valeurs possibles, séparées par des virgules,
     //    "all" pour toutes les facette possibles)
     //    exemple : {{bazarliste groups="bf_ce_titre,bf_ce_pays,etc."..}}
-    $param['groups'] = isset($_GET['groups']) ? $_GET['groups'] : $wiki->GetParameter('groups');
+    $param['groups'] = isset($_GET['groups']) ? $_GET['groups'] : $wiki->getParameter('groups');
     if (empty($param['groups'])) {
         $param['groups'] = array();
     } else {
@@ -4472,7 +4472,7 @@ function getAllParameters($wiki)
     // facette: titres des boite de filtres correspondants au parametre groups
     //    plusieures valeurs possibles, séparées par des virgules, le meme nombre que "groups"
     //    exemple : {{bazarliste titles="Titre,Pays,etc."..}}
-    $param['titles'] = isset($_GET['titles']) ? $_GET['titles'] : $wiki->GetParameter('titles');
+    $param['titles'] = isset($_GET['titles']) ? $_GET['titles'] : $wiki->getParameter('titles');
     if (empty($param['titles'])) {
         $param['titles'] = array();
     } else {
@@ -4483,7 +4483,7 @@ function getAllParameters($wiki)
     // facette: titres des boite de filtres correspondants au parametre groups
     //    plusieures valeurs possibles, séparées par des virgules, le meme nombre que "groups"
     //    exemple : {{bazarliste titles="Titre,Pays,etc."..}}
-    $param['groupicons'] = $wiki->GetParameter('groupicons');
+    $param['groupicons'] = $wiki->getParameter('groupicons');
     if (empty($param['groupicons'])) {
         $param['groupicons'] = array();
     } else {
@@ -4492,15 +4492,15 @@ function getAllParameters($wiki)
     }
 
     // nombre de résultats affichées avant pagination
-    $param['pagination'] = $wiki->GetParameter('pagination');
+    $param['pagination'] = $wiki->getParameter('pagination');
 
     // correspondance transfere les valeurs d'un champs vers un autre, afin de correspondre dans un template
-    $param['correspondance'] = $wiki->GetParameter('correspondance');
+    $param['correspondance'] = $wiki->getParameter('correspondance');
 
     /*
      * Facette : filtres à gauche ou droite (droite par défaut)
      */
-    $param['filterposition'] = isset($_GET['filterposition']) ? $_GET['filterposition'] : $wiki->GetParameter('filterposition');
+    $param['filterposition'] = isset($_GET['filterposition']) ? $_GET['filterposition'] : $wiki->getParameter('filterposition');
     if (empty($param['filterposition']) || (!empty($param['filterposition'])
       && $param['filterposition'] != 'left')) {
         $param['filterposition'] = 'right';
@@ -4509,7 +4509,7 @@ function getAllParameters($wiki)
     /*
      * Facette : largeur colonne
      */
-    $param['filtercolsize'] = isset($_GET['filtercolsize']) ? $_GET['filtercolsize'] : $wiki->GetParameter('filtercolsize');
+    $param['filtercolsize'] = isset($_GET['filtercolsize']) ? $_GET['filtercolsize'] : $wiki->getParameter('filtercolsize');
     if (empty($param['filtercolsize'])
       || (!empty($param['filtercolsize'])
         && (!(ctype_digit($param['filtercolsize'])
@@ -4520,7 +4520,7 @@ function getAllParameters($wiki)
     /*
      * Facette: déplier tous les groupes (panels à droite)
      */
-    $param['groupsexpanded'] = isset($_GET['groupsexpanded']) ? $_GET['groupsexpanded'] : $wiki->GetParameter('groupsexpanded');
+    $param['groupsexpanded'] = isset($_GET['groupsexpanded']) ? $_GET['groupsexpanded'] : $wiki->getParameter('groupsexpanded');
     if (empty($param['groupsexpanded'])) {
         $param['groupsexpanded'] = 'true';
     }
@@ -4544,13 +4544,13 @@ function getAllParameters_carto($wiki, array &$param)
      * provider : designe le fond de carte utilisé pour la carte
      * cf. https://github.com/leaflet-extras/leaflet-providers
      */
-    $param['provider'] = isset($_GET['provider']) ? $_GET['provider'] : $wiki->GetParameter('provider');
+    $param['provider'] = isset($_GET['provider']) ? $_GET['provider'] : $wiki->getParameter('provider');
     if (empty($param['provider'])) {
         $param['provider'] = BAZ_PROVIDER;
     }
     // on recupere d eventuels id et token pour les providers en ayant besoin
-    $param['providerid'] = $wiki->GetParameter('providerid');
-    $param['providerpass'] = $wiki->GetParameter('providerpass');
+    $param['providerid'] = $wiki->getParameter('providerid');
+    $param['providerpass'] = $wiki->getParameter('providerpass');
     if (!empty($param['providerid']) && !empty($param['providerpass'])) {
         if ($param['provider'] == 'MapBox') {
             $param['provider_credentials'] = ', {id: \''.$param['providerid']
@@ -4573,7 +4573,7 @@ function getAllParameters_carto($wiki, array &$param)
      *
      * TODO: ajouter gestion "providers_credentials"
      */
-    $param['providers'] = $wiki->GetParameter('providers');
+    $param['providers'] = $wiki->getParameter('providers');
     if (!empty($param['providers'])) {
         $param['providers'] = explode(',', $param['providers']);
     }
@@ -4593,7 +4593,7 @@ function getAllParameters_carto($wiki, array &$param)
      *
      * TODO: ajouter gestion "layers_credentials"
      */
-    $param['layers'] = $wiki->GetParameter('layers');
+    $param['layers'] = $wiki->getParameter('layers');
     if (!empty($param['layers'])) {
         $param['layers'] = explode(',', $param['layers']);
     }
@@ -4601,7 +4601,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * iconprefix : designe le prefixe des classes CSS utilisees pour la carto
      */
-    $param['iconprefix'] = $wiki->GetParameter('iconprefix');
+    $param['iconprefix'] = $wiki->getParameter('iconprefix');
     if (empty($param['iconprefix'])) {
         if (defined('BAZ_MARKER_ICON_PREFIX') && BAZ_MARKER_ICON_PREFIX) {
             $param['iconprefix'] = BAZ_MARKER_ICON_PREFIX.' '.BAZ_MARKER_ICON_PREFIX.'-';
@@ -4615,12 +4615,12 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * iconfield : designe le champ utilise pour la couleur des marqueurs
      */
-    $param['iconfield'] = $wiki->GetParameter('iconfield');
+    $param['iconfield'] = $wiki->getParameter('iconfield');
 
     /*
      * icon : couleur des marqueurs
      */
-    $param['icon'] = $wiki->GetParameter('icon');
+    $param['icon'] = $wiki->getParameter('icon');
     if (!empty($param['icon'])) {
         $iconparam = explode(',', $param['icon']);
         if (count($iconparam) > 1 && !empty($param['iconfield'])) {
@@ -4648,7 +4648,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * colorfield : designe le champ utilise pour la couleur des marqueurs
      */
-    $param['colorfield'] = $wiki->GetParameter('colorfield');
+    $param['colorfield'] = $wiki->getParameter('colorfield');
 
     /*
      * color : couleur des marqueurs
@@ -4657,7 +4657,7 @@ function getAllParameters_carto($wiki, array &$param)
         'red', 'darkred', 'lightred', 'orange', 'beige', 'green', 'darkgreen', 'lightgreen', 'blue', 'darkblue',
         'lightblue', 'purple', 'darkpurple', 'pink', 'cadetblue', 'white', 'gray', 'lightgray', 'black',
     );
-    $param['color'] = $wiki->GetParameter('color');
+    $param['color'] = $wiki->getParameter('color');
     if (!empty($param['color'])) {
         $colorsparam = explode(',', $param['color']);
         if (count($colorsparam) > 1 && !empty($param['colorfield'])) {
@@ -4688,7 +4688,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * smallmarker : mettre des puces petites ? non par defaut
      */
-    $param['smallmarker'] = $wiki->GetParameter('smallmarker');
+    $param['smallmarker'] = $wiki->getParameter('smallmarker');
     if (empty($param['smallmarker'])) {
         $param['smallmarker'] = BAZ_SMALL_MARKER;
     }
@@ -4707,7 +4707,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * width : largeur de la carte à l'écran en pixels ou pourcentage
      */
-    $param['width'] = $wiki->GetParameter('width');
+    $param['width'] = $wiki->getParameter('width');
     if (empty($param['width'])) {
         $param['width'] = BAZ_GOOGLE_IMAGE_LARGEUR;
     }
@@ -4715,7 +4715,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * height : hauteur de la carte à l'écran en pixels ou pourcentage
      */
-    $param['height'] = $wiki->GetParameter('height');
+    $param['height'] = $wiki->getParameter('height');
     if (empty($param['height'])) {
         $param['height'] = BAZ_GOOGLE_IMAGE_HAUTEUR;
     }
@@ -4723,7 +4723,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * lat : latitude point central en degres WGS84 (exemple : 46.22763) , sinon parametre par defaut
      */
-    $param['latitude'] = $wiki->GetParameter('lat');
+    $param['latitude'] = $wiki->getParameter('lat');
     if (empty($param['latitude'])) {
         $param['latitude'] = BAZ_MAP_CENTER_LAT;
     }
@@ -4731,7 +4731,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * lon : longitude point central en degres WGS84 (exemple : 3.42313) , sinon parametre par defaut
      */
-    $param['longitude'] = $wiki->GetParameter('lon');
+    $param['longitude'] = $wiki->getParameter('lon');
     if (empty($param['longitude'])) {
         $param['longitude'] = BAZ_MAP_CENTER_LON;
     }
@@ -4739,7 +4739,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * niveau de zoom : de 1 (plus eloigne) a 15 (plus proche) , sinon parametre par defaut 5
      */
-    $param['zoom'] = $wiki->GetParameter('zoom');
+    $param['zoom'] = $wiki->getParameter('zoom');
     if (empty($param['zoom'])) {
         $param['zoom'] = BAZ_GOOGLE_ALTITUDE;
     }
@@ -4747,7 +4747,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * Outil de navigation , sinon parametre par defaut true
      */
-    $param['navigation'] = $wiki->GetParameter('navigation'); // true or false
+    $param['navigation'] = $wiki->getParameter('navigation'); // true or false
     if (empty($param['navigation'])) {
         $param['navigation'] = BAZ_AFFICHER_NAVIGATION;
     }
@@ -4755,7 +4755,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * Zoom sur molette : true or false (defaut)
      */
-    $param['zoom_molette'] = $wiki->GetParameter('zoommolette');
+    $param['zoom_molette'] = $wiki->getParameter('zoommolette');
     if (empty($param['zoom_molette'])) {
         $param['zoom_molette'] = BAZ_PERMETTRE_ZOOM_MOLETTE;
     }
@@ -4763,7 +4763,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * Affichage en eclate des points superposes : true or false (defaut)
      */
-    $param['spider'] = $wiki->GetParameter('spider'); // true or false
+    $param['spider'] = $wiki->getParameter('spider'); // true or false
     if (empty($param['spider'])) {
         $param['spider'] = 'false';
     }
@@ -4771,7 +4771,7 @@ function getAllParameters_carto($wiki, array &$param)
     /*
      * Affichage en cluster : true or false, par defaut false
      */
-    $param['cluster'] = $wiki->GetParameter('cluster'); // true or false
+    $param['cluster'] = $wiki->getParameter('cluster'); // true or false
     if (empty($param['cluster'])) {
         $param['cluster'] = 'false';
     }
@@ -4781,7 +4781,7 @@ function getAllParameters_carto($wiki, array &$param)
      * fullscreen: true or false
      * https://github.com/brunob/leaflet.fullscreen
      */
-    $param['fullscreen'] = $wiki->GetParameter('fullscreen');
+    $param['fullscreen'] = $wiki->getParameter('fullscreen');
     if (empty($param['fullscreen'])) {
         $param['fullscreen'] = 'true';
     }

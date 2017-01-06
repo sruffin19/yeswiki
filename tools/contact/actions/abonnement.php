@@ -42,7 +42,7 @@ if (!defined("WIKINI_VERSION"))
 
 
 //recuperation des parametres
-$listelements['mail'] = $this->GetParameter('mail');
+$listelements['mail'] = $this->getParameter('mail');
 if (empty($listelements['mail'])) {
     echo '<div class="alert alert-danger"><strong>'._t('CONTACT_ACTION_ABONNEMENT').' :</strong>&nbsp;'._t('CONTACT_MAIL_REQUIRED').'</div>';
 }
@@ -57,17 +57,17 @@ else {
     $listelements['nbactionmail'] = $GLOBALS['nbactionmail'];
 
     // on choisit le template utilisé
-    $template = $this->GetParameter('template');
+    $template = $this->getParameter('template');
     if (empty($template)) {
         $template = 'subscribe-form.tpl.html';
     }
 
     // on peut ajouter des classes à la classe par défaut
-    $listelements['class'] = ($this->GetParameter('class') ? 'form-abonnement '.$this->GetParameter('class') : 'form-abonnement');
+    $listelements['class'] = ($this->getParameter('class') ? 'form-abonnement '.$this->getParameter('class') : 'form-abonnement');
 
   $listelements['hiddeninputs'] = '';
   // on indique quel type de liste est utilisé pour formatter les envois de mail de facon adaptee
-  $mailinglist = $this->GetParameter('mailinglist');
+  $mailinglist = $this->getParameter('mailinglist');
   if (!empty($mailinglist) and $mailinglist == 'ezmlm') {
      $listelements['hiddeninputs'] .= '<input type="hidden" name="mailinglist" value="ezmlm">';
   }

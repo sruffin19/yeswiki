@@ -8,7 +8,7 @@ Les pages s'affichent et sont modifiées en fonction du squelette qu'elles utili
 
 <?php
 //action réservée aux admins
-if (! $this->UserIsAdmin()) {
+if (! $this->userIsAdmin()) {
     echo '<div class="alert alert-danger alert-error"><strong>Erreur action {{gererdroits..}}</strong> : cette action est r&eacute;serv&eacute;e aux admins</div>';
     return ;
 }
@@ -146,7 +146,7 @@ if (! $this->UserIsAdmin()) {
     {
         if (!isset($_POST['selectpage']))
         {
-            $this->SetMessage('Aucune page n\'a &eacute;t&eacute; s&eacute;lectionn&eacute;e.');
+            $this->setMessage('Aucune page n\'a &eacute;t&eacute; s&eacute;lectionn&eacute;e.');
         }
         else
         {
@@ -165,7 +165,7 @@ if (! $this->UserIsAdmin()) {
     }
 
     //Récupération de la liste des pages
-    $liste_pages = $this->Query("SELECT * FROM " . $table . "pages WHERE latest='Y' ORDER BY " . $table . "pages.tag ASC");
+    $liste_pages = $this->query("SELECT * FROM " . $table . "pages WHERE latest='Y' ORDER BY " . $table . "pages.tag ASC");
 
     $num_page = 0;
     while ($tab_liste_pages = mysqli_fetch_array($liste_pages)) {
@@ -179,7 +179,7 @@ if (! $this->UserIsAdmin()) {
 
 <?php
 
-echo $this->FormOpen();
+echo $this->formOpen();
 echo theme_selector();
 
 ?>
@@ -207,7 +207,7 @@ for ($x = 0; $x < $num_page; $x++) {
 ?>
     <tr>
         <td><input type="checkbox" name="selectpage[]" value="<?php echo $page_et_themes[$x]['page'];?>"></td>
-        <td><?php echo $this->Link($page_et_themes[$x]['page']);?></td>
+        <td><?php echo $this->link($page_et_themes[$x]['page']);?></td>
         <td><div align="center"><?php echo nl2br(str_replace(" ", "<br>", $page_et_themes[$x]['theme']));?></div></td>
         <td><div align="center"><?php echo nl2br(str_replace(" ", "<br>", $page_et_themes[$x]['squelette']));?></div></td>
         <td><div align="center"><?php echo nl2br(str_replace(" ", "<br>", $page_et_themes[$x]['style']));?></div></td>
@@ -227,5 +227,5 @@ for ($x = 0; $x < $num_page; $x++) {
 </p>
 
 <?php
-    echo $this->FormClose();
+    echo $this->formClose();
 ?>

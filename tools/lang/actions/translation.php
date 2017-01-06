@@ -6,7 +6,7 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-$destination = $this->GetParameter("destination");
+$destination = $this->getParameter("destination");
 if (empty($destination)) {
     echo _t(LANG_DESTINATION_REQUIRED);
 }

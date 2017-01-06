@@ -5,7 +5,7 @@ if (!defined('WIKINI_VERSION')) {
     die('acc&egrave;s direct interdit');
 }
 
-if ($this->HasAccess('write') && $this->HasAccess('read')) {
+if ($this->hasAccess('write') && $this->hasAccess('read')) {
     // Edition
     if (!isset($_POST['submit']) || (isset($_POST['submit']) && $_POST['submit'] != 'Sauver')) {
         if ($this->config['use_hashcash']) {
@@ -41,10 +41,10 @@ if ($this->HasAccess('write') && $this->HasAccess('read')) {
             $ChampsHashcash =
              '<script type="text/javascript" src="'.$siteurl.$slash.'tools/security/wp-hashcash-js.php?siteurl='.urlencode($siteurl.$slash).'"></script><span id="hashcash-text" style="display:none" class="pull-right">'._t('HASHCASH_ANTISPAM_ACTIVATED').'</span>';
 
-            $plugin_output_new = preg_replace(
+            $pluginOutputNew = preg_replace(
                 '/\<hr class=\"hr_clear\" \/\>/',
                 $ChampsHashcash.'<hr class="hr_clear" />',
-                $plugin_output_new
+                $pluginOutputNew
             );
         }
         if ($this->config['use_captcha']) {
@@ -64,10 +64,10 @@ if ($this->HasAccess('write') && $this->HasAccess('read')) {
                   <input class="form-control" type="text" name="captcha" placeholder="'._t('CAPTCHA_WRITE').'" value="" required>
                 </div>
               </div>'."\n";
-            $plugin_output_new = preg_replace(
+            $pluginOutputNew = preg_replace(
                 '/\<div class="form-actions">.*<button type=\"submit\" name=\"submit\"/Uis',
                 $ChampsCaptcha.'<div class="form-actions">'."\n".'<button type="submit" name="submit"',
-                $plugin_output_new
+                $pluginOutputNew
             );
         }
     }

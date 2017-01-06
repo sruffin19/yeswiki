@@ -28,7 +28,7 @@ $plugins_list = $plugins->getPluginsList();
 uasort($plugins_list,create_function('$a,$b','return strcmp($a["label"],$b["label"]);'));
 
 
-echo $this->Header();
+echo $this->header();
 ?>
 <div class="page">
 <?php
@@ -47,4 +47,4 @@ echo('</dl>');
 ?>
 </div>
 <?php
-    echo $this->Footer(); 
+    echo $this->footer(); 
