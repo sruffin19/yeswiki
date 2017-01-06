@@ -61,11 +61,11 @@ if (!function_exists('test'))
 
 $res = $this->insertTriple('PagePrincipale', 'testproperty', 'testvalue');
 test('Insert triple ...', $res == 0, "res = $res", false);
-echo $this->getTripleValue('PagePrincipale', 'testproperty') . '<br />';
+echo $this->triples->getTripleValue('PagePrincipale', 'testproperty') . '<br />';
 $res = $this->updateTriple('PagePrincipale', 'testproperty', 'testvalue', 'new value');
 test('Update triple ...', $res == 0, "res = $res", false);
-echo $this->getTripleValue('PagePrincipale', 'testproperty') . '<br />';
-test('Triple exists (... new value)...', $this->tripleExists('PagePrincipale', 'testproperty', 'new value'), '', false);
-test('Triple exists (... testvalue)...', $this->tripleExists('PagePrincipale', 'testproperty', 'testvalue'), '', false);
+echo $this->triples->getTripleValue('PagePrincipale', 'testproperty') . '<br />';
+test('Triple exists (... new value)...', $this->triples->tripleExists('PagePrincipale', 'testproperty', 'new value'), '', false);
+test('Triple exists (... testvalue)...', $this->triples->tripleExists('PagePrincipale', 'testproperty', 'testvalue'), '', false);
 // misterproper
 test('Delete triple ...', !$this->deleteTriple('PagePrincipale', 'testproperty'), '', false);

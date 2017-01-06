@@ -2581,7 +2581,7 @@ function baz_gestion_listes()
 function baz_valeurs_fiche($idfiche = '', $formtab = '')
 {
     if ($idfiche != '') {
-        $type_page = $GLOBALS['wiki']->getTripleValue($idfiche, 'http://outils-reseaux.org/_vocabulary/type', '', '');
+        $type_page = $GLOBALS['wiki']->triples->getTripleValue($idfiche, 'http://outils-reseaux.org/_vocabulary/type', '', '');
         //on verifie que la page en question est bien une page wiki
         if ($type_page == 'fiche_bazar') {
             // on recupere une autre version en cas de consultation de l'historique
@@ -2626,7 +2626,7 @@ function baz_valeurs_liste($idliste = '')
     if ($idliste != '') {
         if (!isset($GLOBALS['_BAZAR_']['lists'][$idliste])) {
             // on verifie que la page en question est bien une page wiki
-            if ($GLOBALS['wiki']->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
+            if ($GLOBALS['wiki']->triples->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
                 $valjson = $GLOBALS['wiki']->loadPage($idliste);
                 $valeurs_fiche = json_decode($valjson['body'], true);
                 if (YW_CHARSET != 'UTF-8') {

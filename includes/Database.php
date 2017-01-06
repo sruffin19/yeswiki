@@ -6,10 +6,13 @@ use \Exception;
 class Database
 {
     private $dblink;
+    public $prefix;
 
-    public function __construct($host, $user, $password, $database)
+    // TODO Utiliser un objet configuration quand il sera créé.
+    public function __construct($host, $user, $password, $database, $prefix)
     {
         $this->dblink = @mysqli_connect($host, $user, $password);
+        $this->prefix = $prefix;
 
         if ($this->dblink) {
             if (! @mysqli_select_db($this->dblink, $database)) {

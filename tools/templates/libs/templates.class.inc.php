@@ -67,7 +67,7 @@ function getMethod()
 
 function GetMetaDatas($pagetag)
 {
-    $metadatas = $this->getTripleValue($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', '', '', '');
+    $metadatas = $this->triples->getTripleValue($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', '', '', '');
     if (!empty($metadatas)) {
         if (YW_CHARSET != 'UTF-8') {
             return array_map('utf8_decode', json_decode($metadatas, true));

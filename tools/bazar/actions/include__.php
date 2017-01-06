@@ -32,7 +32,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 // si la page est de type fiche_bazar, alors on affiche la fiche plutot que de formater en wiki
-$type = $this->getTripleValue($incPageName, 'http://outils-reseaux.org/_vocabulary/type', '', '');
+$type = $this->triples->getTripleValue($incPageName, 'http://outils-reseaux.org/_vocabulary/type', '', '');
 
 if ($type == 'fiche_bazar') {
     $valjson = $this->loadPage($incPageName);

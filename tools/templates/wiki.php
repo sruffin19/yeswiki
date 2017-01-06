@@ -60,7 +60,7 @@ fclose($fp);
 $wikiClassesContent [] = str_replace('<?php', '', $contents);
 
 //on récupère les metadonnées de la page
-$metadatas = $wiki->getTripleValue(
+$metadatas = $wiki->triples->getTripleValue(
     $page,
     'http://outils-reseaux.org/_vocabulary/metadata',
     '',

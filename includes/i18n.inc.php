@@ -125,7 +125,7 @@ function detectPreferedLanguage($available_languages, $http_accept_language = "a
         }
     } elseif ($page!='') {
         // page's metadata lang
-        $GLOBALS['wiki']->metadatas = $GLOBALS['wiki']->getTripleValue($page, 'http://outils-reseaux.org/_vocabulary/metadata', '', '', '');
+        $GLOBALS['wiki']->metadatas = $GLOBALS['wiki']->triples->getTripleValue($page, 'http://outils-reseaux.org/_vocabulary/metadata', '', '', '');
         if (!empty($GLOBALS['wiki']->metadatas)) {
             $GLOBALS['wiki']->metadatas =  array_map('utf8_decode', json_decode($GLOBALS['wiki']->metadatas, true));
         }

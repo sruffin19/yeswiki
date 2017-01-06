@@ -62,7 +62,7 @@ foreach ($pages as $page) {
     $this->registerInclusion($page['tag']);
     $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->format($page['body'])), $nbcartrunc);
     $this->unregisterLastInclusion();
-    $pagetags = $this->getAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+    $pagetags = $this->triples->getAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     foreach ($pagetags as $tag) {
         $tag['value'] = _convert(stripslashes($tag['value']), 'ISO-8859-1');
         $element[$page['tag']]['tagnames'] .= sanitizeEntity($tag['value']).' ';
