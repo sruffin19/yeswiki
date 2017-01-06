@@ -642,19 +642,20 @@ class Wiki extends Actions
             // this is necessary beacause even MySQL does not handel multi-tables
             // deletes before version 4.0
             $wnPages = $this->getConfigValue('table_prefix') . 'pages';
-            $sql = "SELECT DISTINCT a.id FROM $wnPages a, $wnPages b"
-                . 'WHERE a.latest = \'N\' AND a.time < date_sub(now(), INTERVAL \''
-                . addslashes($days) . '\' DAY) AND a.tag = b.tag '
-                . 'AND a.time < b.time '
-                . 'AND b.time < date_sub(now(), INTERVAL \''
-                . addslashes($days) . '\' DAY)';
+            $day = addslashes($days);
+            $sql = "SELECT DISTINCT a.id FROM $wnPages a, $wnPages b "
+                . "WHERE a.latest = 'N' "
+                . "AND a.time < date_sub(now(), INTERVAL '$day' DAY) "
+                . "AND a.tag = b.tag "
+                . "AND a.time < b.time "
+                . "AND b.time < date_sub(now(), INTERVAL '$day' DAY)";
 
             $ids = $this->database->loadAll($sql);
 
             if (count($ids)) {
                 // there are some versions to remove from DB
                 // let's build one big request, that's better...
-                $sql = 'DELETE FROM ' . $wnPages . ' WHERE id IN (';
+                $sql = "DELETE FROM $wnPages WHERE id IN (";
                 foreach ($ids as $key => $line) {
                     // NB.: id is an int, no need of quotes
                     $sql .= ($key ? ', ' : '') . $line['id'];
@@ -1748,7 +1749,8 @@ class Wiki extends Actions
     // THE BIG EVIL NASTY ONE!
     public function run($tag, $method = '')
     {
-        if (! ($this->getMicroTime() % 9)) {
+        // Maintenance une fois sur 10 ??
+        if (!($this->getMicroTime() % 9)) {
             $this->maintenance();
         }
 
