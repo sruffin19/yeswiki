@@ -63,7 +63,6 @@ $wakkaDefaultConfig = array(
     'wikini_version' => '',
     'yeswiki_version' => '',
     'yeswiki_release' => '',
-    'debug' => 'no',
     'mysql_host' => 'localhost',
     'mysql_database' => '',
     'mysql_user' => '',

@@ -26,12 +26,6 @@ class Database
 
     public function query($query)
     {
-        //TODO Gérer les temps d'execution
-
-        /*if ($this->getConfigValue('debug')) {
-            $start = $this->getMicroTime();
-        }*/
-
         if (! $result = mysqli_query($this->dblink, $query)) {
             ob_end_clean();
             throw new Exception(
@@ -39,14 +33,6 @@ class Database
                 1
             );
         }
-
-        /*if ($this->getConfigValue('debug')) {
-            $time = $this->getMicroTime() - $start;
-            $this->queryLog[] = array(
-                'query' => $query,
-                'time' => $time
-            );
-        }*/
 
         return $result;
     }

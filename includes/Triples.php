@@ -28,10 +28,6 @@ class Triples
      *            The resource of the triples
      * @param string $property
      *            The property of the triple to retrieve or null
-     * @param string $resOp
-     *            The operator of comparison between the effective resource and $resource (default: 'LIKE')
-     * @param string $propOp
-     *            The operator of comparison between the effective property and $property (default: '=')
      * @return array The list of all the triples that match the asked criteria
      */
     public function getMatchingTriples($resource, $property = null)

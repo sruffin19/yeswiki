@@ -67,25 +67,6 @@ $carto = $this->href('svg');
 $xhtml_validation_link = 'http://validator.w3.org/check?uri=' . urlencode($this->href());
 $css_validation_link = 'http://jigsaw.w3.org/css-validator/validator?uri=' . urlencode($this->href());
 $wikini_site_url = $this->link("WikiNi:PagePrincipale", "", "WikiNi ".$this->getWikiNiVersion());
-$debug_log = '';
-if ($this->getConfigValue("debug")=="yes")
-{
-    $debug_log = "<span class=\"debug\"><b>Query log :</b><br />\n";
-    $T_SQL=0;
-    foreach ($this->database->queryLog as $query)
-    {
-        $debug_log .= $query["query"]." (".round($query["time"],4).")<br />\n";
-        $T_SQL = $T_SQL + $query["time"];
-    }
-    $debug_log .= "</span>\n";
-
-    $debug_log .= "<span class=\"debug\">".round($T_SQL, 4)." s (total SQL time)</span><br />\n";
-
-    define ('T_END', microtime(true));
-    $debug_log .= "<span class=\"debug\"><b>".round(T_END-T_START, 4)." s (total time)</b></span><br />\n";
-
-    $debug_log .= "<span class=\"debug\">SQL time represent : ".round((($T_SQL/(T_END-T_START))*100),2)."% of total time</span>\n";
-}
 
 ?>
 
@@ -105,8 +86,6 @@ if ($this->getConfigValue("debug")=="yes")
         <a href="<?php echo $css_validation_link ?>">CSS valide ?</a> ::
         -- Fonctionne avec <?php echo $wikini_site_url ?>
     </div>
-
-    <?php echo $debug_log ?>
 
     </body>
 </html>
