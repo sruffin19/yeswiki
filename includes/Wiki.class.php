@@ -944,7 +944,7 @@ class Wiki extends Actions
                 return;
             }
 
-            $tableReferrers = $this->Database->prefix . 'referrers';
+            $tableReferrers = $this->database->prefix . 'referrers';
             $tag = $this->database->escapeString($tag);
             $referrer = $this->database->escapeString($referrer);
             $this->database->query(
