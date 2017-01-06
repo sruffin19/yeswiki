@@ -40,7 +40,7 @@ class Triples
             $property = addslashes($property);
             $sql .= " AND property = \"$property\"";
         }
-        return $this->loadAll($sql);
+        return $this->database->loadAll($sql);
     }
 
     /**

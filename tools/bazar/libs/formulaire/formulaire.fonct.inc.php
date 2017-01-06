@@ -838,7 +838,7 @@ function tags(&$formtemplate, $tableau_template, $mode, $valeurs_fiche)
         foreach ($tags as $tag) {
             trim($tag);
             if ($tag != '') {
-                $GLOBALS['wiki']->insertTriple($valeurs_fiche['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', _convert($tag, YW_CHARSET, true), '', '');
+                $GLOBALS['wiki']->triples->insertTriple($valeurs_fiche['id_fiche'], 'http://outils-reseaux.org/_vocabulary/tag', _convert($tag, YW_CHARSET, true), '', '');
             }
         }
 

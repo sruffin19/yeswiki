@@ -1448,7 +1448,7 @@ function baz_insertion_fiche($valeur)
     // on cree un triple pour specifier que la page wiki creee est une fiche
     // bazar
     if ($saved == 0) {
-        $GLOBALS['wiki']->insertTriple(
+        $GLOBALS['wiki']->triples->insertTriple(
             $valeur['id_fiche'],
             'http://outils-reseaux.org/_vocabulary/type',
             'fiche_bazar',
@@ -2373,7 +2373,7 @@ function baz_gestion_listes()
                 $GLOBALS['wiki']->savePage($nomwikiliste, $value);
 
                 // on cree un triple pour specifier que la PageWiki creee est une liste
-                $GLOBALS['wiki']->insertTriple(
+                $GLOBALS['wiki']->triples->insertTriple(
                     $nomwikiliste,
                     'http://outils-reseaux.org/_vocabulary/type',
                     'liste',
@@ -2459,18 +2459,17 @@ function baz_gestion_listes()
                 ++$i;
             }
         }
+        $valeur['titre_liste'] = $_POST['titre_liste'];
         if (YW_CHARSET != 'UTF-8') {
             $valeur['label'] = array_map('utf8_encode', $valeur['label']);
             $valeur['titre_liste'] = utf8_encode($_POST['titre_liste']);
-        } else {
-            $valeur['titre_liste'] = $_POST['titre_liste'];
         }
 
         //on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
         $GLOBALS['wiki']->savePage($nomwikiliste, json_encode($valeur));
 
         //on cree un triple pour specifier que la PageWiki creee est une liste
-        $GLOBALS['wiki']->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
+        $GLOBALS['wiki']->triples->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
 
         //on redirige vers la page contenant toutes les listes, et on confirme par message la bonne saisie de la liste
         $GLOBALS['wiki']->setMessage(_t('BAZ_NOUVELLE_LISTE_ENREGISTREE'));
