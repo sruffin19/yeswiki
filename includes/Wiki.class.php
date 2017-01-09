@@ -2,9 +2,11 @@
 require_once('includes/Action.php');
 require_once('includes/Database.php');
 require_once('includes/Triples.php');
+require_once('includes/Cookies.php');
 
 use YesWiki\Database;
 use YesWiki\Triples;
+use YesWiki\Cookies;
 
 class Wiki extends Actions
 {
@@ -12,10 +14,12 @@ class Wiki extends Actions
     public $tag;
     public $parameter = array();
     public $queryLog = array();
-    public $CookiePath = '/';
     public $inclusions = array();
 
-    public $triples;
+
+
+    public $triples = null;
+    public $cookies = null;
 
     /**
      * LinkTrackink
@@ -39,6 +43,7 @@ class Wiki extends Actions
     {
         $this->config = $config;
 
+        // TODO Utiliser plutôt de l'injection de dépendance
         $this->database = new Database(
             $this->getConfigValue('mysql_host'),
             $this->getConfigValue('mysql_user'),
@@ -46,18 +51,8 @@ class Wiki extends Actions
             $this->getConfigValue('mysql_database'),
             $this->getConfigValue('table_prefix')
         );
-
         $this->triples = new Triples($this->database);
-
-        // determine le chemin pour les cookies
-        $parsedUrl = parse_url($this->getConfigValue('base_url'));
-        $this->CookiePath = dirname($parsedUrl['path']);
-        // Fixe la gestion des cookie sous les OS utilisant le \ comme separateur de chemin
-        $this->CookiePath = str_replace('\\', '/', $this->CookiePath);
-        // ajoute un '/' terminal sauf si on est a la racine web
-        if ($this->CookiePath != '/') {
-            $this->CookiePath .= '/';
-        }
+        $this->cookies = new Cookies($this->config['base_url']);
     }
 
     // MISC
@@ -622,19 +617,6 @@ class Wiki extends Actions
         }
     }
 
-    // COOKIES
-    // TODO Vérifier si c'est vraiment utile cette gestion des cookies...
-    public function setPersistentCookie($name, $value, $remember = 0)
-    {
-        $expire = time() + ($remember ? 90 * 24 * 60 * 60 : 60 * 60);
-        setcookie($name, $value, $expire, $this->CookiePath);
-    }
-
-    public function deleteCookie($name)
-    {
-        setcookie($name, '', 1, $this->CookiePath);
-    }
-
     // HTTP/REQUEST/LINK RELATED
     public function setMessage($message)
     {
@@ -1078,16 +1060,16 @@ class Wiki extends Actions
     public function setUser($user, $remember = 0)
     {
         $_SESSION['user'] = $user;
-        $this->setPersistentCookie('name', $user['name'], $remember);
-        $this->setPersistentCookie('password', $user['password'], $remember);
-        $this->setPersistentCookie('remember', $remember, $remember);
+        $this->cookies->set('name', $user['name'], $remember);
+        $this->cookies->set('password', $user['password'], $remember);
+        $this->cookies->set('remember', $remember, $remember);
     }
 
     public function logoutUser()
     {
         $_SESSION['user'] = '';
-        $this->deleteCookie('name');
-        $this->deleteCookie('password');
+        $this->cookies->del('name');
+        $this->cookies->del('password');
     }
 
     public function getParameter($parameter, $default = '')
@@ -1721,10 +1703,13 @@ class Wiki extends Actions
         }
 
         if ((! $this->getUser()
-            and isset($_COOKIE['name']))
-            and ($user = $this->loadUser($_COOKIE['name'], $_COOKIE['password']))
+            and $this->cookies->isset('name'))
+            and $user = $this->loadUser(
+                $this->cookie->get('name'),
+                $this->cookie->get('password')
+            )
         ) {
-            $this->setUser($user, $_COOKIE['remember']);
+            $this->setUser($user, $this->cookie->get('remember'));
         }
 
         $this->setPage($this->loadPage($tag, (isset($_REQUEST['time']) ? $_REQUEST['time'] : '')));

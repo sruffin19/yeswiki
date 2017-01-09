@@ -134,17 +134,6 @@ if (($wakkaConfig['wakka_version'] != WAKKA_VERSION)
     exit();
 }
 
-// configuration du cookie de session
-// determine le chemin pour les cookies
-$a = parse_url($wakkaConfig['base_url']);
-$CookiePath = dirname($a['path']);
-// Fixe la gestion des cookie sous les OS utilisant le \ comme s?parteur de chemin
-$CookiePath = str_replace('\\', '/', $CookiePath);
-// ajoute un '/' terminal sauf si on est ? la racine web
-if ($CookiePath != '/') {
-    $CookiePath .= '/';
-}
-
 // start session
 session_start();
 
