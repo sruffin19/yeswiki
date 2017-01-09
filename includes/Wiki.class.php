@@ -55,13 +55,6 @@ class Wiki extends Actions
         $this->cookies = new Cookies($this->config['base_url']);
     }
 
-    // MISC
-    public function getMicroTime()
-    {
-        list ($usec, $sec) = explode(" ", microtime());
-        return ((float) $usec + (float) $sec);
-    }
-
     public function includeBuffered($filename, $notfoundText = '', $vars = '', $path = '')
     {
         $dirs = array('');
@@ -1679,19 +1672,20 @@ class Wiki extends Actions
     // MAINTENANCE
     public function maintenance()
     {
-        // purge referrers
-        $this->purgeReferrers();
-        // purge old page revisions
-        $this->purgePages();
+        list ($usec, $sec) = explode(" ", microtime());
+        if (!(((float) $usec + (float) $sec) % 9)) {
+            // purge referrers
+            $this->purgeReferrers();
+            // purge old page revisions
+            $this->purgePages();
+        }
     }
 
     // THE BIG EVIL NASTY ONE!
     public function run($tag, $method = '')
     {
         // Maintenance une fois sur 10 ??
-        if (!($this->getMicroTime() % 9)) {
-            $this->maintenance();
-        }
+        $this->maintenance();
 
         // do our stuff!
         if (! $this->method = trim($method)) {
