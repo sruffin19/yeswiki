@@ -39,20 +39,17 @@ $page_addr = $this->href();
 header("Content-Type: text/html; charset=$charset");
 
 // <head> : metas & style
+$additionnal_metas = '';
 if ($this->getMethod() != 'show'
     || !empty($_REQUEST['phrase'])
     || !empty($_REQUEST['show_comments'])
-    || isset($_REQUEST['time']))
-{
+    || isset($_REQUEST['time'])
+) {
     $additionnal_metas = "<meta name=\"robots\" content=\"noindex, nofollow\" />\n";
 }
-else
-{
-    $additionnal_metas = '';
-}
+
 $meta_keywords = $this->getConfigValue("meta_keywords");
 $meta_description = $this->getConfigValue("meta_description");
-$imported_style = isset($_COOKIE["sitestyle"]) ? htmlspecialchars($_COOKIE["sitestyle"], ENT_COMPAT, YW_CHARSET) : 'wakka';
 
 // Page contents
 $body_attr = ($message = $this->getMessage()) ? "onLoad=\"alert('".addslashes($message)."');\" " : "";
@@ -73,11 +70,7 @@ $disconnect_link = $this->getUser() ? '(<a href="' . $this->href('', 'Parametres
         <?php echo $additionnal_metas ?>
         <title><?php echo "$wiki_name:$page_name" ?></title>
         <link rel="stylesheet" type="text/css" media="screen" href="wakka.basic.css" />
-        <style type="text/css" media="all">
-            <!--
-            @import url(<?php echo $imported_style ?>.css);
-            -->
-        </style>
+        <link rel="stylesheet" type="text/css" media="screen" href="wakka.css" />
         <script type="text/javascript">
             <!--
             function fKeyDown(e) {
@@ -138,4 +131,3 @@ $disconnect_link = $this->getUser() ? '(<a href="' . $this->href('', 'Parametres
         <?php echo $navigation_links ?> ::
         Vous &ecirc;tes <?php echo $user_name ?> <?php echo $disconnect_link ?>
     </div>
-
