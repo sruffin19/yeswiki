@@ -44,6 +44,7 @@ require_once 'includes/constants.php';
 require_once 'includes/i18n.inc.php';
 require_once 'includes/Wiki.class.php';
 require_once 'includes/Configuration.php';
+require_once('includes/Plugins.php');
 
 use YesWiki\Configuration;
 
@@ -136,6 +137,60 @@ if (!(preg_match('#^[A-Za-z0-9_]*$#', $method))) {
     $method = '';
 }
 
-include 'includes/prepend.php';
+
+
+// Meme nom : remplace
+// _Meme nom : avant
+// Meme nom : _apres
+
+
+$plugins_root = 'tools/';
+
+$objPlugins = new plugins($plugins_root);
+$objPlugins->getPlugins(true);
+$plugins_list = $objPlugins->getPluginsList();
+
+$wakkaConfig['formatter_path'] = 'formatters';
+$wikiClasses[] = 'Wiki';
+$wikiClassesContent[] = '';
+
+foreach ($plugins_list as $pluginName => $v) {
+
+    $pluginBase = $plugins_root . $pluginName . '/';
+
+    if (file_exists($pluginBase . 'wiki.php')) {
+        include($pluginBase . 'wiki.php');
+    }
+
+    // language files : first default language, then preferred language
+    if (file_exists($pluginBase . 'lang/' . $pluginName . '_fr.inc.php')) {
+        include($pluginBase . 'lang/' . $pluginName . '_fr.inc.php');
+    }
+
+    if ($GLOBALS['prefered_language'] != 'fr'
+        and file_exists($pluginBase . 'lang/' . $pluginName . '_' . $GLOBALS['prefered_language'] . '.inc.php')) {
+        include($pluginBase . 'lang/' . $pluginName . '_' . $GLOBALS['prefered_language'] . '.inc.php');
+    }
+
+    if (file_exists($pluginBase . 'actions')) {
+        $wakkaConfig['action_path'] = $pluginBase . 'actions/' . ':' . $wakkaConfig['action_path'];
+    }
+    if (file_exists($pluginBase . 'handlers')) {
+        $wakkaConfig['handler_path'] = $pluginBase . 'handlers/' . ':' . $wakkaConfig['handler_path'];
+    }
+    if (file_exists($pluginBase . 'formatters')) {
+        $wakkaConfig['formatter_path'] = $pluginBase . 'formatters/' . ':' . $wakkaConfig['formatter_path'];
+    }
+}
+
+for ($iw = 1; $iw < count($wikiClasses); $iw ++) {
+    $code = 'Class ' . $wikiClasses[$iw] . ' extends ' . $wikiClasses[$iw - 1] . ' { ' . $wikiClassesContent[$iw] . ' }; ';
+    eval($code);
+
+}
+
+// $wiki = new WikiTools($wakkaConfig);
+$toEval = '$wiki  = new ' . $wikiClasses[count($wikiClasses) - 1] . '($wakkaConfig);';
+eval($toEval);
 
 $wiki->run($page, $method);
