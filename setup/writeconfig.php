@@ -56,17 +56,7 @@ $config['yeswiki_release'] = YESWIKI_RELEASE;
 
 // convert config array into PHP code
 $configCode = "<?php\n// wakka.config.php "._t('CREATED').' '.strftime('%c')."\n// "._t('DONT_CHANGE_YESWIKI_VERSION_MANUALLY')." !\n\n\$wakkaConfig = ";
-if (function_exists('var_export')) {
-    // var_export gives a better result but was added in php 4.2.0 (wikini asks only php 4.1.0)
-    $configCode .= var_export($config, true).";\n?>";
-} else {
-    $configCode .= "array(\n";
-    foreach ($config as $k => $v) {
-        // avoid problems with quotes and slashes
-        $entries[] = "\t'".$k."' => '".str_replace(array('\\', "'"), array('\\\\', '\\\''), $v)."'";
-    }
-    $configCode .= implode(",\n", $entries).");\n\n";
-}
+$configCode .= var_export($config, true).";\n";
 
 // try to write configuration file
 echo '<b>'._t('WRITING_CONFIGURATION_FILE_WIP')." ...</b><br>\n";
