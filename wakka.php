@@ -41,13 +41,13 @@
  */
 
 require_once 'includes/constants.php';
-require_once 'includes/urlutils.inc.php';
 require_once 'includes/i18n.inc.php';
 require_once 'includes/Wiki.class.php';
+require_once 'includes/Configuration.php';
+
+use YesWiki\Configuration;
 
 initI18n();
-
-$t_SQL = 0;
 
 // stupid version check
 if (!isset($_REQUEST)) {
@@ -55,73 +55,18 @@ if (!isset($_REQUEST)) {
 }
 
 // default configuration values
-$wakkaConfig = array();
-$_rewrite_mode = detectRewriteMode();
-
-$wakkaDefaultConfig = array(
-    'wakka_version' => '',
-    'wikini_version' => '',
-    'yeswiki_version' => '',
-    'yeswiki_release' => '',
-    'mysql_host' => 'localhost',
-    'mysql_database' => '',
-    'mysql_user' => '',
-    'mysql_password' => '',
-    'table_prefix' => 'yeswiki_',
-    'base_url' => computeBaseURL($_rewrite_mode),
-    'rewrite_mode' => $_rewrite_mode,
-    'meta_keywords' => '',
-    'meta_description' => '',
-    'action_path' => 'actions',
-    'handler_path' => 'handlers',
-    'header_action' => 'header',
-    'footer_action' => 'footer',
-    'navigation_links' => 'DerniersChangements :: DerniersCommentaires :: ParametresUtilisateur',
-    'referrers_purge_time' => 24,
-    'pages_purge_time' => 90,
-    'default_write_acl' => '*',
-    'default_read_acl' => '*',
-    'default_comment_acl' => '@admins',
-    'preview_before_save' => 0,
-    'allow_raw_html' => false,
-    'timezone'=>'GMT' // Only used if not set in wakka.config.php nor in php.ini
-);
-unset($_rewrite_mode);
+$wakkaConfig = new Configuration();
 
 // load config
-if (! $configfile = GetEnv('WAKKA_CONFIG')) {
-    $configfile = 'wakka.config.php';
+if (!$wakkaConfigfile = GetEnv('WAKKA_CONFIG')) {
+    $wakkaConfigfile = 'wakka.config.php';
 }
 
-if (file_exists($configfile)) {
-    include $configfile;
-} else {
-    // we must init language file without loading the page's settings.. to translate some default config settings
-    $wakkaDefaultConfig['root_page'] = _t('HOMEPAGE_WIKINAME');
-    $wakkaDefaultConfig['wakka_name'] = _t('MY_YESWIKI_SITE');
-}
-$wakkaConfigLocation = $configfile;
-$wakkaConfig = array_merge($wakkaDefaultConfig, $wakkaConfig);
-
-// give a default timezone to avoid error
-if ($wakkaConfig['timezone'] != $wakkaDefaultConfig['timezone']) {
-    date_default_timezone_set($wakkaConfig['timezone']);
-} elseif (!ini_get('date.timezone')) {
-    date_default_timezone_set($wakkaDefaultConfig['timezone']);
-}
-
-// compare versions, start installer if necessary
-if ($wakkaConfig['wakka_version']
-    and (! $wakkaConfig['wikini_version'])
-) {
-    $wakkaConfig['wikini_version'] = $wakkaConfig['wakka_version'];
-}
-
-if (($wakkaConfig['wakka_version'] != WAKKA_VERSION)
-    or ($wakkaConfig['wikini_version'] != WIKINI_VERSION)
-) {
-    // start installer
-    if (! isset($_REQUEST['installAction']) or ! $installAction = trim($_REQUEST['installAction'])) {
+// No configuration file --> start installation process
+if (!file_exists($wakkaConfigfile)) {
+    if (   ! isset($_REQUEST['installAction'])
+        or ! $installAction = trim($_REQUEST['installAction'])
+    ) {
         $installAction = "default";
     }
     include 'setup/header.php';
@@ -134,10 +79,20 @@ if (($wakkaConfig['wakka_version'] != WAKKA_VERSION)
     exit();
 }
 
-// start session
 session_start();
+$wakkaConfig->load($wakkaConfigfile);
 
-// fetch wakka location
+// give a default timezone to avoid error
+// TODO déméler ce truc...
+/*if ($wakkaConfig['timezone'] != $wakkaDefaultConfig['timezone']) {
+    date_default_timezone_set($wakkaConfig['timezone']);
+} elseif (!ini_get('date.timezone')) {
+    date_default_timezone_set($wakkaDefaultConfig['timezone']);
+}*/
+
+
+// fetch wakka location TODO vraiment necessaire ? des valeurs par défaut me
+// semblent plus adapaté. A confirmer
 if (empty($_REQUEST['wiki'])) {
     // redirect to the root page
     header('Location: ' . $wakkaConfig['base_url'] . $wakkaConfig['root_page']);
