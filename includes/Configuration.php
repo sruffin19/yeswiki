@@ -25,6 +25,7 @@ class Configuration implements \ArrayAccess
             'meta_description' => '',
             'action_path' => 'actions',
             'handler_path' => 'handlers',
+            'formatter_path' => 'formatters',
             'header_action' => 'header',
             'footer_action' => 'footer',
             'navigation_links' => 'DerniersChangements :: DerniersCommentaires :: ParametresUtilisateur',
