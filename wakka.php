@@ -137,39 +137,30 @@ if (!(preg_match('#^[A-Za-z0-9_]*$#', $method))) {
     $method = '';
 }
 
+$objPlugins = new Plugins('tools');
+$plugins_list = $objPlugins->getActivePlugins();
 
-
-// Meme nom : remplace
-// _Meme nom : avant
-// Meme nom : _apres
-
-
-$plugins_root = 'tools/';
-
-$objPlugins = new plugins($plugins_root);
-$objPlugins->getPlugins(true);
-$plugins_list = $objPlugins->getPluginsList();
-
-$wakkaConfig['formatter_path'] = 'formatters';
 $wikiClasses[] = 'Wiki';
 $wikiClassesContent[] = '';
 
+$lang = $GLOBALS['prefered_language'];
+
 foreach ($plugins_list as $pluginName => $v) {
 
-    $pluginBase = $plugins_root . $pluginName . '/';
+    $pluginBase = $objPlugins->location . $pluginName . '/';
 
     if (file_exists($pluginBase . 'wiki.php')) {
         include($pluginBase . 'wiki.php');
     }
 
     // language files : first default language, then preferred language
-    if (file_exists($pluginBase . 'lang/' . $pluginName . '_fr.inc.php')) {
-        include($pluginBase . 'lang/' . $pluginName . '_fr.inc.php');
+    $langPath = $pluginBase . 'lang/' . $pluginName;
+    if (file_exists($langPath . '_fr.inc.php')) {
+        include($langPath . '_fr.inc.php');
     }
-
-    if ($GLOBALS['prefered_language'] != 'fr'
-        and file_exists($pluginBase . 'lang/' . $pluginName . '_' . $GLOBALS['prefered_language'] . '.inc.php')) {
-        include($pluginBase . 'lang/' . $pluginName . '_' . $GLOBALS['prefered_language'] . '.inc.php');
+    if ($lang != 'fr'
+        and file_exists($langPath . '_' . $lang . '.inc.php')) {
+        include($langPath . '_' . $lang . '.inc.php');
     }
 
     if (file_exists($pluginBase . 'actions')) {
