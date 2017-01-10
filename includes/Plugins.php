@@ -56,6 +56,23 @@ class Plugins
         return false;
     }
 
+    public function loadTraductions($lang = 'fr')
+    {
+        foreach ($this->pluginsList as $pluginName => $v) {
+            // language files : first default language, then preferred language
+            $langPath = $this->location . $pluginName . '/' . 'lang/' . $pluginName;
+
+            if (file_exists($langPath . '_fr.inc.php')) {
+                include($langPath . '_fr.inc.php');
+            }
+
+            if ($lang != 'fr'
+                and file_exists($langPath . '_' . $lang . '.inc.php')) {
+                include($langPath . '_' . $lang . '.inc.php');
+            }
+        }
+    }
+
     public function getActivePlugins()
     {
         if (($listFiles = $this->readDir()) !== false) {
@@ -92,17 +109,24 @@ class Plugins
                 $res[$entry] = $this->location.$entry . '/desc.xml';
             }
         }
-        $test = glob($this->location . '*/desc.xml');
         return $res;
     }
 
     private function getPluginInfo($plugin)
     {
+        // TODO Utiliser des fonctions moins complexe ou passer sur des fichier
+        // json. (préférence pour la deuxième version)
         if (file_exists($plugin)) {
             $this->_current_tag_cdata = '';
-            $this->_p_info = array('name' => null, 'version' => null,
-                        'active' => null, 'author' => null, 'label' => null,
-                        'desc' => null, 'callbacks' => array(), );
+            $this->_p_info = array(
+                'name' => null,
+                'version' => null,
+                'active' => null,
+                'author' => null,
+                'label' => null,
+                'desc' => null,
+                'callbacks' => array(),
+            );
 
             $this->xml = xml_parser_create('ISO-8859-1');
             xml_parser_set_option($this->xml, XML_OPTION_CASE_FOLDING, false);

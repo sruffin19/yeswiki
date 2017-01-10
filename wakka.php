@@ -138,29 +138,18 @@ if (!(preg_match('#^[A-Za-z0-9_]*$#', $method))) {
 }
 
 $objPlugins = new Plugins('tools');
-$plugins_list = $objPlugins->getActivePlugins();
+$pluginsList = $objPlugins->getActivePlugins();
+$objPlugins->loadTraductions($GLOBALS['prefered_language']);
 
 $wikiClasses[] = 'Wiki';
 $wikiClassesContent[] = '';
 
-$lang = $GLOBALS['prefered_language'];
-
-foreach ($plugins_list as $pluginName => $v) {
+foreach ($pluginsList as $pluginName => $v) {
 
     $pluginBase = $objPlugins->location . $pluginName . '/';
 
     if (file_exists($pluginBase . 'wiki.php')) {
         include($pluginBase . 'wiki.php');
-    }
-
-    // language files : first default language, then preferred language
-    $langPath = $pluginBase . 'lang/' . $pluginName;
-    if (file_exists($langPath . '_fr.inc.php')) {
-        include($langPath . '_fr.inc.php');
-    }
-    if ($lang != 'fr'
-        and file_exists($langPath . '_' . $lang . '.inc.php')) {
-        include($langPath . '_' . $lang . '.inc.php');
     }
 
     if (file_exists($pluginBase . 'actions')) {
