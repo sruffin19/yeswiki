@@ -114,62 +114,25 @@ class Plugins
 
     private function getPluginInfo($plugin)
     {
-        // TODO Utiliser des fonctions moins complexe ou passer sur des fichier
-        // json. (préférence pour la deuxième version)
-        if (file_exists($plugin)) {
-            $this->_current_tag_cdata = '';
-            $this->_p_info = array(
-                'name' => null,
-                'version' => null,
-                'active' => null,
-                'author' => null,
-                'label' => null,
-                'desc' => null,
-                'callbacks' => array(),
-            );
-
-            $this->xml = xml_parser_create('ISO-8859-1');
-            xml_parser_set_option($this->xml, XML_OPTION_CASE_FOLDING, false);
-            xml_set_object($this->xml, $this);
-            xml_set_element_handler($this->xml, 'openTag', 'closeTag');
-            xml_set_character_data_handler($this->xml, 'cdata');
-
-            xml_parse($this->xml, implode('', file($plugin)));
-            xml_parser_free($this->xml);
-
-            if (!empty($this->_p_info['name'])) {
-                return $this->_p_info;
-            }
+        if (!file_exists($plugin)) {
             return false;
         }
-    }
 
-    private function openTag($plugin, $tag, $attr)
-    {
-        if ($tag == $this->type && !empty($attr['name'])) {
-            $this->_p_info['name'] = $attr['name'];
-            $this->_p_info['version'] = (!empty($attr['version'])) ? $attr['version'] : null;
-            $this->_p_info['active'] = (!empty($attr['active'])) ? (boolean) $attr['active'] : false;
+        $xml = simplexml_load_file($plugin);
+
+        $infos = array(
+            'author' => (string)$xml->author,
+            'label' => (string)$xml->label,
+            'desc' => (string)$xml->desc
+        );
+        foreach ($xml->attributes() as $key => $value) {
+            $infos[$key] = (string)$value;
         }
 
-        if ($tag == 'callback') {
-            $this->_p_info['callbacks'][] = array($attr['event'], $attr['function']);
+        if (isset($infos['active'])) {
+            $infos['active'] = (int)$infos['active'];
         }
-    }
 
-    private function closeTag($plugin, $tag)
-    {
-        switch ($tag) {
-            case 'author':
-            case 'label':
-            case 'desc':
-                $this->_p_info[$tag] = $this->_current_tag_cdata;
-                break;
-        }
-    }
-
-    private function cdata($plugin, $cdata)
-    {
-        $this->_current_tag_cdata = $cdata;
+        return $infos;
     }
 }
