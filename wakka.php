@@ -42,7 +42,7 @@
 
 require_once 'includes/constants.php';
 require_once 'includes/i18n.inc.php';
-require_once 'includes/Wiki.class.php';
+require_once 'includes/Wiki.php';
 require_once 'includes/Configuration.php';
 require_once('includes/Plugins.php');
 
