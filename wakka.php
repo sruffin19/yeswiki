@@ -47,6 +47,7 @@ require_once 'includes/Configuration.php';
 require_once('includes/Plugins.php');
 
 use YesWiki\Configuration;
+use YesWiki\Plugins;
 
 initI18n();
 
@@ -124,9 +125,6 @@ try {
     exit();
 }
 
-// update lang
-loadpreferredI18n($page);
-
 // go!
 if (!isset($method)) {
     $method = '';
@@ -141,11 +139,15 @@ $objPlugins = new Plugins('tools');
 $pluginsList = $objPlugins->getActivePlugins();
 $objPlugins->loadTraductions($GLOBALS['prefered_language']);
 
+
 $wikiClasses[] = 'Wiki';
 $wikiClassesContent[] = '';
 
+// TODO trouver une solution pour gérer ça dans la classe Plugins..
+// NOTE il faudra d'abord séparer la déclaration de la classe et du code
+// a executer dans les wiki.php de chaque tool.
+// Debut
 foreach ($pluginsList as $pluginName => $v) {
-
     $pluginBase = $objPlugins->location . $pluginName . '/';
 
     if (file_exists($pluginBase . 'wiki.php')) {
@@ -169,8 +171,11 @@ for ($iw = 1; $iw < count($wikiClasses); $iw ++) {
 
 }
 
-// $wiki = new WikiTools($wakkaConfig);
+// Génère un nouvel objet wiki basé sur toutes les classes étendue des plugins. Voir si il n'est pas possible de le générer qu'une fois.
 $toEval = '$wiki  = new ' . $wikiClasses[count($wikiClasses) - 1] . '($wakkaConfig);';
 eval($toEval);
+// fiN
+
+loadpreferredI18n($page);
 
 $wiki->run($page, $method);

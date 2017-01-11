@@ -1,4 +1,6 @@
 <?php
+namespace YesWiki;
+
 class Plugins
 {
     public $location;
