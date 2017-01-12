@@ -81,7 +81,7 @@ class Configuration implements \ArrayAccess
         if (array_key_exists($paramName, $this->parameters)) {
             return $this->parameters[$paramName];
         }
-        return false;
+        return null;
     }
 
      /**

@@ -81,10 +81,10 @@ if (isset($_GET['jsonp_callback']))
                         // now we render it internally so we can write the updated link table.
                         $this->clearLinkTable();
                         $this->startLinkTracking();
-                        $temp = $this->setInclusions(); // a priori, ca ne sert à rien, mais on ne sait jamais...
-                        $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
+                        $temp = $this->inclusions->set(); // a priori, ca ne sert à rien, mais on ne sait jamais...
+                        $this->inclusions->register($this->getPageTag()); // on simule totalement un affichage normal
                         $this->format($body);
-                        $this->setInclusions($temp);
+                        $this->inclusions->set($temp);
                         if($user = $this->getUser()) {
                             $this->trackLinkTo($user['name']);
                         }

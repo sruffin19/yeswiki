@@ -74,9 +74,9 @@ if ($HasAccessRead=$this->hasAccess("read"))
 
 
         // display page
-        $this->registerInclusion($this->getPageTag());
+        $this->inclusions->register($this->getPageTag());
         echo $this->format($this->page["body"], "wakka");
-        $this->unregisterLastInclusion();
+        $this->inclusions->unregisterLast();
 
         // if this is an old revision, display some buttons
         if (($this->page["latest"] == "N") && $this->hasAccess("write"))

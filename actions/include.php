@@ -58,9 +58,9 @@ if (empty($incPageName))
 {
     echo '<div class="alert alert-danger"><strong>'._t('ERROR').' '._t('ACTION').' Include</strong> : '._t('MISSING_PAGE_PARAMETER').'.</div>'."\n";
 }
-elseif ($this->isIncludedBy($incPageName))
+elseif ($this->inclusions->isIncludedBy($incPageName))
 {
-    $inclusions = $this->getAllInclusions();
+    $inclusions = $this->inclusions->getAll();
     $pg = strtolower($incPageName); // on l'effectue avant le for sinon il sera recalculé é chaque pas
     $err = '[[' . $pg . ']]';
     for($i = 0; $inclusions[$i] != $pg; $i++)
@@ -81,7 +81,7 @@ elseif (!$incPage = $this->loadPage($incPageName))
 // Affichage de la page quand il n'y a pas d'erreur
 elseif ($this->hasAccess('read', $incPageName))
 {
-    $this->registerInclusion($incPageName);
+    $this->inclusions->register($incPageName);
     $output = $this->format($incPage['body']);
     if (isset($classes))
     {
@@ -92,5 +92,5 @@ elseif ($this->hasAccess('read', $incPageName))
         echo "<div class=\"include " . $classes . "\">\n" . $editLink . $output . "</div>\n";
     }
     else echo $output;
-    $this->unregisterLastInclusion();
+    $this->inclusions->unregisterLast();
 }

@@ -61,8 +61,8 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
 
     switch ($submit) {
         case 'Apercu':
-            $temp = $this->setInclusions(); // a priori, éa ne sert é rien, mais on ne sait jamais...
-            $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
+            $temp = $this->inclusions->set(); // a priori, éa ne sert é rien, mais on ne sait jamais...
+            $this->inclusions->register($this->getPageTag()); // on simule totalement un affichage normal
             $output .=
               "<div class=\"page_preview\">\n".
               "<div class=\"prev_alert\"><strong>Aper&ccedil;u</strong></div>\n".
@@ -75,7 +75,7 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
               "<input name=\"submit\" type=\"submit\" value=\"R&eacute;&eacute;diter\" accesskey=\"p\" />\n".
               "<input type=\"button\" value=\"Annulation\" onclick=\"document.location='".addslashes($this->href())."';\" />\n".
               $this->formClose()."\n"."</div>\n";
-            $this->setInclusions($temp);
+            $this->inclusions->set($temp);
             break;
 
         // pour les navigateurs n'interprétant pas le javascript
@@ -107,10 +107,10 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
                     // now we render it internally so we can write the updated link table.
                     $this->clearLinkTable();
                     $this->startLinkTracking();
-                    $temp = $this->setInclusions(); // a priori, éa ne sert é rien, mais on ne sait jamais...
-                    $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
+                    $temp = $this->inclusions->set(); // a priori, éa ne sert é rien, mais on ne sait jamais...
+                    $this->inclusions->register($this->getPageTag()); // on simule totalement un affichage normal
                     $this->format($body);
-                    $this->setInclusions($temp);
+                    $this->inclusions->set($temp);
                     if ($user = $this->getUser()) {
                         $this->trackLinkTo($user['name']);
                     }
