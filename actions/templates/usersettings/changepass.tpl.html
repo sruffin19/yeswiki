@@ -1,0 +1,28 @@
+<input type="hidden" name="action" value="changepass" />
+  <table>
+      <tr>
+          <td>&nbsp;</td>
+          <td>&nbsp;</td>
+      </tr>
+      <tr>
+          <td align="right"></td>
+          <td><?php echo _t('CHANGE_THE_PASSWORD'); ?></td>
+      </tr>
+      <?php
+      if (isset($error)) {
+          echo "<tr><td></td><td><div class=\"alert alert-danger\">", $error, "</div></td></tr>\n";
+      }
+      ?>
+      <tr>
+          <td align="right"><?php echo _t('YOUR_OLD_PASSWORD'); ?>&nbsp;:</td>
+          <td><input type="password" name="oldpass" size="40" /></td>
+      </tr>
+      <tr>
+          <td align="right"><?php echo _t('NEW_PASSWORD'); ?>&nbsp;:</td>
+          <td><input type="password" name="password" size="40" /></td>
+      </tr>
+      <tr>
+          <td></td>
+          <td><input type="submit" value="<?php echo _t('CHANGE'); ?>" size="40" /></td>
+      </tr>
+  </table>
