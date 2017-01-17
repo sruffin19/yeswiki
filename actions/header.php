@@ -30,7 +30,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-$charset = 'iso-8859-1';
+$charset = 'UTF-8';
 
 // Page info
 $page_name = $this->getPageTag();
