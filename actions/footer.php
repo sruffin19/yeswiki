@@ -76,7 +76,6 @@ $wikini_site_url = $this->link("WikiNi:PagePrincipale", "", "WikiNi ".$this->get
             <?php echo $edit_link, $revisions_link, $owner_info ?>
 
             <a href="<?php echo $backlinks ?>" title="Pages faisant r&eacute;f&eacute;rence &agrave; cette page.">R&eacute;tro-liens</a> ::
-            <a href="<?php echo $carto ?>" title="Cartographie des pages liées à cette page (nécessite SVG).">Cartographie</a> ::
             Recherche : <input name="phrase" size="15" class="searchbox" />
         </div>
     </form>
