@@ -71,7 +71,12 @@ Class Link
     {
         // TODO Vérifier l'existance de la page et si elle n'existe pas alors
         // proposer un lien avec le handler edit
-        $this->link = "<a href='$this->tag'>$this->text</a>";
+        $method = "";
+        if ($this->method !== "" or !is_null($this->method)) {
+            $method = '/' . $this->method;
+        }
+
+        $this->link = "<a href='$this->tag$method'>$this->text</a>";
     }
 
     protected function makeEmail()
