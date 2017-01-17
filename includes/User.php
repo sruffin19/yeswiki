@@ -1,6 +1,8 @@
 <?php
 namespace YesWiki;
 
+use \Exception;
+
 class User
 {
     public $name = null;
@@ -25,6 +27,14 @@ class User
         $this->init($infos);
     }
 
+    /**
+     * Met à jour les paramètres de l'utilisateur.
+     * @param  string $email           [description]
+     * @param  string $doubleClickEdit Y|N
+     * @param  styring $showComments   Y|N
+     * @param  string $motto           user's motto
+     * TODO remonter erreur si echec
+     */
     public function update($email, $doubleClickEdit, $showComments, $motto)
     {
         $email = $this->database->escapeString($email);
@@ -42,7 +52,6 @@ class User
                         motto = '$motto'
                     WHERE
                         name = '$name' LIMIT 1";
-        // TODO remonter erreur si echec
         $this->database->query($sql);
 
         $this->email = $email;
@@ -51,18 +60,27 @@ class User
         $this->motto = $motto;
     }
 
-    public function changePassword($password)
+    /**
+     * Change le mot de passe de l'utilisateur.
+     * @param  ClearPassword|EncryptedPassword $password Nouveau mot de passe.
+     * TODO remonter erreur si echec
+     */
+    public function changePassword($newPassword)
     {
         $table = $this->database->prefix . 'users';
-        $password = $this->database->escapeString((string)$password);
+        $newPassword = $this->database->escapeString((string)$newPassword);
         $name = $this->database->escapeString($this->name);
 
-        $sql = "UPDATE $table SET password = '$password'
+        $sql = "UPDATE $table SET password = '$newPassword'
                     WHERE name = '$name' LIMIT 1";
 
         $this->database->query($sql);
     }
 
+    /**
+     * Initialise l'utilisateur avec les informations fournies
+     * @param  array $infos Tableau des informations.
+     */
     private function init($infos) {
         $this->isMinimalInformation($infos);
         $this->name = $infos['name'];
@@ -94,6 +112,11 @@ class User
         }
     }
 
+    /**
+     * Vérifie les informations indispensables sont présentes.
+     * @param  array $infos Tableau des informations.
+     * @return boolean        true si ça a fonctionné sinon lance une Exception
+     */
     private function isMinimalInformation($infos)
     {
         if (!isset($infos['name'])) {

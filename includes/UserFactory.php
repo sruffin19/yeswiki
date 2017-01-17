@@ -16,9 +16,10 @@ class UserFactory
     }
 
     /**
-     * return user if exist or false
-     * @param  string $name user's name
-     * @return User|fasle
+     * Créer un utilisateur si il existe dans la base de donnée. Renvoie Faux si
+     * il n'existe pas.
+     * @param  string $name Nom de l'utilisateur
+     * @return User|false
      */
     public function get($name)
     {
@@ -34,12 +35,12 @@ class UserFactory
         }
 
         $userInfos['password'] = new EncryptedPassword($userInfos['password']);
-
         return new User($this->database, $userInfos);
     }
 
     /**
-     * Return connected user (check password) or return null.
+     * Créé  l'objet User pour l'utilisateur connecté. Si aucune utilisateur
+     * n'est connecté renvoie null.
      * @return User|null
      */
     public function getConnected()
@@ -66,9 +67,9 @@ class UserFactory
     }
 
     /**
-     * Check if user exist
-     * @param  string  $name User's name;
-     * @return boolean
+     * Vérifie si un utilisateur existe.
+     * @param  string  $name Nom de l'utilisateur
+     * @return boolean vrai si l'utilisateur existe sinon faux
      */
     public function isExist($name)
     {
@@ -86,6 +87,10 @@ class UserFactory
         return true;
     }
 
+    /**
+     * Créé un objet User pour chaque utilisateur présent dans la base de données
+     * @return array Tableau d'objets User
+     */
     public function getAll()
     {
         $tableUsers = $this->database->prefix . 'users';
@@ -102,6 +107,14 @@ class UserFactory
         return $users;
     }
 
+    /**
+     * Créé un nouvel utilisateur
+     * @param  string $name     Nom de l'utilisateur (le fait que ce soit un
+     *                          WikiName doit deja etre vérifié)
+     * @param  string $email    Email de l'utilisateur
+     * @param  string $password Mot de passe de l'utilisateur
+     * @return User           [description]
+     */
     public function new($name, $email, $password)
     {
         $tableUsers = $this->database->prefix . 'users';
@@ -116,5 +129,7 @@ class UserFactory
                     password = md5('$password')";
 
         $this->database->query($sql);
+
+        return $this->get($name);
     }
 }

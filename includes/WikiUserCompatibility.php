@@ -6,22 +6,30 @@ namespace YesWiki;
 
 class WikiUserCompatibility
 {
+    /**
+     * Charge un utilisateur dans la base de données.
+     * @param  string       $name   nom de l'utilisateur
+     * @return User|false           Un objet User si l'utilisateur existe sinon
+     *                              faux
+     */
     public function loadUser($name)
     {
         $userFactory = new UserFactory($this->database);
         return $userFactory->get($name);
     }
 
+    /**
+     * Retourne tous les utilisateurs existant dans la base de donnée.
+     * @return array of User
+     */
     public function loadUsers()
     {
-        $tableUsers = $this->database->prefix . 'users';
-        return $this->database->getAll(
-            "SELECT * FROM $tableUsers ORDER BY name"
-        );
+        $userFactory = new UserFactory($this->database);
+        return $userFactory->getAll();
     }
 
     /**
-     * Return name of logged user or '' if no user connected.
+     * Renvois l'utilisateur connecté ou une chaine vide.
      * @return [type] [description]
      */
     public function getUser()
@@ -33,7 +41,8 @@ class WikiUserCompatibility
     }
 
     /**
-     * Get connected username, or remote computer name/IP if no user connected.
+     * Retourne le nom de l'utilisateur connecté ou l'ip de la machine distante
+     * si pas d'utilisateur connecté
      * @return string
      */
     public function getUserName()
@@ -45,6 +54,12 @@ class WikiUserCompatibility
 
     }
 
+    /**
+     * Connecte un utilisateur
+     * @param User  $user       Utilisateur a connecter
+     * @param integer $remember Définis si il faut mémoriser un utilisateur sur le
+     * long terme. Ne semble pas être utiliser correctement TODO
+     */
     public function setUser($user, $remember = 0)
     {
         $_SESSION['user'] = $user->name;
@@ -53,15 +68,24 @@ class WikiUserCompatibility
         $this->cookies->set('remember', $remember, $remember);
     }
 
+    /**
+     * Déconnecte un utilisateur
+     */
     public function logoutUser()
     {
+        unset($this->connectedUser);
+        $this->connectedUser = null;
         $_SESSION['user'] = '';
         $this->cookies->del('name');
         $this->cookies->del('password');
         $this->cookies->del('remember');
     }
 
-    // returns true if logged in user is owner of current page, or page specified in $tag
+    /**
+     * Vérifie si l'utilisateur connecté est propriétaire de la page.
+     * @param  string $tag Nom de la page.
+     * @return bool
+     */
     public function userIsOwner($tag = "")
     {
         // check if user is logged in
@@ -76,18 +100,22 @@ class WikiUserCompatibility
         if ($this->getPageOwner($tag) == $this->GetUserName()) {
             return true;
         }
+        return false;
     }
 
 
     /**
-     * Checks if a given user is andministrator
+     * Vérifie si un utilisateur a les droit d'administrateur. Si aucun
+     * utilisateur n'est spécifié c'est l'utilisateur connecté qui est utilisé.
      *
-     * @param string $user
-     *            The name of the user (defaults to the current user if not given)
-     * @return boolean true iff the user is an administrator
+     * @param string $user Le nom de l'utilisateur.
+     * @return boolean Vrai si l'utilisateur a les droits.
      */
     public function userIsAdmin($user = null)
     {
+        if (is_null($user)) {
+            $user = $this->connectedUser;
+        }
         return $this->userIsInGroup(ADMIN_GROUP, $user, false);
     }
 
