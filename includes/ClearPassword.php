@@ -12,7 +12,7 @@ class ClearPassword extends EncryptedPassword
     public function __construct($password)
     {
         $this->clearPassword = $password;
-        $this->password = $this->encrypt($password);
+        $this->encrypt();
     }
 
     /**
@@ -33,5 +33,15 @@ class ClearPassword extends EncryptedPassword
             return false;
         }
         return true;
+    }
+
+    /**
+     * Chiffre le mot de passe.
+     * @param  string $password [description]
+     * @return [type]           [description]
+     */
+    protected function encrypt()
+    {
+        $this->password = md5($this->clearPassword);
     }
 }

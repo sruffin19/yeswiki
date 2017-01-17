@@ -15,11 +15,11 @@ class EncryptedPassword
         return $this->password;
     }
 
-    protected function encrypt($password)
-    {
-        return md5($password);
-    }
-
+    /**
+     * Vérifie si les deux mot de passe sont identique.
+     * @param  EncryptedPassword|ClearPassword  $password Mot de passe a vérifier.
+     * @return boolean Vrai si les mots de passe sont identiques.
+     */
     public function isMatching($password)
     {
         $password = (string)$password;
