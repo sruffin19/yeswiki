@@ -4,12 +4,14 @@ require_once('includes/Database.php');
 require_once('includes/Triples.php');
 require_once('includes/Cookies.php');
 require_once('includes/Inclusions.php');
+require_once('includes/UserFactory.php');
 
 use YesWiki\Database;
 use YesWiki\Triples;
 use YesWiki\Cookies;
 use YesWiki\Inclusions;
 use YesWiki\Actions;
+use YesWiki\UserFactory;
 
 class Wiki extends Actions
 {
@@ -21,6 +23,7 @@ class Wiki extends Actions
     public $queryLog = array();
     public $triples = null;
     public $cookies = null;
+    public $connectedUser = null;
 
     /**
      * LinkTrackink
@@ -382,8 +385,8 @@ class Wiki extends Actions
 
                 // current user is owner; if user is logged in! otherwise, no owner.
                 $owner = '';
-                if ($this->getUser()) {
-                    $owner = $user;
+                if (!is_null($this->connectedUser)) {
+                    $owner = $this->connectedUser->name;
                 }
             } else {
                 // aha! page isn't new. keep owner!
@@ -473,8 +476,8 @@ class Wiki extends Actions
         $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
         $this->format($body);
         $this->setInclusions($temp);
-        if ($user = $this->getUser()) {
-            $this->trackLinkTo($user['name']);
+        if (!is_null($this->connectedUser)) {
+            $this->trackLinkTo($this->connectedUser->name);
         }
         if ($owner = $this->getPageOwner()) {
             $this->trackLinkTo($owner);
@@ -1058,22 +1061,7 @@ class Wiki extends Actions
     }
 
     // ACCESS CONTROL
-    // returns true if logged in user is owner of current page, or page specified in $tag
-    public function userIsOwner($tag = "")
-    {
-        // check if user is logged in
-        if (! $this->GetUser()) {
-            return false;
-        }
-        // set default tag
-        if (!$tag = trim($tag)) {
-            $tag = $this->GetPageTag();
-        }
-        // check if user is owner
-        if ($this->getPageOwner($tag) == $this->GetUserName()) {
-            return true;
-        }
-    }
+
 
     /**
      *
@@ -1197,17 +1185,7 @@ class Wiki extends Actions
         return $this->checkACL($this->getGroupACL($group), $user, $admincheck);
     }
 
-    /**
-     * Checks if a given user is andministrator
-     *
-     * @param string $user
-     *            The name of the user (defaults to the current user if not given)
-     * @return boolean true iff the user is an administrator
-     */
-    public function userIsAdmin($user = null)
-    {
-        return $this->userIsInGroup(ADMIN_GROUP, $user, false);
-    }
+
 
     public function getPageOwner($tag = "", $time = "")
     {
@@ -1579,15 +1557,10 @@ class Wiki extends Actions
             $this->redirect($this->href("", $this->config['root_page']));
         }
 
-        if ((! $this->getUser()
-            and $this->cookies->isset('name'))
-            and $user = $this->loadUser(
-                $this->cookie->get('name'),
-                $this->cookie->get('password')
-            )
-        ) {
-            $this->setUser($user, $this->cookie->get('remember'));
-        }
+        // TODO vraiment sa place ? constructeur ou plutot controller. ou classe user.
+        // WIP Il faut tester si l'utilisateur existe et si le mot de passe est le bon.
+        $userFactory = new UserFactory($this->database, $this->cookies);
+        $this->connectedUser = $userFactory->getConnected();
 
         $this->setPage($this->loadPage($tag, (isset($_REQUEST['time']) ? $_REQUEST['time'] : '')));
         $this->logReferrer();

@@ -42,7 +42,12 @@ if (!defined("WIKINI_VERSION"))
 ob_start();
 
 echo '<div class="page"';
-echo (($user = $this->getUser()) && ($user['doubleclickedit'] == 'N') || !$this->hasAccess('write')) ? '' : ' ondblclick="doubleClickEdit(event);"';
+$user = $this->connectedUser;
+echo ($this->connectedUser
+    and ($user->doubleClickEdit == 'N')
+    or !$this->hasAccess('write'))
+        ? ''
+        : ' ondblclick="doubleClickEdit(event);"';
 echo '>'."\n";
 if (!empty($_SESSION['redirects']))
 {
