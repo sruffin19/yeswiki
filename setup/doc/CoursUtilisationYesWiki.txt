@@ -122,7 +122,7 @@ donnera :
 
 
 =====Les actions disponibles=====
-Voir la page spéciale : ListeDesActionsWikini
+Voir la page spéciale : [[https://yeswiki.net/wakka.php?wiki=DocumentationActions Listes des actions]]
 
 **les actions é ajouter dans la barre d'adresse:**
 rajouter dans la barre d'adresse :
