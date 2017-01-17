@@ -5,6 +5,7 @@ require_once('includes/Triples.php');
 require_once('includes/Cookies.php');
 require_once('includes/Inclusions.php');
 require_once('includes/UserFactory.php');
+require_once('includes/Link.php');
 
 use YesWiki\Database;
 use YesWiki\Triples;
@@ -12,6 +13,7 @@ use YesWiki\Cookies;
 use YesWiki\Inclusions;
 use YesWiki\Actions;
 use YesWiki\UserFactory;
+use YesWiki\Link;
 
 class Wiki extends Actions
 {
@@ -601,7 +603,8 @@ class Wiki extends Actions
     // TODO à réécrire. trop complexe et pas lisible.
     public function link($tag, $method = "", $text = "", $track = 1)
     {
-        $displayText = $text ? $text : $tag;
+        return new Link($tag, $method, $text);
+        /*$displayText = $text ? $text : $tag;
         $displayText = htmlspecialchars($displayText, ENT_COMPAT, YW_CHARSET);
 
         // is this a full link? ie, does it contain non alpha-numeric characters?
@@ -674,7 +677,7 @@ class Wiki extends Actions
             YW_CHARSET
         );
         return "<span class=\"missingpage\">$displayText</span>"
-            . "<a href=\"$href\">?</a>";
+            . "<a href=\"$href\">?</a>";*/
     }
 
     //TODO : voir le parametre $track visiblement un booléen et c'est mal
