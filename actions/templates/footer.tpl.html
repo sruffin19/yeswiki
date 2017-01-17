@@ -1,0 +1,16 @@
+<form action="<?php echo $search_page ?>" method="get">
+    <div class="footer">
+        <input type="hidden" name="wiki" value="RechercheTexte" />
+        <?php echo $edit_link, $revisions_link, $owner_info ?>
+
+        <a href="<?php echo $backlinks ?>" title="Pages faisant r&eacute;f&eacute;rence &agrave; cette page.">R&eacute;tro-liens</a> ::
+        Recherche : <input name="phrase" size="15" class="searchbox" />
+    </div>
+</form>
+
+<div class="copyright">
+    Fonctionne avec YesWiki <?php echo $this->config->getParameter('yeswiki_version') . ' (' . $this->config->getParameter('yeswiki_release') . ')' ?>
+</div>
+
+</body>
+</html>

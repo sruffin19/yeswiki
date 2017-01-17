@@ -40,17 +40,17 @@ if ($this->page)
     // if owner is current user
     if ($this->userIsOwner())
     {
-        $owner_info = "Propri&eacute;taire&nbsp;: vous :: \n";
+        $owner_info = "Propriétaire&nbsp;: vous :: \n";
     }
     else
     {
         if ($owner = $this->getPageOwner())
         {
-            $owner_info = "Propri&eacute;taire : " . $this->format($owner);
+            $owner_info = "Propriétaire&nbsp;: " . $this->format($owner);
         }
         else
         {
-            $owner_info = "Pas de propri&eacute;taire ";
+            $owner_info = "Pas de propriétaire ";
             $owner_info .= ($this->getUser() ? "(<a href=\"".$this->href("claim")."\">Appropriation</a>)" : "");
         }
         $owner_info .= " :: \n";
@@ -58,33 +58,9 @@ if ($this->page)
     if ($this->userIsOwner() || $this->userIsAdmin())
     {
         $owner_info .=
-        "<a href=\"" . $this->href("acls") . "\" title=\"Cliquez pour &eacute;diter les permissions de cette page.\">&Eacute;diter permissions</a> :: \n" .
+        "<a href=\"" . $this->href("acls") . "\" title=\"Cliquez pour éditer les permissions de cette page.\">éditer permissions</a> :: \n" .
         "<a href=\"" . $this->href("deletepage") . "\">Supprimer</a> :: \n";
     }
 }
 $backlinks = $this->href('backlinks');
-$carto = $this->href('svg');
-$xhtml_validation_link = 'http://validator.w3.org/check?uri=' . urlencode($this->href());
-$css_validation_link = 'http://jigsaw.w3.org/css-validator/validator?uri=' . urlencode($this->href());
-$wikini_site_url = $this->link("WikiNi:PagePrincipale", "", "WikiNi ".$this->getWikiNiVersion());
-
-?>
-
-    <form action="<?php echo $search_page ?>" method="get">
-        <div class="footer">
-            <input type="hidden" name="wiki" value="RechercheTexte" />
-            <?php echo $edit_link, $revisions_link, $owner_info ?>
-
-            <a href="<?php echo $backlinks ?>" title="Pages faisant r&eacute;f&eacute;rence &agrave; cette page.">R&eacute;tro-liens</a> ::
-            Recherche : <input name="phrase" size="15" class="searchbox" />
-        </div>
-    </form>
-
-    <div class="copyright">
-        <a href="<?php echo $xhtml_validation_link ?>">XHTML 1.0 valide ?</a> ::
-        <a href="<?php echo $css_validation_link ?>">CSS valide ?</a> ::
-        -- Fonctionne avec <?php echo $wikini_site_url ?>
-    </div>
-
-    </body>
-</html>
+include('actions/templates/footer.tpl.html');
