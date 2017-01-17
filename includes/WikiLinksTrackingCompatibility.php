@@ -1,7 +1,9 @@
 <?php
 namespace YesWiki;
 
-class WikiLinksTrackingCompatibility
+require_once('includes/WikiLinkCompatibility.php');
+
+class WikiLinksTrackingCompatibility extends WikiLinkCompatibility
 {
     /**
      * LinkTrackink
@@ -77,9 +79,9 @@ class WikiLinksTrackingCompatibility
         $tag = $this->database->escapeString($this->getPageTag());
         $this->database->query("DELETE FROM $tableLinks WHERE from_tag = '$tag'");
 
-        if ($linktable = $this->linktable()) {
+        if (!empty($this->linktable)) {
             $fromTag = $this->database->escapeString($this->getPageTag());
-            foreach ($linktable as $toTag) {
+            foreach ($this->linktable as $toTag) {
                 $lowerToTag = strtolower($toTag);
                 if (! isset($written[$lowerToTag])) {
                     $toTag = $this->database->escapeString($toTag);

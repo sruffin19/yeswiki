@@ -580,38 +580,6 @@ class Wiki extends Actions
         exit();
     }
 
-    // returns just PageName[/method].
-    public function miniHref($method = '', $tag = '')
-    {
-        if (! $tag = trim($tag)) {
-            $tag = $this->tag;
-        }
-
-        return $tag . ($method ? '/' . $method : '');
-    }
-
-    // returns the full url to a page/method.
-    public function href($method = '', $tag = '', $params = '', $htmlspchars = true)
-    {
-        $href = $this->config["base_url"] . $this->miniHref($method, $tag);
-        if ($params) {
-            $href .= ($this->config['rewrite_mode'] ? '?' : ($htmlspchars ? '&amp;' : '&')) . $params;
-        }
-        return $href;
-    }
-
-    // TODO à réécrire. trop complexe et pas lisible.
-    public function link($tag, $method = "", $text = "")
-    {
-        return new Link($tag, $method, $text);
-    }
-
-    //TODO : voir le parametre $track visiblement un booléen et c'est mal
-    public function composeLinkToPage($tag, $method = "", $text = "")
-    {
-        return new Link($tag, $method, $text);
-    }
-
     public function isWikiName($text)
     {
         return preg_match('/^' . WN_CAMEL_CASE . '$/', $text);
