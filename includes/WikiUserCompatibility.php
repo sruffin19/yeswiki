@@ -151,4 +151,12 @@ class WikiUserCompatibility
 
         return $access ;
     }
+
+    public function UserWantsComments()
+    {
+        if (! $user = $this->GetUser()) {
+            return false;
+        }
+        return ($user->showComments == 'Y');
+    }
 }
