@@ -146,6 +146,8 @@ class PageFactory
                     body_r = ''"
         );
 
+        //Supprimer les revisions en trop.
+
         return $this->getLastRevision($tag);
     }
 

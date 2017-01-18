@@ -944,8 +944,6 @@ class Wiki extends Actions
         if (!(((float) $usec + (float) $sec) % 9)) {
             // purge referrers
             $this->purgeReferrers();
-            // purge old page revisions
-            $this->purgePages();
         }
     }
 

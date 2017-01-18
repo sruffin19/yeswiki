@@ -178,42 +178,6 @@ class WikiPageCompatibility
         return false;
     }
 
-    /**
-     * Make the purge of page versions that are older than the last version
-     * older than 3 "pages_purge_time" This method permits to allways keep a
-     * version that is older than that period.
-     */
-    public function purgePages()
-    {
-        if ($days = $this->getConfigValue('pages_purge_time')) {
-            // is purge active ?
-            // let's search which pages versions we have to remove
-            // this is necessary beacause even MySQL does not handel multi-tables
-            // deletes before version 4.0
-            $wnPages = $this->getConfigValue('table_prefix') . 'pages';
-            $day = addslashes($days);
-            $sql = "SELECT DISTINCT a.id FROM $wnPages a, $wnPages b
-                        WHERE a.latest = 'N'
-                            AND a.time < date_sub(now(), INTERVAL '$day' DAY)
-                            AND a.tag = b.tag
-                            AND a.time < b.time
-                            AND b.time < date_sub(now(), INTERVAL '$day' DAY)";
-            $ids = $this->database->loadAll($sql);
-            if (count($ids)) {
-                // there are some versions to remove from DB
-                // let's build one big request, that's better...
-                $sql = "DELETE FROM $wnPages WHERE id IN (";
-                foreach ($ids as $key => $line) {
-                    // NB.: id is an int, no need of quotes
-                    $sql .= ($key ? ', ' : '') . $line['id'];
-                }
-                $sql .= ')';
-                // ... and send it !
-                $this->database->query($sql);
-            }
-        }
-    }
-
     public function setPageOwner($tag, $user)
     {
         $user = $this->userFactory->get($user);
