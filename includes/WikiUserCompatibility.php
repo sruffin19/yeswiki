@@ -48,11 +48,7 @@ class WikiUserCompatibility extends WikiLinksTrackingCompatibility
      */
     public function getUserName()
     {
-        if (is_null($this->connectedUser)) {
-            return $_SERVER["REMOTE_ADDR"];
-        }
         return $this->connectedUser->name;
-
     }
 
     /**
@@ -63,10 +59,7 @@ class WikiUserCompatibility extends WikiLinksTrackingCompatibility
      */
     public function setUser($user, $remember = 0)
     {
-        $_SESSION['user'] = $user->name;
-        $this->cookies->set('name', $user->name, $remember);
-        $this->cookies->set('password', $user->password, $remember);
-        $this->cookies->set('remember', $remember, $remember);
+        $this->login($user, $remember = 0);
     }
 
     /**
@@ -74,12 +67,7 @@ class WikiUserCompatibility extends WikiLinksTrackingCompatibility
      */
     public function logoutUser()
     {
-        unset($this->connectedUser);
-        $this->connectedUser = null;
-        $_SESSION['user'] = '';
-        $this->cookies->del('name');
-        $this->cookies->del('password');
-        $this->cookies->del('remember');
+        $this->logout();
     }
 
     /**

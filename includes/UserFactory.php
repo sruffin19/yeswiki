@@ -11,10 +11,9 @@ class UserFactory
     private $database;
     private $cookies;
 
-    public function __construct($database, $cookies = null)
+    public function __construct($database)
     {
         $this->database = $database;
-        $this->cookies = $cookies;
     }
 
     /**
@@ -45,21 +44,21 @@ class UserFactory
      * n'est connecté renvoie null.
      * @return User|null
      */
-    public function getConnected()
+    public function getConnected($cookies)
     {
         // If cookies not initialised, no connected user.
-        if (is_null($this->cookies)) {
+        if (is_null($cookies)) {
             return new UnknowUser();
         }
 
-        if ($this->cookies->isset('name') and isset($_SESSION['user'])) {
-            $user = $this->get($this->cookies->get('name'));
+        if ($cookies->isset('name') and isset($_SESSION['user'])) {
+            $user = $this->get($cookies->get('name'));
             // User doesn't exist
             if (!$user) {
                 return new UnknowUser();
             }
             // bad password.
-            $password = new EncryptedPassword($this->cookies->get('password'));
+            $password = new EncryptedPassword($cookies->get('password'));
             if (!$user->password->isMatching($password)) {
                 return new UnknowUser();
             }

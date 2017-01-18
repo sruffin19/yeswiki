@@ -967,7 +967,7 @@ class Wiki extends Actions
         $this->tag = $tag;
 
         // TODO vraiment sa place ? constructeur ou plutot controller. ou classe user.
-        $this->connectedUser = $this->userFactory->getConnected();
+        $this->connectedUser = $this->userFactory->getConnected($this->cookies);
         $this->mainPage = false;
         $this->page = array();
         if (isset($_REQUEST['time'])) {
@@ -993,5 +993,31 @@ class Wiki extends Actions
         if (! empty($_SESSION['redirects'])) {
             session_unregister('redirects');
         }
+    }
+
+    /**
+     * Connecte un utilisateur
+     * @param  User  $user       Utilisateur a connecter.
+     * @param  integer $remember [description]
+     */
+    public function login($user, $remember = 0)
+    {
+        // TODO check credential
+        $_SESSION['user'] = $user->name;
+        $this->cookies->set('name', $user->name, $remember);
+        $this->cookies->set('password', $user->password, $remember);
+        $this->cookies->set('remember', $remember, $remember);
+    }
+
+    /**
+     * Déconnecte l'utilisateur courant
+     */
+    public function logout() {
+        unset($this->connectedUser);
+        $this->connectedUser = null;
+        $_SESSION['user'] = '';
+        $this->cookies->del('name');
+        $this->cookies->del('password');
+        $this->cookies->del('remember');
     }
 }
