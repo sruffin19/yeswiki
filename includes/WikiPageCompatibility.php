@@ -283,13 +283,12 @@ class WikiPageCompatibility
 
     public function setPageOwner($tag, $user)
     {
-        $userFactory = new UserFactory($this->database, $this->cookies);
-        $user = $userFactory->get($user);
+        $user = $this->userFactory->get($user);
         if ($user === false) {
             return;
         }
 
-        $page = $this->pageFactory->getLastRevisionLastRevision($tag);
+        $page = $this->pageFactory->getLastRevision($tag);
         if ($page === false) {
             return;
         }
