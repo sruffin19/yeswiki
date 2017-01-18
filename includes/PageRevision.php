@@ -69,11 +69,6 @@ class PageRevision
         );
     }
 
-    public function appendContent($content)
-    {
-        $this->infos['body'] .= $content;
-    }
-
     /**
      * Retourne la liste des pages pointant vers cette page. (uniquement le Nom
      * des pages.)

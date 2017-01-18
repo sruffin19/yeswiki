@@ -179,56 +179,6 @@ class WikiPageCompatibility
     }
 
     /**
-     * appendContentToPage
-     * Ajoute du contenu a la fin d'une page
-     *
-     * @param string $content
-     *            Contenu a ajouter a la page
-     * @param string $page
-     *            Nom de la page
-     * @param boolean $bypassAcls
-     *            Bouleen pour savoir s'il faut bypasser les ACLs
-     * @return int Code d'erreur : 0 (succes), 1 (pas de contenu specifie)
-     *
-     * TODO : ne sert que dans la fonction logAdministrativeAction, semble
-     * inutilement compliqué. a vérifier sans compter le booléen passé en paramêtre
-     */
-    public function appendContentToPage($content, $page)
-    {
-        // -- Determine quelle est la page :
-        // -- passee en parametre (que se passe-t'il si elle n'existe pas ?)
-        // -- ou la page en cours par defaut
-        $page = isset($page) ? $page : $this->getPageTag();
-
-        // -- Chargement de la page
-        $result = $this->loadPage($page);
-        $body = $result['body'];
-        // -- Ajout du contenu a la fin de la page
-        $body .= $content;
-
-        // -- Sauvegarde de la page
-        // TODO : que se passe-t-il si la page est pleine ou si l'utilisateur n'a pas les droits ?
-        $this->savePage($page, $body, '', true);
-
-        // now we render it internally so we can write the updated link table.
-        $this->clearLinkTable();
-        $this->startLinkTracking();
-        $temp = $this->setInclusions();
-        $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
-        $this->format($body);
-        $this->setInclusions($temp);
-        if (!is_null($this->connectedUser)) {
-            $this->trackLinkTo($this->connectedUser->name);
-        }
-        if ($owner = $this->getPageOwner()) {
-            $this->trackLinkTo($owner);
-        }
-        $this->stopLinkTracking();
-        $this->writeLinkTable();
-        $this->clearLinkTable();
-    }
-
-    /**
      * Make the purge of page versions that are older than the last version
      * older than 3 "pages_purge_time" This method permits to allways keep a
      * version that is older than that period.

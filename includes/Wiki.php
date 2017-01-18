@@ -179,31 +179,6 @@ class Wiki extends Actions
         return WIKINI_VERSION;
     }
 
-
-    /**
-     * logAdministrativeAction($user, $content, $page = "")
-     *
-     * @param string $user
-     *            Utilisateur
-     * @param string $content
-     *            Contenu de l'enregistrement
-     * @param string $page
-     *            Page de log
-     *
-     * @return int Code d'erreur : 0 (succes), 1 (pas de contenu specifie)
-     */
-    public function logAdministrativeAction($user, $content, $page = '')
-    {
-        $order = array("\r\n", "\n", "\r");
-        $replace = '\\n';
-        $content = str_replace($order, $replace, $content);
-        $contentToAppend = "\n" . date('Y-m-d H:i:s')
-            . " . . . . $user"
-            . " . . . . $content\n";
-        $page = $page ? $page : 'LogDesActionsAdministratives' . date('Ymd');
-        return $this->appendContentToPage($contentToAppend, $page);
-    }
-
     // HTTP/REQUEST/LINK RELATED
     public function setMessage($message)
     {
