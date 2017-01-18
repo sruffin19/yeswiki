@@ -6,6 +6,7 @@ require_once('includes/Cookies.php');
 require_once('includes/Inclusions.php');
 require_once('includes/UserFactory.php');
 require_once('includes/Link.php');
+require_once('includes/PageFactory.php');
 
 use YesWiki\Database;
 use YesWiki\Triples;
@@ -14,18 +15,21 @@ use YesWiki\Inclusions;
 use YesWiki\Actions;
 use YesWiki\UserFactory;
 use YesWiki\Link;
+use YesWiki\PageFactory;
 
 class Wiki extends Actions
 {
-    public $page;
-    public $tag;
     public $config;
     public $inclusions;
     public $parameter = array();
     public $queryLog = array();
     public $triples = null;
     public $cookies = null;
+
     public $connectedUser = null;
+    public $mainPage = null;
+    public $pageFactory = null;
+    public $userFactory = null;
 
     /**
      * LinkTrackink
@@ -60,6 +64,8 @@ class Wiki extends Actions
         $this->triples = new Triples($this->database);
         $this->cookies = new Cookies($this->config['base_url']);
         $this->inclusions = new Inclusions();
+        $this->pageFactory = new PageFactory($this->database);
+        $this->userFactory = new UserFactory($this->database, $this->cookies);
     }
 
     public function includeBuffered($filename, $notfoundText = '', $vars = '', $path = '')
@@ -145,16 +151,6 @@ class Wiki extends Actions
         return false;
     }
 
-    // VARIABLES
-    public function getPageTag()
-    {
-        return $this->tag;
-    }
-
-    public function getPageTime()
-    {
-        return $this->page['time'];
-    }
 
     public function getMethod()
     {
@@ -183,311 +179,6 @@ class Wiki extends Actions
         return WIKINI_VERSION;
     }
 
-    // PAGES
-    public function loadPage($tag, $time = "", $cache = 1)
-    {
-        // retrieve from cache
-        if (empty($time)
-            and $cache
-            and (($cachedPage = $this->getCachedPage($tag)) !== false)
-        ) {
-            return $cachedPage;
-        }
-
-        $table = $this->config['table_prefix'] . 'pages';
-        $tag = $this->database->escapeString($tag);
-        $strTime = $time
-            ? "time = '" . $this->database->escapeString($time) . "'"
-            : "latest = 'Y'";
-
-        $sql = "SELECT * FROM $table WHERE tag = '$tag' AND $strTime LIMIT 1";
-        $page = $this->database->loadSingle($sql);
-
-        // the database is in ISO-8859-15, it must be converted
-        if (isset($page['body'])) {
-            $page['body'] = _convert($page['body'], 'ISO-8859-15');
-        }
-
-        // cache result
-        if (! $time) {
-            $this->cachePage($page, $tag);
-        }
-
-        return $page;
-    }
-
-    /**
-     * Retrieves the cached version of a page.
-     *
-     * Notice that this method null or false, use
-     * $this->getCachedPage($tag) === false
-     * to check if a page is not in the cache.
-     *
-     * @return mixed The cached version of a page:
-     *         - the page DB line if the page exists and is in cache
-     *         - null if the cache knows that the page does not exists
-     *         - false is the cache does not know the page
-     */
-    public function getCachedPage($tag)
-    {
-        if (array_key_exists($tag, $this->pageCache)) {
-            return $this->pageCache[$tag];
-        }
-        return false;
-    }
-
-    /**
-     * Caches a page's DB line.
-     *
-     * @param array $page
-     *            The page (full) DB line or null if the page does not exists
-     * @param string $pageTag
-     *            The tag of the page to cache. Defaults to $page['tag'] but is
-     *            mendatory when $page === null
-     */
-    public function cachePage($page, $pageTag = null)
-    {
-        if ($pageTag === null) {
-            $pageTag = $page['tag'];
-        }
-        $this->pageCache[$pageTag] = $page;
-    }
-
-    public function setPage($page)
-    {
-        $this->page = $page;
-        if ($this->page['tag']) {
-            $this->tag = $this->page['tag'];
-        }
-    }
-
-    public function loadPageById($pageId)
-    {
-        $table = $this->database->prefix . 'pages';
-        $pageId = $this->database->escapeString($pageId);
-        return $this->database->loadSingle(
-            "SELECT * FROM $table WHERE id = '$pageId' LIMIT 1"
-        );
-    }
-
-    public function loadRevisions($page)
-    {
-        $table = $this->database->prefix . 'pages';
-        $tag = $this->database->escapeString($page);
-
-        return $this->database->loadAll(
-            "SELECT * FROM $table WHERE tag = '$tag' ORDER BY time DESC"
-        );
-    }
-
-    public function loadPagesLinkingTo($tag)
-    {
-        $table = $this->database->prefix . 'links';
-        $tag = $this->database->escapeString($tag);
-        return $this->database->loadAll(
-            "SELECT from_tag AS tag FROM $table
-                WHERE to_tag = '$tag' ORDER BY tag"
-        );
-    }
-
-    public function loadRecentlyChanged($limit = 50)
-    {
-        $limit = (int) $limit;
-        $table = $this->database->prefix . 'pages';
-        if ($pages = $this->database->loadAll(
-            "SELECT id, tag, time, user, owner FROM $table
-                WHERE latest = 'Y' AND comment_on = ''
-                ORDER BY time DESC LIMIT $limit"
-        )) {
-            foreach ($pages as $page) {
-                $this->cachePage($page);
-            }
-
-            return $pages;
-        }
-    }
-
-    public function getPageCreateTime($pageTag)
-    {
-        $table = $this->database->prefix . 'pages';
-        $tag = $this->database->escapeString($pageTag);
-        $sql = "SELECT time FROM $table
-                    WHERE tag = '$tag' AND comment_on = \"\"
-                    ORDER BY `time` ASC LIMIT 1";
-        if ($page = $this->database->loadSingle($sql)) {
-            return $page['time'];
-        }
-        return null ;
-    }
-
-    public function isOrphanedPage($tag)
-    {
-        $tablePages = $this->database->prefix . 'pages';
-        $tableLinks = $this->database->prefix . 'links';
-        $tag = $this->database->escapeString($tag);
-
-        return $this->database->loadAll(
-            "SELECT DISTINCT tag FROM $tablePages
-                AS p LEFT JOIN $tableLinks AS l ON p.tag = l.to_tag
-                WHERE l.to_tag IS NULL AND p.latest = 'Y' AND tag = '$tag'"
-        );
-    }
-
-    public function deleteOrphanedPage($tag)
-    {
-        $tablePages = $this->database->prefix . 'pages';
-        $tableLinks = $this->database->prefix . 'links';
-        $tableAcls = $this->database->prefix . 'acls';
-        $tableReferrers = $this->database->prefix . 'referrers';
-        $tag = $this->database->escapeString($tag);
-
-        $this->database->query(
-            "DELETE FROM $tablePages WHERE tag='$tag' OR comment_on='$tag'"
-        );
-        $this->database->query("DELETE FROM $tableLinks WHERE from_tag='$tag'");
-        $this->database->query("DELETE FROM $tableAcls WHERE page_tag='$tag'");
-        $this->database->query("DELETE FROM $tableReferrers WHERE page_tag='$tag'");
-    }
-
-    /**
-     * savePage
-     * Sauvegarde un contenu dans une page donnee
-     *
-     * @param string $body
-     *            Contenu a sauvegarder dans la page
-     * @param string $tag
-     *            Nom de la page
-     * @param string $commentOn
-     *            Indication si c'est un commentaire
-     * @param boolean $bypassAcls
-     *            Indication si on bypasse les droits d'ecriture
-     * @return int Code d'erreur : 0 (succes), 1 (l'utilisateur n'a pas les droits)
-     *
-     */
-    public function savePage($tag, $body, $commentOn = "", $bypassAcls = false)
-    {
-        // get current user
-        $user = $this->getUserName();
-
-        // check bypass of rights or write privilege
-        $rights = $bypassAcls
-            || ($commentOn ? $this->hasAccess('comment', $commentOn) : $this->hasAccess('write', $tag));
-
-        if ($rights) {
-            // is page new?
-            if (! $oldPage = $this->loadPage($tag)) {
-                // create default write acl. store empty write ACL for comments.
-                $this->saveAcl($tag, 'write', ($commentOn ? $user : $this->getConfigValue('default_write_acl')));
-
-                // create default read acl
-                $this->saveAcl($tag, 'read', $this->getConfigValue('default_read_acl'));
-
-                // create default comment acl.
-                $this->saveAcl($tag, 'comment', ($commentOn ? '' : $this->getConfigValue('default_comment_acl')));
-
-                // current user is owner; if user is logged in! otherwise, no owner.
-                $owner = '';
-                if (!is_null($this->connectedUser)) {
-                    $owner = $this->connectedUser->name;
-                }
-            } else {
-                // aha! page isn't new. keep owner!
-                $owner = $oldPage['owner'];
-
-                // ...and comment_on, eventualy?
-                if ($commentOn == '') {
-                    $commentOn = $oldPage['comment_on'];
-                }
-            }
-
-
-            $tablePages = $this->database->prefix . 'pages';
-            $strTag = $this->database->escapeString($tag);
-
-            // set all other revisions to old
-            $this->database->query(
-                "UPDATE $tablePages SET latest = 'N' WHERE tag = '$strTag'"
-            );
-
-            $commentStr = "";
-            if($commentOn) {
-                $commentStr = "comment_on = '"
-                    . $this->database->escapeString($commentOn)
-                    . "', ";
-            }
-            $owner = $this->database->escapeString($owner);
-            $user = $this->database->escapeString($user);
-            $body = $this->database->escapeString(chop($body));
-
-            // add new revision
-            $this->database->query(
-                "INSERT INTO $tablePages
-                    SET tag = '$strTag',
-                        $commentStr
-                        time = now(),
-                        owner = '$owner',
-                        user = '$user',
-                        latest = 'Y',
-                        body = '$body',
-                        body_r = ''"
-            );
-
-            unset($this->pageCache[$tag]);
-            return 0;
-        }
-
-        return 1;
-    }
-
-    /**
-     * appendContentToPage
-     * Ajoute du contenu a la fin d'une page
-     *
-     * @param string $content
-     *            Contenu a ajouter a la page
-     * @param string $page
-     *            Nom de la page
-     * @param boolean $bypassAcls
-     *            Bouleen pour savoir s'il faut bypasser les ACLs
-     * @return int Code d'erreur : 0 (succes), 1 (pas de contenu specifie)
-     *
-     * TODO : ne sert que dans la fonction logAdministrativeAction, semble
-     * inutilement compliqué. a vérifier sans compter le booléen passé en paramêtre
-     */
-    public function appendContentToPage($content, $page)
-    {
-        // -- Determine quelle est la page :
-        // -- passee en parametre (que se passe-t'il si elle n'existe pas ?)
-        // -- ou la page en cours par defaut
-        $page = isset($page) ? $page : $this->getPageTag();
-
-        // -- Chargement de la page
-        $result = $this->loadPage($page);
-        $body = $result['body'];
-        // -- Ajout du contenu a la fin de la page
-        $body .= $content;
-
-        // -- Sauvegarde de la page
-        // TODO : que se passe-t-il si la page est pleine ou si l'utilisateur n'a pas les droits ?
-        $this->savePage($page, $body, '', true);
-
-        // now we render it internally so we can write the updated link table.
-        $this->clearLinkTable();
-        $this->startLinkTracking();
-        $temp = $this->setInclusions();
-        $this->registerInclusion($this->getPageTag()); // on simule totalement un affichage normal
-        $this->format($body);
-        $this->setInclusions($temp);
-        if (!is_null($this->connectedUser)) {
-            $this->trackLinkTo($this->connectedUser->name);
-        }
-        if ($owner = $this->getPageOwner()) {
-            $this->trackLinkTo($owner);
-        }
-        $this->stopLinkTracking();
-        $this->writeLinkTable();
-        $this->clearLinkTable();
-    }
 
     /**
      * logAdministrativeAction($user, $content, $page = "")
@@ -513,51 +204,11 @@ class Wiki extends Actions
         return $this->appendContentToPage($contentToAppend, $page);
     }
 
-    /**
-     * Make the purge of page versions that are older than the last version
-     * older than 3 "pages_purge_time" This method permits to allways keep a
-     * version that is older than that period.
-     */
-    public function purgePages()
-    {
-        if ($days = $this->getConfigValue('pages_purge_time')) {
-            // is purge active ?
-            // let's search which pages versions we have to remove
-            // this is necessary beacause even MySQL does not handel multi-tables
-            // deletes before version 4.0
-            $wnPages = $this->getConfigValue('table_prefix') . 'pages';
-            $day = addslashes($days);
-            $sql = "SELECT DISTINCT a.id FROM $wnPages a, $wnPages b
-                        WHERE a.latest = 'N'
-                            AND a.time < date_sub(now(), INTERVAL '$day' DAY)
-                            AND a.tag = b.tag
-                            AND a.time < b.time
-                            AND b.time < date_sub(now(), INTERVAL '$day' DAY)";
-
-            $ids = $this->database->loadAll($sql);
-
-            if (count($ids)) {
-                // there are some versions to remove from DB
-                // let's build one big request, that's better...
-                $sql = "DELETE FROM $wnPages WHERE id IN (";
-                foreach ($ids as $key => $line) {
-                    // NB.: id is an int, no need of quotes
-                    $sql .= ($key ? ', ' : '') . $line['id'];
-                }
-                $sql .= ')';
-
-                // ... and send it !
-                $this->database->query($sql);
-            }
-        }
-    }
-
     // HTTP/REQUEST/LINK RELATED
     public function setMessage($message)
     {
         $_SESSION['message'] = $message;
     }
-
 
     /**
      * retourne et efface le message.
@@ -724,8 +375,9 @@ class Wiki extends Actions
 
     public function method($method)
     {
-        if (! $handler = $this->page['handler']) {
-            $handler = 'page';
+        $handler = 'page';
+        if (!empty($this->page) and isset($this->page['handler'])) {
+            $handler = $this->page['handler'];
         }
 
         $methodLocation = $handler . '/' . $method . '.php';
@@ -991,22 +643,6 @@ class Wiki extends Actions
         if ($page = $this->loadPage($tag, $time)) {
             return isset($page["owner"]) ? $page["owner"] : null;
         }
-    }
-
-    public function setPageOwner($tag, $user)
-    {
-        // check if user exists
-        if (! $this->loadUser($user)) {
-            return;
-        }
-
-        // updated latest revision with new owner
-        $table = $this->config['table_prefix'] . 'pages';
-        $user = $this->database->escapeString($user);
-        $tag = $this->database->escapeString($tag);
-        $this->database->query(
-            "UPDATE $table SET owner = '$user' WHERE tag = '$tag' AND latest = 'Y' LIMIT 1"
-        );
     }
 
     /**
@@ -1345,23 +981,35 @@ class Wiki extends Actions
         $this->maintenance();
 
         // do our stuff!
-        if (! $this->method = trim($method)) {
-            $this->method = "show";
+        $this->method = "show";
+        $method = trim($method);
+        if (!empty($method)) {
+            $this->method = $method;
         }
 
-        if (! $this->tag = trim($tag)) {
+        $tag = trim($tag);
+        if (empty($tag)) {
             $this->redirect($this->href("", $this->config['root_page']));
         }
+        $this->tag = $tag;
 
         // TODO vraiment sa place ? constructeur ou plutot controller. ou classe user.
-        // WIP Il faut tester si l'utilisateur existe et si le mot de passe est le bon.
-        $userFactory = new UserFactory($this->database, $this->cookies);
-        $this->connectedUser = $userFactory->getConnected();
+        $this->connectedUser = $this->userFactory->getConnected();
+        $this->mainPage = false;
+        $this->page = array();
+        if (isset($_REQUEST['time'])) {
+            $this->mainPage = $this->pageFactory->getRevision($this->tag, $_REQUEST['time']);
+        }
+        if (!isset($_REQUEST['time'])) {
+            $this->mainPage = $this->pageFactory->getLastRevision($this->tag);
+        }
 
-        $this->setPage($this->loadPage($tag, (isset($_REQUEST['time']) ? $_REQUEST['time'] : '')));
+        if ($this->mainPage !== false) {
+            $this->page = $this->mainPage->array();
+        }
+
         $this->logReferrer();
 
-        // correction pour un support plus facile de nouveaux handlers
         $text = _t('HANDLER_NO_ACCESS');
         if ($this->checkModuleACL($this->method, 'handler')) {
             $text = $this->method($this->method);

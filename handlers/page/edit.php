@@ -48,15 +48,18 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
     }
 
     // fetch fields
-    if (empty($_POST['previous'])) {
-        $previous = $this->page['id'];
-    } else {
+    $previous = "";
+    $body = "";
+    if ($this->mainPage !== false) {
+        $previous = $this->mainPage->id;
+        $body = $this->mainPage->body;
+    }
+    if (!empty($_POST['previous'])) {
         $previous = $_POST['previous'];
     }
-    if (empty($_POST['body'])) {
-        $body = $this->page['body'];
-    } else {
+    if (!empty($_POST['body'])) {
         $body = $_POST['body'];
+
     }
 
     switch ($submit) {
@@ -93,42 +96,41 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
             } else { // store
                 $body = str_replace("\r", '', $body);
 
-                // teste si la nouvelle page est differente de la précédente
-                if (rtrim($body) == rtrim($this->page['body'])) {
-                    $this->setMessage('Cette page n\'a pas &eacute;t&eacute; enregistr&eacute;e car elle n\'a subi aucune modification.');
-                    $this->redirect($this->href());
-                } else { // sécurité
-                    // l'encodage de la base est en iso-8859-1, voir s'il faut convertir
-                    $body = _convert($body, YW_CHARSET, true);
+                // l'encodage de la base est en iso-8859-1, voir s'il faut convertir
+                $body = _convert($body, YW_CHARSET, true);
 
-                    // add page (revisions)
+                // add page (revisions)
+                try {
                     $this->savePage($this->tag, $body);
-
-                    // now we render it internally so we can write the updated link table.
-                    $this->clearLinkTable();
-                    $this->startLinkTracking();
-                    $temp = $this->inclusions->set(); // a priori, éa ne sert é rien, mais on ne sait jamais...
-                    $this->inclusions->register($this->getPageTag()); // on simule totalement un affichage normal
-                    $this->format($body);
-                    $this->inclusions->set($temp);
-                    if ($user = $this->getUser()) {
-                        $this->trackLinkTo($user['name']);
-                    }
-                    if ($owner = $this->getPageOwner()) {
-                        $this->trackLinkTo($owner);
-                    }
-                    $this->stopLinkTracking();
-                    $this->writeLinkTable();
-                    $this->clearLinkTable();
-
-                    // forward
-                    if ($this->page['comment_on']) {
-                        $this->redirect($this->href('', $this->page['comment_on']).'#'.$this->tag);
-                    } else {
-                        $this->redirect($this->href());
-                    }
+                } catch (Exception $e) {
+                    $this->setMessage($e->getMessage());
+                    $this->redirect($this->href());
                 }
 
+
+                // now we render it internally so we can write the updated link table.
+                $this->clearLinkTable();
+                $this->startLinkTracking();
+                $temp = $this->inclusions->set(); // a priori, éa ne sert é rien, mais on ne sait jamais...
+                $this->inclusions->register($this->getPageTag()); // on simule totalement un affichage normal
+                $this->format($body);
+                $this->inclusions->set($temp);
+                if ($user = $this->getUser()) {
+                    $this->trackLinkTo($user);
+                }
+                if ($owner = $this->getPageOwner()) {
+                    $this->trackLinkTo($owner);
+                }
+                $this->stopLinkTracking();
+                $this->writeLinkTable();
+                $this->clearLinkTable();
+
+                // Si c'est un commentaire on redirige vers la page commenté.
+                if (isset($this->page['comment_on'])) {
+                    $this->redirect($this->href('', $this->page['comment_on']).'#'.$this->tag);
+                } else {
+                    $this->redirect($this->href());
+                }
                 // sécurité
                 exit;
             }

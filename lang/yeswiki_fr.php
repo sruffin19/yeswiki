@@ -220,6 +220,9 @@ $GLOBALS['translations'] = array(
 // actions/wantedpages.php
 'NO_PAGE_TO_CREATE' => 'Aucune page &agrave; cr&eacute;er',
 
+// handler/page/edit.php
+'NO_MODIFICATION' => 'Cette page n\'a pas &eacute;t&eacute; enregistr&eacute;e car elle n\'a subi aucune modification.',
+
 // setup/header.php
 'OK' => 'OK',
 'FAIL' => 'ECHEC',
