@@ -22,21 +22,19 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-
-if ($page = trim($this->getParameter('page')))
-{
-    $title = _t('PAGES_WITH_LINK').' '.$this->composeLinkToPage($page)."&nbsp;: <br />\n";
+$targetPage = $this->mainPage;
+$title = _t('PAGES_WITH_LINK_TO_CURRENT_PAGE')."&nbsp;: <br />\n";
+$tag = trim($this->getParameter('page'));
+if (!empty($tag)) {
+    $targetPage = $this->pageFactory->getLastRevision($tag);
+    $title = _t('PAGES_WITH_LINK')
+        . ' '
+        . new  YesWiki\Link($targetPage->tag)
+        . "&nbsp;: <br />\n";
 }
-else
-{
-    $page = $this->getPageTag();
-    $title = _t('PAGES_WITH_LINK_TO_CURRENT_PAGE')."&nbsp;: <br />\n";
-}
 
-$pages = $this->loadPagesLinkingTo($page);
-
-if ($pages)
-{
+$pages = $targetPage->getLinkingTo();
+if (!empty($pages)) {
     echo $title;
     $exclude = explode(';', $this->getParameter('exclude'));
     foreach($exclude as $key => $exclusion){
@@ -45,11 +43,13 @@ if ($pages)
 
     foreach($pages as $page){
         if(!in_array($page['tag'], $exclude)){
-            echo $this->composeLinkToPage($page['tag'], '', '', false), "<br />\n";
+            echo new YesWiki\Link($page['tag']) . "<br />\n";
         }
     }
-}
-else
-{
-    echo '<i>'._t('NO_PAGES_WITH_LINK_TO').' ', $this->composeLinkToPage($page), '.</i>';
+} else {
+    echo '<i>'
+        . _t('NO_PAGES_WITH_LINK_TO')
+        . ' '
+        . new  YesWiki\Link($targetPage->tag)
+        . '.</i>';
 }
