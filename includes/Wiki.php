@@ -49,13 +49,7 @@ class Wiki extends Actions
         $this->config = $config;
 
         // TODO Utiliser plutôt de l'injection de dépendance
-        $this->database = new Database(
-            $this->getConfigValue('mysql_host'),
-            $this->getConfigValue('mysql_user'),
-            $this->getConfigValue('mysql_password'),
-            $this->getConfigValue('mysql_database'),
-            $this->getConfigValue('table_prefix')
-        );
+        $this->database = new Database($config);
         $this->triples = new Triples($this->database);
         $this->cookies = new Cookies($this->config['base_url']);
         $this->inclusions = new Inclusions();

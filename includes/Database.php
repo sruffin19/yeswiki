@@ -8,14 +8,21 @@ class Database
     private $dblink;
     public $prefix;
 
-    // TODO Utiliser un objet configuration quand il sera créé.
-    public function __construct($host, $user, $password, $database, $prefix)
+    public function __construct($config)
     {
-        $this->dblink = @mysqli_connect($host, $user, $password);
-        $this->prefix = $prefix;
+        $this->dblink = @mysqli_connect(
+            $config->getParameter('mysql_host'),
+            $config->getParameter('mysql_user'),
+            $config->getParameter('mysql_password')
+        );
+        $this->prefix = $config->getParameter('table_prefix');
 
         if ($this->dblink) {
-            if (! @mysqli_select_db($this->dblink, $database)) {
+            if (!@mysqli_select_db(
+                    $this->dblink,
+                    $config->getParameter('mysql_database')
+                )
+            ) {
                 @mysqli_close($this->dblink);
                 $this->dblink = false;
             }
