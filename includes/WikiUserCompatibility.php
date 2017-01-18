@@ -153,12 +153,8 @@ class WikiUserCompatibility extends WikiLinksTrackingCompatibility
         return $access ;
     }
 
-    public function UserWantsComments()
+    public function userWantsComments()
     {
-        $user = $this->GetUser();
-        if (get_class($this->connectedUser) === 'YesWiki\User') {
-            return ($user->showComments == 'Y');
-        }
-        return false;
+        return ($this->connectedUser->showComments == 'Y');
     }
 }
