@@ -1,8 +1,10 @@
 <?php
 namespace YesWiki;
 require_once('includes/User.php');
+require_once('includes/UnknowUser.php');
 require_once('includes/EncryptedPassword.php');
 require_once('includes/ClearPassword.php');
+
 
 class UserFactory
 {
@@ -47,23 +49,23 @@ class UserFactory
     {
         // If cookies not initialised, no connected user.
         if (is_null($this->cookies)) {
-            return null;
+            return new UnknowUser();
         }
 
         if ($this->cookies->isset('name') and isset($_SESSION['user'])) {
             $user = $this->get($this->cookies->get('name'));
             // User doesn't exist
             if (!$user) {
-                return null;
+                return new UnknowUser();
             }
             // bad password.
             $password = new EncryptedPassword($this->cookies->get('password'));
             if (!$user->password->isMatching($password)) {
-                return null;
+                return new UnknowUser();
             }
             return $user;
         }
-        return null;
+        return new UnknowUser();
     }
 
     /**
