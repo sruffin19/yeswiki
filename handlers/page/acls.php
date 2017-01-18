@@ -52,7 +52,7 @@ if ($this->page && ($this->userIsOwner() || $this->userIsAdmin()))
         $this->saveAcl($this->getPageTag(), "write", $_POST["write_acl"]);
         $this->saveAcl($this->getPageTag(), "comment", ($this->page['comment_on'] ? "" : $_POST["comment_acl"]));
         $message = "Droits d\'acc&egrave;s mis &agrave; jour ";//$message = "Access control lists updated";
-        
+
         // change owner?
         if ($newowner = $_POST["newowner"])
         {
@@ -75,7 +75,7 @@ if ($this->page && ($this->userIsOwner() || $this->userIsAdmin()))
         ?>
         <h3>Liste des droits d'acc&egrave;s de la page  <?php echo  $this->composeLinkToPage($this->getPageTag()) ?></h3><!-- Access Control Lists for-->
         <br />
-        
+
         <?php echo  $this->formOpen("acls") ?>
         <table border="0" cellspacing="0" cellpadding="0">
             <tr>
@@ -105,7 +105,7 @@ if ($this->page && ($this->userIsOwner() || $this->userIsAdmin()))
                         {
                             foreach($users as $user)
                             {
-                                echo "<option value=\"",htmlspecialchars($user["name"], ENT_COMPAT, YW_CHARSET),"\">",$user["name"],"</option>\n";
+                                echo "<option value=\"",htmlspecialchars($user, ENT_COMPAT, YW_CHARSET),"\">",$user,"</option>\n";
                             }
                         }
                         ?>
