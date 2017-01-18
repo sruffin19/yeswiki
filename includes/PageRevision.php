@@ -79,10 +79,10 @@ class PageRevision
      * des pages.)
      * @return array [description]
      */
-    public function linkingTo()
+    public function getLinkingTo()
     {
         $table = $this->database->prefix . 'links';
-        $tag = $this->database->escapeString($tag);
+        $tag = $this->database->escapeString($this->tag);
         return $this->database->loadAll(
             "SELECT from_tag AS tag FROM $table
                 WHERE to_tag = '$tag' ORDER BY tag"
