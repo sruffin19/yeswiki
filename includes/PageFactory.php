@@ -42,7 +42,7 @@ class PageFactory
     public function getById($id)
     {
         $table = $this->database->prefix . 'pages';
-        $pageId = $this->database->escapeString($pageId);
+        $pageId = $this->database->escapeString($id);
         $pageInfos = $this->database->loadSingle(
             "SELECT * FROM $table WHERE id = '$pageId' LIMIT 1"
         );
@@ -58,10 +58,23 @@ class PageFactory
         $tag = $this->database->escapeString($tag);
 
         $sql = "SELECT * FROM $table WHERE tag = '$tag'";
-        $pagesInfos = $this->database->loadSingle($sql);
+        $pagesInfos = $this->database->loadAll($sql);
         if (empty($pagesInfos)) {
             return false;
         }
+        return $this->sqlResultsToPages($pagesInfos);
+    }
+
+    public function getRecentChanges($limit)
+    {
+        $table = $this->database->prefix . 'pages';
+        $limit = $this->database->escapeString((int)$limit);
+
+        $sql = "SELECT * FROM $table
+                    WHERE latest = 'Y' AND comment_on = ''
+                    ORDER BY time DESC
+                    LIMIT $limit";
+        $pagesInfos = $this->database->loadAll($sql);
         return $this->sqlResultsToPages($pagesInfos);
     }
 

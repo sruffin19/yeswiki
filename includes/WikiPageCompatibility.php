@@ -78,7 +78,7 @@ class WikiPageCompatibility
 
     public function loadPageById($pageId)
     {
-        $page = $this->pageFactory->getLastRevisionById($pageId);
+        $page = $this->pageFactory->getById($pageId);
         // S'attendent a un tableaux en résultat, (uniquement a des fin de
         // compatibilité : a supprimer dans le futur)
         return $page->array();
@@ -91,7 +91,7 @@ class WikiPageCompatibility
      */
     public function loadRevisions($tag)
     {
-        $pages = $this->pageFactory->getLastRevisionAllRevisions($tag);
+        $pages = $this->pageFactory->getAllRevisions($tag);
 
         // S'attendent a des tableaux en résultat, (uniquement a des fin de
         // compatibilité : a supprimer dans le futur)
@@ -112,23 +112,6 @@ class WikiPageCompatibility
     {
         $this->pageFactory->getLastRevision($tag);
         return $page->linkingTo();
-    }
-
-    public function loadRecentlyChanged($limit = 50)
-    {
-        $limit = (int) $limit;
-        $table = $this->database->prefix . 'pages';
-        if ($pages = $this->database->loadAll(
-            "SELECT id, tag, time, user, owner FROM $table
-                WHERE latest = 'Y' AND comment_on = ''
-                ORDER BY time DESC LIMIT $limit"
-        )) {
-            foreach ($pages as $page) {
-                $this->cachePage($page);
-            }
-
-            return $pages;
-        }
     }
 
     public function getPageCreateTime($tag)

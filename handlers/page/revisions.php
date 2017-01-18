@@ -53,15 +53,8 @@ if ($this->hasAccess("read"))
         $output .= "</tr>\n";
         $output .= "</table>\n";
         $output .= "<table border=\"0\" cellspacing=\"0\" cellpadding=\"1\">\n";
-        if ($user = $this->getUser())
-        {
-            $max = $user["revisioncount"];
-        }
-        else
-        {
-            $max = 20;
-        }
-    
+        $max = $this->connectedUser->revisionCount;
+
         $c = 0;
         foreach ($pages as $page)
         {

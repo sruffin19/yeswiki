@@ -31,45 +31,20 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 // Which is the max number of pages to be shown ?
-if ($max = $this->getParameter("max"))
-{
-    if ($max=="last") $max=50; else $last = (int) $max;
-}
-elseif ($user = $this->getUser())
-{
-    $max = $user["changescount"];
-}
-else
-{
-    $max = 50;
+
+$max = (int)$this->connectedUser->changesCount;
+$parameterMax = $this->getParameter("max");
+if ($parameterMax) {
+    $max = $parameterMax;
+    if ($max == "last") {
+        $max = 50;
+    }
 }
 
-// Show recently changed pages
-if ($pages = $this->loadRecentlyChanged($max))
-{
-    if ($this->getParameter("max"))
-    {
-        foreach ($pages as $i => $page)
-        {
-            // echo entry
-            echo "(",$page["time"],") (",$this->composeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->composeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->format($page["user"]),"<br />\n" ;
-        }
-    }
-    else
-    {
-        $curday='';
-        foreach ($pages as $i => $page)
-        {
-            // day header
-            list($day, $time) = explode(" ", $page["time"]);
-            if ($day != $curday)
-            {
-                if ($curday) echo "<br />\n" ;
-                echo "<b>$day&nbsp;:</b><br />\n" ;
-                $curday = $day;
-            }
-            // echo entry
-            echo "&nbsp;&nbsp;&nbsp;(",$time,") (",$this->composeLinkToPage($page["tag"], "revisions", _t('HISTORY'), 0),") ",$this->composeLinkToPage($page["tag"], "", "", 0)," . . . . ",$this->format($page["user"]),"<br />\n" ;
-        }
-    }
+$pages = $this->pageFactory->getRecentChanges($max);
+foreach ($pages as $page) {
+    $link = $this->composeLinkToPage($page->tag, "revisions", _t('HISTORY'), 0);
+    $link2 = $this->composeLinkToPage($page->tag, "", "", 0);
+    $user = $this->format($page->user);
+    echo "($page->time) ($link) $link2 . . . . $user<br />\n" ;
 }
