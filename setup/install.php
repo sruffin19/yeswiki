@@ -160,21 +160,6 @@ switch ($version) {
             0
         );
         test(
-            _t('CREATION_OF_TABLE').' '.$config['table_prefix'].'referrers ...',
-            @mysqli_query(
-                $dblink,
-                'CREATE TABLE '.$config['table_prefix'].'referrers ('.
-                "page_tag char(50) NOT NULL default '',".
-                "referrer char(150) NOT NULL default '',".
-                "time datetime NOT NULL,".
-                'KEY idx_page_tag (page_tag),'.
-                'KEY idx_time (time)'.
-                ') ENGINE=MyISAM'
-            ),
-            _t('ALREADY_CREATED').' ?',
-            0
-        );
-        test(
             _t('CREATION_OF_TABLE').' '.$config['table_prefix'].'users ...',
             @mysqli_query(
                 $dblink,

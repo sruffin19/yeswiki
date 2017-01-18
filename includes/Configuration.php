@@ -29,7 +29,6 @@ class Configuration implements \ArrayAccess
             'header_action' => 'header',
             'footer_action' => 'footer',
             'navigation_links' => 'DerniersChangements :: DerniersCommentaires :: ParametresUtilisateur',
-            'referrers_purge_time' => 24,
             'pages_purge_time' => 90,
             'default_write_acl' => '*',
             'default_read_acl' => '*',

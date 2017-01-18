@@ -243,75 +243,6 @@ class Wiki extends Actions
         return "</form>\n";
     }
 
-    // REFERRERS
-    // TODO : Appeler une seule fois et sans parametres... supprimer les parametres.
-    public function logReferrer($tag = "", $referrer = "")
-    {
-        // fill values
-        if (! $tag = trim($tag)) {
-            $tag = $this->getPageTag();
-        }
-
-        if (! $referrer = trim($referrer) and isset($_SERVER['HTTP_REFERER'])) {
-            $referrer = $_SERVER['HTTP_REFERER'];
-        }
-
-        // check if it's coming from another site
-        if ($referrer
-            and !preg_match(
-                '/^' . preg_quote($this->getConfigValue('base_url'), '/') . '/',
-                $referrer
-            )
-        ) {
-            // avoid XSS (with urls like "javascript:alert()" and co)
-            // by forcing http/https prefix
-            // NB.: this does NOT exempt to htmlspecialchars() the collected URIs !
-            if (! preg_match('`^https?://`', $referrer)) {
-                return;
-            }
-
-            $tableReferrers = $this->database->prefix . 'referrers';
-            $tag = $this->database->escapeString($tag);
-            $referrer = $this->database->escapeString($referrer);
-            $this->database->query(
-                "INSERT INTO $tableReferrers
-                    SET page_tag = '$tag',
-                        referrer = '$referrer',
-                        time = now()"
-            );
-        }
-    }
-
-    public function loadReferrers($tag = "")
-    {
-        $tableReferrers = $this->database->prefix . 'referrers';
-        $where = "";
-        if ($tag = trim($tag)) {
-            $where = "WHERE page_tag = '" . $this->database->escapeString($tag) . "'";
-        }
-
-        return $this->database->loadAll(
-            "SELECT referrer, count(referrer) AS num
-                FROM $tableReferrers
-                $where
-                GROUP BY referrer
-                ORDER BY num DESC"
-        );
-    }
-
-    //TODO appelé qu'une seule fois... necessaires ?
-    public function purgeReferrers()
-    {
-        if ($days = $this->getConfigValue("referrers_purge_time")) {
-            $tableReferrers = $this->database->prefix . 'referrers';
-            $days = $this->database->escapeString($days);
-            $this->database->query(
-                "DELETE FROM $tableReferrers
-                    WHERE time < date_sub(now(), interval '$days' day)"
-            );
-        }
-    }
-
     /**
      * Retrieves the list of existing handlers
      *
@@ -926,22 +857,9 @@ class Wiki extends Actions
         return $this->checkACL($acl, $user);
     }
 
-    // MAINTENANCE
-    public function maintenance()
-    {
-        list ($usec, $sec) = explode(" ", microtime());
-        if (!(((float) $usec + (float) $sec) % 9)) {
-            // purge referrers
-            $this->purgeReferrers();
-        }
-    }
-
     // THE BIG EVIL NASTY ONE!
     public function run($tag, $method = '')
     {
-        // Maintenance une fois sur 10 ??
-        $this->maintenance();
-
         // do our stuff!
         $this->method = "show";
         $method = trim($method);
@@ -970,8 +888,6 @@ class Wiki extends Actions
             $this->mainPage->updateLinks(); // TODO a supprimer uniquement pour les tests.
             $this->page = $this->mainPage->array();
         }
-
-        $this->logReferrer();
 
         $text = _t('HANDLER_NO_ACCESS');
         if ($this->checkModuleACL($this->method, 'handler')) {

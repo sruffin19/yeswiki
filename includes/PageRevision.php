@@ -52,7 +52,6 @@ class PageRevision
         $tablePages = $this->database->prefix . 'pages';
         $tableLinks = $this->database->prefix . 'links';
         $tableAcls = $this->database->prefix . 'acls';
-        $tableReferrers = $this->database->prefix . 'referrers';
         $tag = $this->database->escapeString($this->tag);
 
         $this->database->query(
@@ -63,9 +62,6 @@ class PageRevision
         );
         $this->database->query(
             "DELETE FROM $tableAcls WHERE page_tag='$tag'"
-        );
-        $this->database->query(
-            "DELETE FROM $tableReferrers WHERE page_tag='$tag'"
         );
     }
 
