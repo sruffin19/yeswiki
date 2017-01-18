@@ -51,7 +51,10 @@ if ($this->page)
         else
         {
             $owner_info = "Pas de propriétaire ";
-            $owner_info .= ($this->getUser() ? "(<a href=\"".$this->href("claim")."\">Appropriation</a>)" : "");
+
+            if (get_class($this->connectedUser) === 'YesWiki\User') {
+                $owner_info .= "(<a href=\"".$this->href("claim")."\">Appropriation</a>)";
+            }
         }
         $owner_info .= " :: \n";
     }

@@ -42,7 +42,7 @@ if ($_REQUEST["action"] == "logout") {
     exit;
 }
 
-if (!is_null($this->connectedUser)) {
+if (get_class($this->connectedUser) === 'YesWiki\User') {
     switch ($_REQUEST["action"]) {
         case 'update':
             $this->connectedUser->update(

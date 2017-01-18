@@ -58,7 +58,10 @@ $page_search = $this->href('', 'RechercheTexte', 'phrase=' . urlencode($page_nam
 $root_page = $this->composeLinkToPage($this->config["root_page"]);
 $navigation_links = $this->config["navigation_links"] ? $this->format($this->config["navigation_links"]) : "";
 $user_name = $this->format($this->getUserName());
-$disconnect_link = $this->getUser() ? '(<a href="' . $this->href('', 'ParametresUtilisateur', 'action=logout') . "\">D&eacute;connexion</a>)\n" : '';
+$disconnect_link = '';
+if (get_class($this->connectedUser) === 'YesWiki\User') {
+    $disconnect_link = '(<a href="' . $this->href('', 'ParametresUtilisateur', 'action=logout') . "\">D&eacute;connexion</a>)\n";
+}
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
