@@ -32,6 +32,6 @@ class WikiLinkCompatibility extends WikiPageCompatibility
             $tag = $this->tag;
         }
         $link = new Link($tag, $method, null, $params);
-        return$link->href();
+        return $link->href();
     }
 }

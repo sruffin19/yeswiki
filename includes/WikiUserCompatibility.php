@@ -1,11 +1,11 @@
 <?php
 namespace YesWiki;
 
-require_once('includes/WikiLinksTrackingCompatibility.php');
+require_once('includes/WikiLinkCompatibility.php');
 // Classe temporaire pour assurer la compatibilité. A supprimer une fois toutes
 // les méthodes remplacées et supprimées.
 
-class WikiUserCompatibility extends WikiLinksTrackingCompatibility
+class WikiUserCompatibility extends WikiLinkCompatibility
 {
     /**
      * Charge un utilisateur dans la base de données.

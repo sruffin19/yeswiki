@@ -31,11 +31,6 @@ class Wiki extends Actions
     public $pageFactory = null;
     public $userFactory = null;
 
-    /**
-     * LinkTrackink
-     */
-    public $isTrackingLinks = false;
-    public $linktable = array();
     public $pageCache = array();
     public $groupsCache = array();
     public $actionsAclsCache = array();
@@ -221,7 +216,7 @@ class Wiki extends Actions
         if (($actionObj = $this->getActionObject($action)) and is_object($actionObj)) {
             return $actionObj->GenerateHeader();
         }
-        return $this->action($action, 1);
+        return $this->action($action);
     }
 
     /**
@@ -233,7 +228,7 @@ class Wiki extends Actions
         if (($actionObj = $this->getActionObject($action)) and is_object($actionObj)) {
             return $actionObj->GenerateFooter();
         }
-        return $this->action($action, 1);
+        return $this->action($action);
     }
 
     // FORMS
@@ -978,6 +973,7 @@ class Wiki extends Actions
         }
 
         if ($this->mainPage !== false) {
+            $this->mainPage->updateLinks(); // TODO a supprimer uniquement pour les tests.
             $this->page = $this->mainPage->array();
         }
 

@@ -132,7 +132,6 @@ class PageFactory
         $owner = $this->database->escapeString($page->owner);
         $user = $this->database->escapeString($user);
         $body = $this->database->escapeString($body);
-        $
 
         // add new revision
         $this->database->query(
@@ -146,8 +145,7 @@ class PageFactory
                     body_r = ''"
         );
 
-        //Supprimer les revisions en trop.
-
+        // TODO Supprimer les revisions en trop.
         return $this->getLastRevision($tag);
     }
 

@@ -116,6 +116,49 @@ class PageRevision
 
     }
 
+    public function updateLinks()
+    {
+        // Supprime tous les liens a partir de cette page.
+        $tableLinks = $this->database->prefix . 'links';
+        $tag = $this->database->escapeString($this->tag);
+        $this->database->query("DELETE FROM $tableLinks WHERE from_tag = '$tag'");
+
+        // Cherche les liens dans la page.
+        preg_match_all(
+            "/\[\[.*?\]\]|\\b" . WN_WIKI_LINK . "\\b/ms",
+            $this->body,
+            $matches
+        );
+        $matches = preg_replace("/\[\[|\]\]/", "", $matches[0]);
+        $fromTag = $this->database->escapeString($this->tag);
+        foreach ($matches as $linkString) {
+            $linkString = explode(' ', $linkString)[0];
+            $link = new Link($linkString);
+            if ($link->internal) {
+                $toTag = $this->database->escapeString($link->tag);
+                $sql = "INSERT INTO $tableLinks
+                    SET from_tag = '$fromTag', to_tag = '$toTag'";
+                $this->database->query($sql);
+            }
+        }
+
+
+        /*if (!empty($this->linktable)) {
+            $fromTag = $this->database->escapeString($this->getPageTag());
+            foreach ($this->linktable as $toTag) {
+                $lowerToTag = strtolower($toTag);
+                if (! isset($written[$lowerToTag])) {
+                    $toTag = $this->database->escapeString($toTag);
+                    $this->database->query(
+                        "INSERT INTO $tableLinks
+                            SET from_tag = '$fromTag', to_tag = '$toTag'"
+                    );
+                    $written[$lowerToTag] = 1;
+                }
+            }
+        }*/
+    }
+
     private function loadOrphanedStatus()
     {
         $tablePages = $this->database->prefix . 'pages';

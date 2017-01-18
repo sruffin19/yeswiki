@@ -101,33 +101,16 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
 
                 // add page (revisions)
                 try {
-                    $this->savePage($this->tag, $body);
+                    $page = $this->savePage($this->tag, $body);
+                    $page->updateLinks();
                 } catch (Exception $e) {
                     $this->setMessage($e->getMessage());
                     $this->redirect($this->href());
                 }
 
-
-                // now we render it internally so we can write the updated link table.
-                $this->clearLinkTable();
-                $this->startLinkTracking();
-                $temp = $this->inclusions->set(); // a priori, éa ne sert é rien, mais on ne sait jamais...
-                $this->inclusions->register($this->getPageTag()); // on simule totalement un affichage normal
-                $this->format($body);
-                $this->inclusions->set($temp);
-                if ($user = $this->getUser()) {
-                    $this->trackLinkTo($user);
-                }
-                if ($owner = $this->getPageOwner()) {
-                    $this->trackLinkTo($owner);
-                }
-                $this->stopLinkTracking();
-                $this->writeLinkTable();
-                $this->clearLinkTable();
-
                 // Si c'est un commentaire on redirige vers la page commenté.
-                if (isset($this->page['comment_on'])) {
-                    $this->redirect($this->href('', $this->page['comment_on']).'#'.$this->tag);
+                if (!empty($page->commentOn)) {
+                    $this->redirect($this->href('', $page->commentOn).'#'.$page->tag);
                 } else {
                     $this->redirect($this->href());
                 }

@@ -6,6 +6,11 @@ Class Link
     private $link = "Bad link";
     private $href = "";
 
+    public $internal = false;
+    public $tag;
+    public $method;
+    public $params;
+
     public function __construct($tag, $method = null, $text = null, $params = null)
     {
         $this->tag = htmlspecialchars($tag, ENT_COMPAT, YW_CHARSET);
@@ -19,6 +24,7 @@ Class Link
         }
         if ($this->isInternal()) {
             $this->makeInternal();
+            $this->internal = true;
             return;
         }
 
