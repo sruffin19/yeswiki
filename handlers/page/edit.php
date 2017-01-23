@@ -101,12 +101,13 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
 
                 // add page (revisions)
                 try {
-                    $page = $this->savePage($this->tag, $body);
-                    $page->updateLinks();
+                    $this->savePage($this->tag, $body);
                 } catch (Exception $e) {
                     $this->setMessage($e->getMessage());
                     $this->redirect($this->href());
                 }
+                $page = $this->pageFactory->getLastRevision($this->tag);
+                $page->updateLinks();
 
                 // Si c'est un commentaire on redirige vers la page commenté.
                 if (!empty($page->commentOn)) {
