@@ -873,19 +873,22 @@ class Wiki extends Actions
         }
         $this->tag = $tag;
 
-        // TODO vraiment sa place ? constructeur ou plutot controller. ou classe user.
+        // TODO vraiment sa place ? constructeur ou plutot controller. ou
+        // classe user.
         $this->connectedUser = $this->userFactory->getConnected($this->cookies);
         $this->mainPage = false;
         $this->page = array();
         if (isset($_REQUEST['time'])) {
-            $this->mainPage = $this->pageFactory->getRevision($this->tag, $_REQUEST['time']);
+            $this->mainPage = $this->pageFactory->getRevision(
+                $this->tag,
+                $_REQUEST['time']
+            );
         }
         if (!isset($_REQUEST['time'])) {
             $this->mainPage = $this->pageFactory->getLastRevision($this->tag);
         }
 
         if ($this->mainPage !== false) {
-            $this->mainPage->updateLinks(); // TODO a supprimer uniquement pour les tests.
             $this->page = $this->mainPage->array();
         }
 
