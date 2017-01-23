@@ -1,7 +1,7 @@
 <?php
 
 // operational constants
-define('WAKKA_ENGINE', 'wakka.php');
+define('WAKKA_ENGINE', 'index.php');
 
 // YesWiki Charset
 // YW_CHARSET définie dans includes/i18n.inc.php:initI18n()
