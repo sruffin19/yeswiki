@@ -294,15 +294,6 @@ class Wiki extends Actions
         );
     }
 
-    public function getParameter($parameter, $default = '')
-    {
-        return (
-            isset($this->parameter[$parameter])
-                ? $this->parameter[$parameter]
-                : $default
-        );
-    }
-
     // COMMENTS
     /**
      * Charge les commentaires relatifs a une page.

@@ -179,4 +179,15 @@ abstract class Actions extends WikiUserCompatibility
 
         return array_unique($list);
     }
+
+
+    // Renvois les parametres d'une action.
+    public function getParameter($parameter, $default = '')
+    {
+        return (
+            isset($this->parameter[$parameter])
+                ? $this->parameter[$parameter]
+                : $default
+        );
+    }
 }
