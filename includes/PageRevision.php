@@ -137,22 +137,6 @@ class PageRevision
                 $this->database->query($sql);
             }
         }
-
-
-        /*if (!empty($this->linktable)) {
-            $fromTag = $this->database->escapeString($this->getPageTag());
-            foreach ($this->linktable as $toTag) {
-                $lowerToTag = strtolower($toTag);
-                if (! isset($written[$lowerToTag])) {
-                    $toTag = $this->database->escapeString($toTag);
-                    $this->database->query(
-                        "INSERT INTO $tableLinks
-                            SET from_tag = '$fromTag', to_tag = '$toTag'"
-                    );
-                    $written[$lowerToTag] = 1;
-                }
-            }
-        }*/
     }
 
     private function loadOrphanedStatus()
