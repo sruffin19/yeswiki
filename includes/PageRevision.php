@@ -93,6 +93,7 @@ class PageRevision
         $this->database->query(
             "UPDATE $table SET owner = '$user' WHERE id = '$this->id' LIMIT 1"
         );
+        $this->owner = $user;
     }
 
     // Méthode temporaire pour la compatibilité
