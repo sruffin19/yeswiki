@@ -521,15 +521,7 @@ class Wiki extends Actions
 
 
 
-    public function getPageOwner($tag = "", $time = "")
-    {
-        if (! $tag = trim($tag)) {
-            $tag = $this->getPageTag();
-        }
-        if ($page = $this->loadPage($tag, $time)) {
-            return isset($page["owner"]) ? $page["owner"] : null;
-        }
-    }
+
 
     /**
      *

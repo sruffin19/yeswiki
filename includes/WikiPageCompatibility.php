@@ -1,7 +1,9 @@
 <?php
 namespace YesWiki;
 
-class WikiPageCompatibility
+require_once('includes/WikiGroupCompatibility.php');
+
+class WikiPageCompatibility extends WikiGroupCompatibility
 {
     public $page;
     public $tag;
@@ -190,5 +192,23 @@ class WikiPageCompatibility
             return;
         }
         $page->setOwner($user);
+    }
+
+    public function getPageOwner($tag = null, $time = null)
+    {
+        if (is_null($tag)) {
+            $tag = $this->mainPage->tag;
+        }
+
+        $page = null;
+        if ($time === null) {
+            $page = $this->pageFactory->getLastRevision($tag);
+        }
+
+        if ($time !== null) {
+            $page = $this->pageFactory->getRevision($tag, $time);
+        }
+
+        return $page->owner;
     }
 }
