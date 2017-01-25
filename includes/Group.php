@@ -4,6 +4,7 @@ namespace YesWiki;
 class Group
 {
     public $name;
+    public $members;
 
     public function __construct($name, $members)
     {
@@ -22,7 +23,6 @@ class Group
         if (in_array($user->name, $this->members)) {
             return true;
         }
-
         return false;
     }
 }

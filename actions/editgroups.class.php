@@ -74,7 +74,6 @@ class ActionEditgroups extends WikiniAdminAction
             }
             else
             {
-                $wiki->logAdministrativeAction($wiki->getUserName(), _t('NEW_ACL_FOR_GROUP')." " . ucfirst($name) . ' : ' . $newacl . "\n");
                 return $res . _t('NEW_ACL_SUCCESSFULLY_SAVED_FOR_THE_GROUP').' ' . ucfirst($name) . '.<br />';
             }
         }
