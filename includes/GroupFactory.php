@@ -52,6 +52,20 @@ class GroupFactory
     }
 
     /**
+     * Vérifie si un groupe existe dans la base de donnée.
+     * TODO le charger dans le cache
+     * @param  [type]  $groupName [description]
+     * @return boolean            [description]
+     */
+    public function isExist($groupName)
+    {
+        if ($this->get($groupName) === false) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * Créé un objet groupe a partir des informations stockées dans la base de
      * donnée. (Chaque membre est un objet User)
      * @param  [type] $groupInfos [description]
