@@ -66,6 +66,35 @@ class GroupFactory
     }
 
     /**
+     * Ajoute un nouveau groupe dans la base de donnée. La non existance du
+     * groupe doit déjà avoir été testé. Les utilisateurs doivent exister.
+     * @param  string $groupName Nom du groupe
+     * @param  array  $members   Tableau d'objet User
+     * @return Group|bool        Le nouvel objet Group ou false en cas d'échec.
+     */
+    public function new($groupName, $members)
+    {
+        $tableTriples = $this->database->prefix . 'triples';
+        $resource = $this->database->escapeString(GROUP_PREFIX . $groupName);
+        $property = $this->database->escapeString(WIKINI_VOC_PREFIX . WIKINI_VOC_ACLS);
+        $membersString = "";
+        foreach ($members as $member) {
+            $membersString .= $this->database->escapeString($member->name) . "\n";
+        }
+
+        $this->database->escapeString($members);
+
+        $sql = "INSERT INTO $tableTriples (resource, property, value)
+                    VALUE ('$resource', '$property', '$membersString')";
+
+        if (!$this->database->query($sql)) {
+            return false;
+        }
+
+        return $this->get($groupName);
+    }
+
+    /**
      * Créé un objet groupe a partir des informations stockées dans la base de
      * donnée. (Chaque membre est un objet User)
      * @param  [type] $groupInfos [description]
