@@ -74,17 +74,9 @@ class UserFactory
      */
     public function isExist($name)
     {
-        $table = $this->database->prefix . 'users';
-        $name = $this->database->escapeString($name);
-
-        $userInfos = $this->database->loadSingle(
-            "SELECT * FROM $table WHERE name = '$name' LIMIT 1"
-        );
-
-        if (empty($userInfos)) {
+        if ($this->get($name) === false) {
             return false;
         }
-
         return true;
     }
 
