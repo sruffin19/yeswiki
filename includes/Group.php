@@ -6,10 +6,11 @@ class Group
     public $name;
     public $members;
 
-    public function __construct($name, $members)
+    public function __construct($database, $name, $members)
     {
         $this->members = $members;
         $this->name = $name;
+        $this->database = $database;
     }
 
     /**
@@ -24,5 +25,30 @@ class Group
             return true;
         }
         return false;
+    }
+
+    /**
+     * Mets à jour la liste des membres avec la nouvelle liste.
+     * @param  [type] $memberList [description]
+     * @return [type]             [description]
+     */
+    public function updateMembers($memberList)
+    {
+        $tableTriples = $this->database->prefix . 'triples';
+        $resource = $this->database->escapeString(GROUP_PREFIX . $this->name);
+        $membersString = "";
+        foreach ($members as $member) {
+            $membersString .= $this->database->escapeString($member->name) . "\n";
+        }
+
+        $sql = "UPDATE $tableTriples
+                    SET value = '$membersString',
+                    WHERE resource = '$resource'
+                    LIMIT 1";
+
+        if (!$this->database->query($sql)) {
+            return false;
+        }
+        return true;
     }
 }

@@ -77,21 +77,20 @@ class GroupFactory
         $tableTriples = $this->database->prefix . 'triples';
         $resource = $this->database->escapeString(GROUP_PREFIX . $groupName);
         $property = $this->database->escapeString(WIKINI_VOC_PREFIX . WIKINI_VOC_ACLS);
-        $membersString = "";
-        foreach ($members as $member) {
-            $membersString .= $this->database->escapeString($member->name) . "\n";
-        }
 
-        $this->database->escapeString($members);
-
+        // Ajoute le groupe vide
         $sql = "INSERT INTO $tableTriples (resource, property, value)
-                    VALUE ('$resource', '$property', '$membersString')";
+                    VALUE ('$resource', '$property', '')";
 
         if (!$this->database->query($sql)) {
             return false;
         }
 
-        return $this->get($groupName);
+        $group = $this->get($groupName);
+        // Ajoute les membres au groupe.
+        $group->updateMembers($members);
+
+        return $group;
     }
 
     /**
@@ -107,6 +106,7 @@ class GroupFactory
             $members[$username] = $this->userFactory->get($username);
         }
         return new Group(
+            $this->database,
             substr($groupInfos['resource'], $prefixLen),
             $members
         );
