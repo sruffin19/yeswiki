@@ -70,26 +70,31 @@ class WikiGroupCompatibility
      * @param string $acl
      *            The new ACL to associate with the group $gname
      * @return int 0 if successful, a triple error code or a specific error code:
-     *         1000 if the new value would define the group recursively
+     *         1000 if the new value would define the group recursively (no more recursive group)
      *         1001 if $gname is not named with alphanumeric chars
      * @see getGroupACL
      */
-    public function setGroupACL($gname, $acl)
+    public function setGroupACL($gname, $memberList)
     {
         if (preg_match('/[^A-Za-z0-9]/', $gname)) {
             return 1001;
         }
-        $old = $this->getGroupACL($gname);
-        if ($this->makesGroupRecursive($gname, $acl)) {
-            return 1000;
+
+        $members = array();
+        foreach (explode("\n", $memberList) as $user) {
+            $members[$user] = $user;
         }
-        $this->groupsCache[$gname] = $acl;
-        if ($old === null) {
-            return $this->triples->insertTriple($gname, WIKINI_VOC_ACLS, $acl, GROUP_PREFIX);
-        } elseif ($old === $acl) {
-            return 0; // nothing has changed
+
+        // le Groupe existe déja.
+        if ($this->groupFactory->isExist($gname)) {
+            $group = $this->groupFactory->get($gname);
+            $group->updateMembers($members);
+            return 0;
         }
-        return $this->updateTriple($gname, WIKINI_VOC_ACLS, $old, $acl, GROUP_PREFIX);
+
+        // C'est un nouveau groupe
+        $group = $this->groupFactory->new($gname, $members);
+        return 0;
     }
 
     /**
