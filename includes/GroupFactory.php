@@ -103,7 +103,7 @@ class GroupFactory
         $prefixLen = strlen(GROUP_PREFIX);
         $members = array();
         foreach (explode("\n", $groupInfos['value']) as $username) {
-            $members[$username] = $this->userFactory->get($username);
+            $members[$username] = $username;
         }
         return new Group(
             $this->database,

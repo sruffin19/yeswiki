@@ -37,12 +37,12 @@ class Group
         $tableTriples = $this->database->prefix . 'triples';
         $resource = $this->database->escapeString(GROUP_PREFIX . $this->name);
         $membersString = "";
-        foreach ($members as $member) {
-            $membersString .= $this->database->escapeString($member->name) . "\n";
+        foreach ($memberList as $member) {
+            $membersString .= $this->database->escapeString($member) . "\n";
         }
 
         $sql = "UPDATE $tableTriples
-                    SET value = '$membersString',
+                    SET value = '$membersString'
                     WHERE resource = '$resource'
                     LIMIT 1";
 
