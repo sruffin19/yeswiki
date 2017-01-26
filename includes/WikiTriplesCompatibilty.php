@@ -27,38 +27,20 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
      */
     public function getAllTriplesValues(
         $resource,
-        $property,
+        $property, // useless only for compatibility
         $rePrefix = THISWIKI_PREFIX,
-        $propPrefix = WIKINI_VOC_PREFIX
+        $propPrefix = WIKINI_VOC_PREFIX // useless only for compatibility
     ) {
-        $res = $rePrefix . $resource ;
-        $prop = $propPrefix . $property ;
-        if (isset($this->triplesCacheByRsrc[$res])) {
-            // All resource's properties was previously loaded.
-            //error_log(__METHOD__.' cache hits ['.$res.']['.$prop.'] '. count($this->triplesCacheByRsrc));
-            if (isset($this->triplesCacheByRsrc[$res][$prop])) {
-                return $this->triplesCacheByRsrc[$res][$prop] ;
-            }
-            // LoadAll($sql) return an empty array when no result, do the same.
-            return array();
-        }
-        //error_log(__METHOD__.' cache miss ['.$res.']['.$prop.'] '. count($this->triplesCacheByRsrc));
-        $this->triplesCacheByRsrc[$res] = array();
-        $table = $this->database->prefix . 'triples';
-        $slashedRes = addslashes($res);
-        $sql = "SELECT * FROM $table WHERE resource = \"$slashedRes\"" ;
+        $triples = $this->tripleFactory->getAll($rePrefix . $resource);
 
-        foreach ($this->database->loadAll($sql) as $triple) {
-            if (!isset($this->triplesCacheByRsrc[$res][$triple['property']])) {
-                $this->triplesCacheByRsrc[$res][$triple['property']] = array();
-            }
-            $this->triplesCacheByRsrc[$res][ $triple['property'] ][] =
-                array( 'id'=>$triple['id'], 'value'=>$triple['value']) ;
+        $result = array();
+        foreach ($triples as $triple) {
+            $result[$triple->resource]['property'] = array(
+                'id' => $triple->id,
+                'value' => $triple->value,
+            );
         }
-        if (isset($this->triplesCacheByRsrc[$res][$prop])) {
-            return $this->triplesCacheByRsrc[$res][$prop] ;
-        }
-        return array() ;
+        return $result;
     }
 
     /**
