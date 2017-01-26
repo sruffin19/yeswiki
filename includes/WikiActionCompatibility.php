@@ -3,9 +3,7 @@ namespace YesWiki;
 
 require_once('includes/WikiUserCompatibility.php');
 
-use YesWiki\WikiUserCompatibility;
-
-abstract class Actions extends WikiUserCompatibility
+class WikiActionCompatibility extends WikiUserCompatibility
 {
     /**
      * an array containing all the actions that are implemented by an object
