@@ -53,7 +53,7 @@ if (!function_exists("rssdiff")) {
             . $pageB["time"]
             . "</a></b><br />\n";
 
-        $wiki->inclusions->register($tag);
+        $wiki->register($tag);
         if ($added) {
             // remove blank lines
             $output .= "<br />\n<b>Ajouts:</b><br />\n";
@@ -65,7 +65,7 @@ if (!function_exists("rssdiff")) {
             $output .= "<div class=\"deletions\">".(implode("\n", $deleted))."</div>";
         }
 
-        $wiki->inclusions->unregisterLast();
+        $wiki->unregisterLast();
 
         if (!$added && !$deleted) {
             $output .= "<br />\nPas de diff&eacute;rences.";

@@ -64,8 +64,8 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
 
     switch ($submit) {
         case 'Apercu':
-            $temp = $this->inclusions->set(); // a priori, éa ne sert é rien, mais on ne sait jamais...
-            $this->inclusions->register($this->getPageTag()); // on simule totalement un affichage normal
+            $temp = $this->set(); // a priori, éa ne sert é rien, mais on ne sait jamais...
+            $this->register($this->getPageTag()); // on simule totalement un affichage normal
             $output .=
               "<div class=\"page_preview\">\n".
               "<div class=\"prev_alert\"><strong>Aper&ccedil;u</strong></div>\n".
@@ -78,7 +78,7 @@ if ($this->hasAccess('write') && $this->hasAccess('read')) {
               "<input name=\"submit\" type=\"submit\" value=\"R&eacute;&eacute;diter\" accesskey=\"p\" />\n".
               "<input type=\"button\" value=\"Annulation\" onclick=\"document.location='".addslashes($this->href())."';\" />\n".
               $this->formClose()."\n"."</div>\n";
-            $this->inclusions->set($temp);
+            $this->set($temp);
             break;
 
         // pour les navigateurs n'interprétant pas le javascript

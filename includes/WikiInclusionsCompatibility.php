@@ -1,7 +1,7 @@
 <?php
 namespace YesWiki;
 
-Class inclusions
+Class WikiInclusionsCompatibility
 {
     public $inclusions = array();
 

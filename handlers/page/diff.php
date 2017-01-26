@@ -87,7 +87,7 @@ if ($this->hasAccess("read"))
 
           $output .= "<b>Comparaison de <a href=\"".$this->href("", "", "time=".urlencode($pageA["time"]))."\">".$pageA["time"]."</a> &agrave; <a href=\"".$this->href("", "", "time=".urlencode($pageB["time"]))."\">".$pageB["time"]."</a></b><br />\n";
 
-          $this->inclusions->register($this->getPageTag());
+          $this->register($this->getPageTag());
           if ($added)
           {
             // remove blank lines
@@ -100,7 +100,7 @@ if ($this->hasAccess("read"))
             $output .= "<br />\n<b>Suppressions:</b><br />\n";
             $output .= "<div class=\"deletions\">".$this->format(implode("\n", $deleted))."</div>";
           }
-          $this->inclusions->unregisterLast();
+          $this->unregisterLast();
 
           if (!$added && !$deleted)
           {

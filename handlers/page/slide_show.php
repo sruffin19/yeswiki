@@ -83,9 +83,9 @@ if (!$this->hasAccess('read')) {
 
         //
         // découpe la page
-        $this->inclusions->register($this->getPageTag());
+        $this->register($this->getPageTag());
         $body_f = $this->format($this->page['body']);
-        $this->inclusions->unregisterLast();
+        $this->unregisterLast();
         $body = preg_split('/(.*<h2>.*<\/h2>)/', $body_f, -1, PREG_SPLIT_DELIM_CAPTURE);
 
         // Informations de débogage

@@ -2,7 +2,6 @@
 require_once('includes/WikiActionCompatibility.php');
 require_once('includes/Database.php');
 require_once('includes/Cookies.php');
-require_once('includes/Inclusions.php');
 require_once('includes/UserFactory.php');
 require_once('includes/Link.php');
 require_once('includes/PageFactory.php');
@@ -11,7 +10,6 @@ require_once('includes/GroupFactory.php');
 use YesWiki\WikiActionCompatibility;
 use YesWiki\Database;
 use YesWiki\Cookies;
-use YesWiki\Inclusions;
 use YesWiki\UserFactory;
 use YesWiki\Link;
 use YesWiki\PageFactory;
@@ -20,7 +18,6 @@ use YesWiki\GroupFactory;
 class Wiki extends WikiActionCompatibility
 {
     public $config;
-    public $inclusions;
     public $parameter = array();
     public $queryLog = array();
     public $cookies = null;
@@ -49,7 +46,6 @@ class Wiki extends WikiActionCompatibility
         // TODO Utiliser plutôt de l'injection de dépendance
         $this->database = new Database($config);
         $this->cookies = new Cookies($this->config['base_url']);
-        $this->inclusions = new Inclusions();
         $this->pageFactory = new PageFactory($this->database);
         $this->userFactory = new UserFactory($this->database);
         $this->groupFactory = new GroupFactory($this->database, $this->userFactory);

@@ -30,7 +30,7 @@ unset($params['tags']);
 // requete avec toutes les pages contenants les mots cles
 $req = "SELECT DISTINCT tag, time, user, owner, body
 FROM ".$this->config['table_prefix']."pages, ".$this->config['table_prefix']."triples tags
-WHERE latest = 'Y' AND comment_on = '' AND tags.value IN (".$taglist.") AND tags.property = \"http://outils-reseaux.org/_vocabulary/tag\" AND tags.resource = tag AND tag NOT IN (\"".implode('","', $this->inclusions->getAll())."\") ORDER BY tag ASC";
+WHERE latest = 'Y' AND comment_on = '' AND tags.value IN (".$taglist.") AND tags.property = \"http://outils-reseaux.org/_vocabulary/tag\" AND tags.resource = tag AND tag NOT IN (\"".implode('","', $this->getAll())."\") ORDER BY tag ASC";
 $pages = $this->database->loadAll($req);
 
 echo '<div class="well well-sm no-dblclick controls">'."\n".'<div class="pull-right muted"><span class="nbfilteredelements">'.count($pages).'</span> '._t('TAGS_RESULTS').'</div>';
@@ -59,9 +59,9 @@ foreach ($pages as $page) {
     $element[$page['tag']]['time'] = $page['time'];
     $element[$page['tag']]['title'] = get_title_from_body($page);
     $element[$page['tag']]['image'] = get_image_from_body($page);
-    $this->inclusions->register($page['tag']);
+    $this->register($page['tag']);
     $element[$page['tag']]['desc'] = tokenTruncate(strip_tags($this->format($page['body'])), $nbcartrunc);
-    $this->inclusions->unregisterLast();
+    $this->unregisterLast();
     $pagetags = $this->getAllTriplesValues($page['tag'], 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     foreach ($pagetags as $tag) {
         $tag['value'] = _convert(stripslashes($tag['value']), 'ISO-8859-1');
