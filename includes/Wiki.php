@@ -6,6 +6,7 @@ require_once('includes/UserFactory.php');
 require_once('includes/Link.php');
 require_once('includes/PageFactory.php');
 require_once('includes/GroupFactory.php');
+require_once('includes/TripleFactory.php');
 
 use YesWiki\WikiActionCompatibility;
 use YesWiki\Database;
@@ -14,6 +15,7 @@ use YesWiki\UserFactory;
 use YesWiki\Link;
 use YesWiki\PageFactory;
 use YesWiki\GroupFactory;
+use YesWiki\TripleFactory;
 
 class Wiki extends WikiActionCompatibility
 {
@@ -38,6 +40,7 @@ class Wiki extends WikiActionCompatibility
         $this->pageFactory = new PageFactory($this->database);
         $this->userFactory = new UserFactory($this->database);
         $this->groupFactory = new GroupFactory($this->database, $this->userFactory);
+        $this->tripleFactory = new TripleFactory($this->database, $this->userFactory);
     }
 
     public function includeBuffered($filename, $notfoundText = '', $vars = '', $path = '')
