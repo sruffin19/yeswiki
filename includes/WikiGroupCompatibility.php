@@ -57,11 +57,17 @@ class WikiGroupCompatibility extends WikiTriplesCompatibilty
      */
     public function getGroupACL($group)
     {
-        if (array_key_exists($group, $this->groupsCache)) {
-            return $this->groupsCache[$group];
+        $group = $this->groupFactory->get($group);
+        if ($group === false) {
+            return "";
         }
-        return $this->groupsCache[$group] =
-            $this->getTripleValue($group, WIKINI_VOC_ACLS, GROUP_PREFIX);
+
+        $memberStr = "";
+        foreach ($group->members as $member) {
+            $memberStr .= $member . "\n";
+        }
+
+        return $memberStr;
     }
 
     /**
