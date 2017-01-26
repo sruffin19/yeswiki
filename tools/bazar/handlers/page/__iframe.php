@@ -4,7 +4,7 @@ if (!defined("WIKINI_VERSION")) {
     die("acc&egrave;s direct interdit");
 }
 
-$type = $this->triples->getTripleValue($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
+$type = $this->getTripleValue($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
 $bazaroutput = '';
 if ($type == 'fiche_bazar') {
     // si la page est de type fiche_bazar, alors on affiche la fiche plutot que de formater en wiki

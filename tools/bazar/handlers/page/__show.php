@@ -32,7 +32,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 //si la page est de type fiche_bazar, alors on affiche la fiche plutot que de formater en wiki
-$type = $this->triples->getTripleValue($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
+$type = $this->getTripleValue($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
 if ($type == 'fiche_bazar') {
     $tab_valeurs = baz_valeurs_fiche($this->getPageTag());
     $this->page["body"] = '""'.baz_voir_fiche(0, $tab_valeurs).'""';

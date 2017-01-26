@@ -1448,7 +1448,7 @@ function baz_insertion_fiche($valeur)
     // on cree un triple pour specifier que la page wiki creee est une fiche
     // bazar
     if ($saved == 0) {
-        $GLOBALS['wiki']->triples->insertTriple(
+        $GLOBALS['wiki']->insertTriple(
             $valeur['id_fiche'],
             'http://outils-reseaux.org/_vocabulary/type',
             'fiche_bazar',
@@ -2373,7 +2373,7 @@ function baz_gestion_listes()
                 $GLOBALS['wiki']->savePage($nomwikiliste, $value);
 
                 // on cree un triple pour specifier que la PageWiki creee est une liste
-                $GLOBALS['wiki']->triples->insertTriple(
+                $GLOBALS['wiki']->insertTriple(
                     $nomwikiliste,
                     'http://outils-reseaux.org/_vocabulary/type',
                     'liste',
@@ -2469,7 +2469,7 @@ function baz_gestion_listes()
         $GLOBALS['wiki']->savePage($nomwikiliste, json_encode($valeur));
 
         //on cree un triple pour specifier que la PageWiki creee est une liste
-        $GLOBALS['wiki']->triples->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
+        $GLOBALS['wiki']->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
 
         //on redirige vers la page contenant toutes les listes, et on confirme par message la bonne saisie de la liste
         $GLOBALS['wiki']->setMessage(_t('BAZ_NOUVELLE_LISTE_ENREGISTREE'));
@@ -2580,7 +2580,7 @@ function baz_gestion_listes()
 function baz_valeurs_fiche($idfiche = '', $formtab = '')
 {
     if ($idfiche != '') {
-        $type_page = $GLOBALS['wiki']->triples->getTripleValue($idfiche, 'http://outils-reseaux.org/_vocabulary/type', '', '');
+        $type_page = $GLOBALS['wiki']->getTripleValue($idfiche, 'http://outils-reseaux.org/_vocabulary/type', '', '');
         //on verifie que la page en question est bien une page wiki
         if ($type_page == 'fiche_bazar') {
             // on recupere une autre version en cas de consultation de l'historique
@@ -2625,7 +2625,7 @@ function baz_valeurs_liste($idliste = '')
     if ($idliste != '') {
         if (!isset($GLOBALS['_BAZAR_']['lists'][$idliste])) {
             // on verifie que la page en question est bien une page wiki
-            if ($GLOBALS['wiki']->triples->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
+            if ($GLOBALS['wiki']->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
                 $valjson = $GLOBALS['wiki']->loadPage($idliste);
                 $valeurs_fiche = json_decode($valjson['body'], true);
                 if (YW_CHARSET != 'UTF-8') {

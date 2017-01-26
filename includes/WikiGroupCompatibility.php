@@ -1,7 +1,9 @@
 <?php
 namespace YesWiki;
 
-class WikiGroupCompatibility
+require_once('includes/WikiTriplesCompatibilty.php');
+
+class WikiGroupCompatibility extends WikiTriplesCompatibilty
 {
     public $groupsCache = array();
 
@@ -59,7 +61,7 @@ class WikiGroupCompatibility
             return $this->groupsCache[$group];
         }
         return $this->groupsCache[$group] =
-            $this->triples->getTripleValue($group, WIKINI_VOC_ACLS, GROUP_PREFIX);
+            $this->getTripleValue($group, WIKINI_VOC_ACLS, GROUP_PREFIX);
     }
 
     /**

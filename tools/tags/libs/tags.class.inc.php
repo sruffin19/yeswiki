@@ -3,7 +3,7 @@
 function DeleteAllTags($page)
 {
     //on recupere les anciens tags de la page courante
-    $tabtagsexistants = $this->triples->getAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+    $tabtagsexistants = $this->getAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     if (is_array($tabtagsexistants)) {
         foreach ($tabtagsexistants as $tab) {
             $this->deleteTriple($page, 'http://outils-reseaux.org/_vocabulary/tag', $tab['value'], '', '');
@@ -18,7 +18,7 @@ function SaveTags($page, $liste_tags)
     $tags = explode(',', $this->database->escapeString(_convert($liste_tags, YW_CHARSET, true)));
 
     //on recupere les anciens tags de la page courante
-    $tabtagsexistants = $this->triples->getAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+    $tabtagsexistants = $this->getAllTriplesValues($page, 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     if (is_array($tabtagsexistants)) {
         foreach ($tabtagsexistants as $tab) {
             $tags_restants_a_effacer[] = $tab['value'];
@@ -29,7 +29,7 @@ function SaveTags($page, $liste_tags)
     foreach ($tags as $tag) {
         trim($tag);
         if ($tag != '') {
-            if (!$this->triples->tripleExists($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '')) {
+            if (!$this->tripleExists($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '')) {
                 $this->insertTriple($page, 'http://outils-reseaux.org/_vocabulary/tag', $tag, '', '');
             }
             //on supprime ce tag du tableau des tags restants a effacer
@@ -56,7 +56,7 @@ function GetAllTags($page = '')
 
         return $this->database->loadAll($sql);
     } else {
-        return $this->triples->getAllTriplesValues($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/tag', '', '');
+        return $this->getAllTriplesValues($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/tag', '', '');
     }
 }
 

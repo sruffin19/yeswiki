@@ -494,7 +494,7 @@ function is_liste($idliste = '') {
         list($idliste,$suffixe)=explode( '*', $idliste);
 
 
-        if ($GLOBALS['wiki']->triples->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
+        if ($GLOBALS['wiki']->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
             return true;
     }
         else {
@@ -510,7 +510,7 @@ function liste_to_array($idliste = '') {
     if ($idliste != '') {
         list($idliste,$suffixe)=explode( '*', $idliste);
         //on vérifie que la page en question est bien une page wiki
-        if ($GLOBALS['wiki']->triples->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
+        if ($GLOBALS['wiki']->getTripleValue($idliste, 'http://outils-reseaux.org/_vocabulary/type', '', '') == 'liste') {
 
         $valjson = $GLOBALS['wiki']->loadPage($idliste);
         $valeurs_fiche = json_decode($valjson["body"], true);

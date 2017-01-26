@@ -16,7 +16,7 @@ public function loadPage($tag, $time = "", $cache = 1)
             $page["metadatas"] = $this->GetMetaDatas($tag);
         }
 
-        $type = $this->triples->getTripleValue($tag, 'http://outils-reseaux.org/_vocabulary/type', '', '');
+        $type = $this->getTripleValue($tag, 'http://outils-reseaux.org/_vocabulary/type', '', '');
         if ($type == 'fiche_bazar') {
             $page = $this->checkBazarAcls($page, $tag);
         }

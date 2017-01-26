@@ -1,7 +1,6 @@
 <?php
 require_once('includes/Action.php');
 require_once('includes/Database.php');
-require_once('includes/Triples.php');
 require_once('includes/Cookies.php');
 require_once('includes/Inclusions.php');
 require_once('includes/UserFactory.php');
@@ -10,7 +9,6 @@ require_once('includes/PageFactory.php');
 require_once('includes/GroupFactory.php');
 
 use YesWiki\Database;
-use YesWiki\Triples;
 use YesWiki\Cookies;
 use YesWiki\Inclusions;
 use YesWiki\Actions;
@@ -25,7 +23,6 @@ class Wiki extends Actions
     public $inclusions;
     public $parameter = array();
     public $queryLog = array();
-    public $triples = null;
     public $cookies = null;
 
     public $connectedUser = null;
@@ -51,7 +48,6 @@ class Wiki extends Actions
 
         // TODO Utiliser plutôt de l'injection de dépendance
         $this->database = new Database($config);
-        $this->triples = new Triples($this->database);
         $this->cookies = new Cookies($this->config['base_url']);
         $this->inclusions = new Inclusions();
         $this->pageFactory = new PageFactory($this->database);
@@ -640,7 +636,7 @@ class Wiki extends Actions
                     $acl = $this->actionsAclsCache[$module];
                     break;
                 }
-                $acl = $this->triples->getTripleValue(
+                $acl = $this->getTripleValue(
                     $module,
                     WIKINI_VOC_ACLS,
                     WIKINI_VOC_ACTIONS_PREFIX
@@ -656,7 +652,7 @@ class Wiki extends Actions
                 break;
 
             case 'handler':
-                $acl = $this->triples->getTripleValue($module, WIKINI_VOC_ACLS, WIKINI_VOC_HANDLERS_PREFIX);
+                $acl = $this->getTripleValue($module, WIKINI_VOC_ACLS, WIKINI_VOC_HANDLERS_PREFIX);
                 break;
             default:
                 return null; // TODO error msg ?
@@ -679,18 +675,18 @@ class Wiki extends Actions
     {
         $module = strtolower($module);
         $voc_prefix = $module_type == 'action' ? WIKINI_VOC_ACTIONS_PREFIX : WIKINI_VOC_HANDLERS_PREFIX;
-        $old = $this->triples->getTripleValue($module, WIKINI_VOC_ACLS, $voc_prefix);
+        $old = $this->getTripleValue($module, WIKINI_VOC_ACLS, $voc_prefix);
 
         if ($module_type == 'action') {
             $this->actionsAclsCache[$module] = $acl;
         }
 
         if ($old === null) {
-            return $this->triples->insertTriple($module, WIKINI_VOC_ACLS, $acl, $voc_prefix);
+            return $this->insertTriple($module, WIKINI_VOC_ACLS, $acl, $voc_prefix);
         } elseif ($old === $acl) {
             return 0; // nothing has changed
         }
-        return $this->triples->updateTriple($module, WIKINI_VOC_ACLS, $old, $acl, $voc_prefix);
+        return $this->updateTriple($module, WIKINI_VOC_ACLS, $old, $acl, $voc_prefix);
     }
 
     /**

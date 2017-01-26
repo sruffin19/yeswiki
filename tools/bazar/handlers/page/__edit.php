@@ -32,7 +32,7 @@ if (!defined("WIKINI_VERSION")) {
 }
 
 if ($this->hasAccess('write')) {
-    $type = $this->triples->getTripleValue($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
+    $type = $this->getTripleValue($this->getPageTag(), 'http://outils-reseaux.org/_vocabulary/type', '', '');
 
     if ($type == 'fiche_bazar') {
         // dans le cas ou on vient de modifier dans le formulaire une fiche bazar, on enregistre les modifications

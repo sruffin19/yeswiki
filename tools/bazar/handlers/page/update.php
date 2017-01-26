@@ -39,7 +39,7 @@ if ($this->userIsInGroup('admins')) {
                 //on sauve les valeurs d'une liste dans une PageWiki, pour garder l'historique
                 $GLOBALS["wiki"]->savePage($nomwikiliste, json_encode($valeur));
                 //on cree un triple pour spécifier que la page wiki créée est une liste
-                $GLOBALS["wiki"]->triples->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
+                $GLOBALS["wiki"]->insertTriple($nomwikiliste, 'http://outils-reseaux.org/_vocabulary/type', 'liste', '', '');
             }
             $valeur = NULL;
             $valeur = array();

@@ -1,21 +1,9 @@
 <?php
 namespace YesWiki;
 
-class Triples
+class WikiTriplesCompatibilty
 {
-    /**
-     * A very simple Request level cache for triple resources
-     *
-     * @var array
-     */
     protected $triplesCacheByRsrc = array();
-
-    protected $database;
-
-    public function __construct($database)
-    {
-        $this->database = $database;
-    }
 
     /**
      * Retrieves all the triples that match some criteria.

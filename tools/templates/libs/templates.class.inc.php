@@ -67,7 +67,7 @@ function getMethod()
 
 function GetMetaDatas($pagetag)
 {
-    $metadatas = $this->triples->getTripleValue($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', '', '', '');
+    $metadatas = $this->getTripleValue($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', '', '', '');
     if (!empty($metadatas)) {
         if (YW_CHARSET != 'UTF-8') {
             return array_map('utf8_decode', json_decode($metadatas, true));
@@ -86,14 +86,14 @@ function SaveMetaDatas($pagetag, $metadatas)
 
     if ($former_metadatas) {
         $metadatas = array_merge($former_metadatas, $metadatas);
-        $this->triples->deleteTriple($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', null, '', '');
+        $this->deleteTriple($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', null, '', '');
     }
     if (YW_CHARSET != 'UTF-8') {
         $metadatas = json_encode(array_map("utf8_encode", $metadatas));
     } else {
         $metadatas = json_encode($metadatas);
     }
-    return $this->triples->insertTriple($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', $metadatas, '', '');
+    return $this->insertTriple($pagetag, 'http://outils-reseaux.org/_vocabulary/metadata', $metadatas, '', '');
 }
 
 // templates avec cache
