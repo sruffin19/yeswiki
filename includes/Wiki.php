@@ -416,11 +416,6 @@ class Wiki extends WikiActionCompatibility
             $text = $this->method($this->method);
         }
         echo $text;
-
-        // action redirect: aucune redirection n'a eu lieu, effacer la liste des redirections precedentes
-        if (! empty($_SESSION['redirects'])) {
-            session_unregister('redirects');
-        }
     }
 
     /**

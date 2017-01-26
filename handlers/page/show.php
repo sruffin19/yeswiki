@@ -49,14 +49,6 @@ echo ($this->connectedUser
         ? ''
         : ' ondblclick="doubleClickEdit(event);"';
 echo '>'."\n";
-if (!empty($_SESSION['redirects']))
-{
-    $trace = $_SESSION['redirects'];
-    $tag = $trace[count($trace) - 1];
-    $prevpage = $this->loadPage($tag);
-    echo '<div class="redirectfrom"><em>(Redirig&eacute; depuis ', $this->link($prevpage['tag'], 'edit'), ")</em></div>\n";
-  unset($_SESSION['redirects'][count($trace) - 1]);
-}
 
 if ($HasAccessRead=$this->hasAccess("read"))
 {
