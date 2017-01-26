@@ -8,32 +8,6 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
     protected $triplesCacheByRsrc = array();
 
     /**
-     * Retrieves all the triples that match some criteria.
-     * This allows to search triples by their approximate resource or property names.
-     * The allowed operators are the sql "LIKE" and the sql "=".
-     *
-     * Does not use the cache $this->triplesCacheByRsrc.
-     *
-     * @param string $resource
-     *            The resource of the triples
-     * @param string $property
-     *            The property of the triple to retrieve or null
-     * @return array The list of all the triples that match the asked criteria
-     */
-    public function getMatchingTriples($resource, $property = null)
-    {
-        $table = $this->database->prefix . 'triples';
-        $resource = addslashes($resource);
-        $sql = "SELECT * FROM $table WHERE resource LIKE \"$resource\"";
-
-        if ($property !== null) {
-            $property = addslashes($property);
-            $sql .= " AND property = \"$property\"";
-        }
-        return $this->database->loadAll($sql);
-    }
-
-    /**
      * Retrieves all the values for a given couple (resource, property)
      *
      * @param string $resource
