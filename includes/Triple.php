@@ -19,16 +19,39 @@ class Triple
         $this->database = $database;
     }
 
+    /**
+     * Supprime le triple de la base de donnée.
+     * @return [type] [description]
+     */
     public function delete()
     {
         $tableTriples = $this->database->prefix . 'triples';
-        $this->database->query(
+        return $this->database->query(
             "DELETE FROM $tableTriples WHERE id = '$this->id'"
         );
     }
 
-    public function update()
+    /**
+     * Met a jour la valeur du triple
+     * @param string $value Nouvelle valeur du triple.
+     */
+    public function set($value)
     {
-        // TODO
+        // TODO Vérifier si le triple n'existe pas déjà.
+        $tableTriples = $this->database->prefix . 'triples';
+        $resource = $this->database->escapeString($this->ressource);
+        $property = $this->database->escapeString($this->property);
+        $value = $this->databse->escapeString($value);
+
+        $sql = "UPDATE $tableTriples
+                    SET value = '$value'
+                    WHERE resource = '$resource' AND property = '$property'
+                    LIMIT 1";
+
+        if (!$this->database->query($sql)) {
+            return false;
+        }
+        $this->value = $value;
+        return true;
     }
 }

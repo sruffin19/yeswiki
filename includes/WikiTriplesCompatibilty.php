@@ -27,15 +27,19 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
      */
     public function getAllTriplesValues(
         $resource,
-        $property, // useless only for compatibility
+        $property,
         $rePrefix = THISWIKI_PREFIX,
-        $propPrefix = WIKINI_VOC_PREFIX // useless only for compatibility
+        $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $triples = $this->tripleFactory->getAll($rePrefix . $resource);
+        $triples = $this->tripleFactory->getByResourceAndProperty(
+            $rePrefix . $resource,
+            $propPrefix . $property
+        );
 
+        // Un peu de mise en forme pour assurer la compatibilité...
         $result = array();
         foreach ($triples as $triple) {
-            $result[$triple->resource]['property'] = array(
+            $result[$triple->resource][$triple->property] = array(
                 'id' => $triple->id,
                 'value' => $triple->value,
             );
@@ -67,7 +71,6 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
         if ($res) {
             return $res[0]['value'];
         }
-
         return null;
     }
 
@@ -94,15 +97,13 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
         $rePrefix = THISWIKI_PREFIX,
         $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $sql = 'SELECT id FROM ' . $this->database->prefix . 'triples '
-            . 'WHERE resource = "' . addslashes($rePrefix . $resource) . '" '
-            . 'AND property = "' . addslashes($propPrefix . $property) . '" '
-            . 'AND value = "' . addslashes($value) . '"';
-        $res = $this->database->loadSingle($sql);
-        if (!$res) {
+        $resource = $rePrefix . $resource;
+        $property = $propPrefix . $property;
+        $triple = $this->tripleFactory->get($resource, $property, $value);
+        if ($triple === false) {
             return 0;
         }
-        return $res['id'];
+        return $triple->id;
     }
 
     /**
@@ -127,23 +128,17 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
         $rePrefix = THISWIKI_PREFIX,
         $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $res = $rePrefix . $resource ;
+        $triple = $this->TripleFactory->new(
+            $rePrefix . $resource,
+            $propPrefix . $property,
+            $value
+        );
 
-        if ($this->tripleExists($res, $property, $value, '', $propPrefix)) {
-            return 3;
+        $if ($triple === false) {
+            return 1;
         }
 
-        // invalidate the cache
-        if (isset($this->triplesCacheByRsrc[$res])) {
-            unset($this->triplesCacheByRsrc[$res]);
-        }
-
-
-        $sql = 'INSERT INTO ' . $this->database->prefix
-            . 'triples (resource, property, value)'
-            . 'VALUES ("' . addslashes($res) . '", "' . addslashes($propPrefix . $property)
-            . '", "' . addslashes($value) . '")';
-        return $this->database->query($sql) ? 0 : 1;
+        return 0;
     }
 
     /**
@@ -168,38 +163,31 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
     public function updateTriple(
         $resource,
         $property,
-        $oldvalue,
-        $newvalue,
+        $oldValue,
+        $newValue,
         $rePrefix = THISWIKI_PREFIX,
         $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $res = $rePrefix . $resource ;
+        $resource = $rePrefix . $ressource;
+        $property = $propPrefix . $property;
 
-        $tripleId = $this->tripleExists(
-            $res,
-            $property,
-            $oldvalue,
-            '',
-            $propPrefix
-        );
-
-        if (! $tripleId) {
-            return 2;
-        }
-
-        if ($this->tripleExists($res, $property, $newvalue, '', $propPrefix)) {
+        // Vérifie si le nouveau triple n'existe pas déjà.
+        $newTriple = $this->tripleFactory->get($resource, $property, $newValue);
+        if ($newTriple !== false) {
             return 3;
         }
 
-        // invalidate the cache
-        if (isset($this->triplesCacheByRsrc[$res])) {
-            unset($this->triplesCacheByRsrc[$res]);
+        // Vérifie si le triple a modifier existe.
+        $triple = $this->tripleFactory->get($resource, $property, $oldValue);
+        if ($triple === false) {
+            return 2;
         }
 
-        $table = $this->database->prefix . 'triples';
-        $newvalue = addslashes($newvalue);
-        $sql = "UPDATE $table SET value = '$newvalue' WHERE id = $tripleId";
-        return $this->database->query($sql) ? 0 : 1;
+        if ($triple->set($newValue) === false) {
+            return 1;
+        }
+
+        return 0;
     }
 
     /**
@@ -225,20 +213,23 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
         $rePrefix = THISWIKI_PREFIX,
         $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $res = $rePrefix . $resource ;
+        $resource = $rePrefix . $ressource;
+        $property = $propPrefix . $property;
 
-        $sql = 'DELETE FROM ' . $this->database->prefix . 'triples '
-            . 'WHERE resource = "' . addslashes($res) . '" '
-            . 'AND property = "' . addslashes($propPrefix . $property) . '" ';
-        if ($value !== null) {
-            $sql .= 'AND value = "' . addslashes($value) . '"';
+        if (is_null($value)) {
+            $triples  = $this->tripleFactory->getByResourceAndProperty(
+                $resource,
+                $property
+            );
+            foreach ($triples as $triple) {
+                $triple->delete();
+            }
+            return;
         }
 
-        // invalidate the cache
-        if (isset($this->triplesCacheByRsrc[$res])) {
-            unset($this->triplesCacheByRsrc[$res]);
+        $triple = $this->tripleFactory->get($resource, $rpoperty, $value)
+        if ($triple !== false) {
+            $triple->delete();
         }
-
-        $this->database->query($sql);
     }
 }
