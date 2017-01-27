@@ -134,7 +134,7 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
             $value
         );
 
-        $if ($triple === false) {
+        if ($triple === false) {
             return 1;
         }
 
@@ -227,7 +227,7 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
             return;
         }
 
-        $triple = $this->tripleFactory->get($resource, $rpoperty, $value)
+        $triple = $this->tripleFactory->get($resource, $rpoperty, $value);
         if ($triple !== false) {
             $triple->delete();
         }

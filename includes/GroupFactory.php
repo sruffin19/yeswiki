@@ -6,12 +6,10 @@ require_once('includes/Group.php');
 class GroupFactory
 {
     private $database;
-    private $userFactory;
 
-    public function __construct($database, $userFactory)
+    public function __construct($database)
     {
         $this->database = $database;
-        $this->userFactory = $userFactory;
     }
 
     /**
