@@ -77,11 +77,19 @@ class User
         $this->database->query($sql);
     }
 
+    /**
+     * Retourne Vrai si c'est un utilisateur avec un compte.
+     * @return boolean [description]
+     */
     public function isReal()
     {
         return true;
     }
 
+    /**
+     * Retourn vrai si l'utilisateur est administrateur
+     * @return boolean [description]
+     */
     public function isAdmin()
     {
         return false;
