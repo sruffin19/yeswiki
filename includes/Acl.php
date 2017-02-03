@@ -35,7 +35,7 @@ class Acl
      */
     public function isAuthorized($user)
     {
-        if ($user->isReal) {
+        if ($user->isReal()) {
             // l'utilisateur est administrateur, il peut tout faire.
             if ($user->isAdmin()) {
                 return true;
@@ -50,7 +50,7 @@ class Acl
             return true;
         }
 
-        if ($user->isReal) {
+        if ($user->isReal()) {
             // Seuls les utilisateurs enregistré et non interdit
             if ($this->registredUser) {
                 return true;

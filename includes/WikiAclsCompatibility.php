@@ -84,14 +84,16 @@ class WikiAclsCompatibility
     public function hasAccess($privilege, $tag = '', $user = '')
     {
         if ($tag === '') {
-            $tag = $this->mainPage->tag;
+            $page = $this->mainPage;
+        } else {
+            $page = $this->pageFactory->getLastRevision($tag);
         }
 
         if ($user === '') {
-            $user = $this->connectedUser->name;
+            $user = $this->userFactory->getConnected($this->cookies);
+        } else {
+            $user = $this->userFactory->get($user);
         }
-
-        $page = $this->pageFactory->getLastRevision($tag);
 
         switch ($privilege) {
             case 'read':
@@ -100,15 +102,12 @@ class WikiAclsCompatibility
 
             case 'write':
                 return $page->canWrite($user);
-                break;
 
             case 'comment':
                 return $page->canComment($user);
-                break;
 
             default:
                 return false;
-                break;
         }
     }
 
