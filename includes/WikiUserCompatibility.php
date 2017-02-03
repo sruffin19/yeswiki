@@ -15,8 +15,7 @@ class WikiUserCompatibility extends WikiLinkCompatibility
      */
     public function loadUser($name)
     {
-        $userFactory = new UserFactory($this->database);
-        return $userFactory->get($name);
+        return $this->userFactory->get($name);
     }
 
     /**
@@ -25,8 +24,7 @@ class WikiUserCompatibility extends WikiLinkCompatibility
      */
     public function loadUsers()
     {
-        $userFactory = new UserFactory($this->database);
-        return $userFactory->getAll();
+        return $this->userFactory->getAll();
     }
 
     /**
@@ -136,7 +134,7 @@ class WikiUserCompatibility extends WikiLinkCompatibility
         // load acl
         $acl = $this->loadAcl($tag, $privilege);
         // now check them
-        $access = $this->checkACL($acl['list'], $user);
+        $access = $this->checkACL($acl, $user);
 
         return $access ;
     }

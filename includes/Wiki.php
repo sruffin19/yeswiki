@@ -37,10 +37,23 @@ class Wiki extends WikiActionCompatibility
         // TODO Utiliser plutôt de l'injection de dépendance
         $this->database = new Database($config);
         $this->cookies = new Cookies($this->config['base_url']);
-        $this->pageFactory = new PageFactory($this->database);
-        $this->userFactory = new UserFactory($this->database);
-        $this->groupFactory = new GroupFactory($this->database, $this->userFactory);
-        $this->tripleFactory = new TripleFactory($this->database, $this->userFactory);
+
+        $this->groupFactory = new GroupFactory($this->database);
+
+        $adminGroup = $this->groupFactory->get('admins');
+        $this->userFactory = new UserFactory($this->database, $adminGroup);
+
+        $this->tripleFactory = new TripleFactory(
+            $this->database,
+            $this->userFactory
+        );
+
+        $this->pageFactory = new PageFactory(
+            $this->database,
+            $this->config,
+            $this->userFactory,
+            $this->groupFactory
+        );
     }
 
     public function includeBuffered($filename, $notfoundText = '', $vars = '', $path = '')

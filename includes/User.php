@@ -77,6 +77,16 @@ class User
         $this->database->query($sql);
     }
 
+    public function isReal()
+    {
+        return true;
+    }
+
+    public function isAdmin()
+    {
+        return false;
+    }
+
     /**
      * Initialise l'utilisateur avec les informations fournies
      * @param  array $infos Tableau des informations.

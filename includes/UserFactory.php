@@ -2,6 +2,7 @@
 namespace YesWiki;
 require_once('includes/User.php');
 require_once('includes/UnknowUser.php');
+require_once('includes/AdminUser.php');
 require_once('includes/EncryptedPassword.php');
 require_once('includes/ClearPassword.php');
 
@@ -9,11 +10,12 @@ require_once('includes/ClearPassword.php');
 class UserFactory
 {
     private $database;
-    private $cookies;
+    private $adminGroup;
 
-    public function __construct($database)
+    public function __construct($database, $adminGroup)
     {
         $this->database = $database;
+        $this->adminGroup = $adminGroup;
     }
 
     /**
@@ -35,8 +37,7 @@ class UserFactory
             return false;
         }
 
-        $userInfos['password'] = new EncryptedPassword($userInfos['password']);
-        return new User($this->database, $userInfos);
+        return $this->makeUser($userInfos);
     }
 
     /**
@@ -93,8 +94,7 @@ class UserFactory
 
         $users = array();
         foreach ($usersInfos as $userInfos) {
-            $userInfos['password'] = new EncryptedPassword($userInfos['password']);
-            $users[$userInfos['name']] = new User($this->database, $userInfos);
+            $users[$userInfos['name']] = $this->makeUser($userInfos);
         }
 
         return $users;
@@ -124,5 +124,15 @@ class UserFactory
         $this->database->query($sql);
 
         return $this->get($name);
+    }
+
+    private function makeUser($userInfos)
+    {
+        $userInfos['password'] = new EncryptedPassword($userInfos['password']);
+        $user = new User($this->database, $userInfos);
+        if ($this->adminGroup->isMember($user)) {
+            $user = new AdminUser($this->database, $userInfos);
+        }
+        return $user;
     }
 }
