@@ -106,39 +106,6 @@ class WikiUserCompatibility extends WikiLinkCompatibility
         return $this->userIsInGroup(ADMIN_GROUP, $user, false);
     }
 
-    /**
-     * Check if user has a privilege on page.
-     * The page's owner has always access (always return true).
-     *
-     * @param string $privilege The privilege to check (read, write, comment)
-     * @param string $tag The page WikiName. Default to current page
-     * @param string $user The username. Default to current user.
-     * @return boolean true if access granted, false if not.
-     */
-    public function hasAccess($privilege, $tag = '', $user = '')
-    {
-        // set default to current page
-        if (! $tag = trim($tag)) {
-            $tag = $this->getPageTag();
-        }
-        // set default to current user
-        if (!$user) {
-            $user = $this->getUserName();
-        }
-
-        // if current user is owner, return true. owner can do anything!
-        if ($this->userIsOwner($tag)) {
-            return true;
-        }
-
-        // load acl
-        $acl = $this->loadAcl($tag, $privilege);
-        // now check them
-        $access = $this->checkACL($acl, $user);
-
-        return $access ;
-    }
-
     public function userWantsComments()
     {
         return ($this->connectedUser->showComments == 'Y');
