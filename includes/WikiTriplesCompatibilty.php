@@ -168,7 +168,7 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
         $rePrefix = THISWIKI_PREFIX,
         $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $resource = $rePrefix . $ressource;
+        $resource = $rePrefix . $resource;
         $property = $propPrefix . $property;
 
         // Vérifie si le nouveau triple n'existe pas déjà.
@@ -213,7 +213,7 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
         $rePrefix = THISWIKI_PREFIX,
         $propPrefix = WIKINI_VOC_PREFIX
     ) {
-        $resource = $rePrefix . $ressource;
+        $resource = $rePrefix . $resource;
         $property = $propPrefix . $property;
 
         if (is_null($value)) {
@@ -227,7 +227,7 @@ class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
             return;
         }
 
-        $triple = $this->tripleFactory->get($resource, $rpoperty, $value);
+        $triple = $this->tripleFactory->get($resource, $property, $value);
         if ($triple !== false) {
             $triple->delete();
         }
