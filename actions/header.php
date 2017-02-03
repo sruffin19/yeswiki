@@ -59,7 +59,7 @@ $root_page = $this->composeLinkToPage($this->config["root_page"]);
 $navigation_links = $this->config["navigation_links"] ? $this->format($this->config["navigation_links"]) : "";
 $user_name = $this->format($this->getUserName());
 $disconnect_link = '';
-if (get_class($this->connectedUser) === 'YesWiki\User') {
+if ($this->connectedUser->isReal()) {
     $disconnect_link = '(<a href="' . $this->href('', 'ParametresUtilisateur', 'action=logout') . "\">D&eacute;connexion</a>)\n";
 }
 

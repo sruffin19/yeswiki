@@ -52,7 +52,7 @@ if ($this->page)
         {
             $owner_info = "Pas de propriétaire ";
 
-            if (get_class($this->connectedUser) === 'YesWiki\User') {
+            if ($this->connectedUser->isReal()) {
                 $owner_info .= "(<a href=\"".$this->href("claim")."\">Appropriation</a>)";
             }
         }

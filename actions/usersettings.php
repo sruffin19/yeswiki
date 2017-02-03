@@ -42,7 +42,7 @@ if ($_REQUEST["action"] == "logout") {
     exit;
 }
 
-if (get_class($this->connectedUser) === 'YesWiki\User') {
+if ($this->connectedUser->isReal()) {
     switch ($_REQUEST["action"]) {
         case 'update':
             $this->connectedUser->update(
@@ -93,8 +93,7 @@ if (get_class($this->connectedUser) === 'YesWiki\User') {
 
     switch ($_REQUEST["action"]) {
         case 'login':
-            $userFactory = new YesWiki\UserFactory($this->database);
-            $user = $userFactory->get($_POST['name']);
+            $user = $this->userFactory->get($_POST['name']);
             $password = new ClearPassword($_POST['password']);
             // User doesn't exist
             if ($user === false) {
@@ -158,19 +157,3 @@ if (get_class($this->connectedUser) === 'YesWiki\User') {
     include('actions/templates/usersettings/login.tpl.html');
     echo $this->formClose();
 }
-// is user trying to log in or register?
-/*      $name = trim($_POST["name"]);
-        $email = trim($_POST["email"]);
-        $password = $_POST["password"];
-        $confpassword = $_POST["confpassword"];
-
-        {
-
-
-            // log in
-            $this->setUser($this->loadUser($name));
-
-            // forward
-            $this->redirect($this->href());
-        }
-*/
