@@ -22,9 +22,7 @@ class EncryptedPassword
      */
     public function isMatching($password)
     {
-        $password = (string)$password;
-
-        if ($this->password === $password) {
+        if ($this->password === $password->password) {
             return true;
         }
         return false;
