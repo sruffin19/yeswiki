@@ -1,5 +1,5 @@
 <?php
-require_once('includes/WikiActionCompatibility.php');
+require_once('includes/compatibility/WikiAction.php');
 require_once('includes/Database.php');
 require_once('includes/Cookies.php');
 require_once('includes/UserFactory.php');
@@ -8,7 +8,7 @@ require_once('includes/PageFactory.php');
 require_once('includes/GroupFactory.php');
 require_once('includes/TripleFactory.php');
 
-use YesWiki\WikiActionCompatibility;
+use YesWiki\Compatibility\WikiAction;
 use YesWiki\Database;
 use YesWiki\Cookies;
 use YesWiki\UserFactory;
@@ -17,7 +17,7 @@ use YesWiki\PageFactory;
 use YesWiki\GroupFactory;
 use YesWiki\TripleFactory;
 
-class Wiki extends WikiActionCompatibility
+class Wiki extends WikiAction
 {
     public $config;
     public $parameter = array();

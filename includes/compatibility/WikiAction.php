@@ -1,9 +1,9 @@
 <?php
-namespace YesWiki;
+namespace YesWiki\Compatibility;
 
-require_once('includes/WikiUserCompatibility.php');
+require_once('includes/compatibility/WikiUser.php');
 
-class WikiActionCompatibility extends WikiUserCompatibility
+class WikiAction extends WikiUser
 {
     /**
      * an array containing all the actions that are implemented by an object

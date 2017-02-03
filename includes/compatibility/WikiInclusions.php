@@ -1,9 +1,9 @@
 <?php
-namespace YesWiki;
+namespace YesWiki\Compatibility;
 
-require_once('WikiAclsCompatibility.php');
+require_once('includes/compatibility/WikiAcls.php');
 
-Class WikiInclusionsCompatibility extends WikiAclsCompatibility
+Class WikiInclusions extends WikiAcls
 {
     public $inclusions = array();
 

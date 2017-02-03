@@ -1,9 +1,9 @@
 <?php
-namespace YesWiki;
+namespace YesWiki\Compatibility;
 
-require_once('includes/WikiInclusionsCompatibility.php');
+require_once('includes/compatibility/WikiInclusions.php');
 
-class WikiTriplesCompatibilty extends WikiInclusionsCompatibility
+class WikiTriples extends WikiInclusions
 {
     protected $triplesCacheByRsrc = array();
 

@@ -1,9 +1,11 @@
 <?php
-namespace YesWiki;
+namespace YesWiki\Compatibility;
 
-require_once('includes/WikiPageCompatibility.php');
+require_once('includes/compatibility/WikiPage.php');
 
-class WikiLinkCompatibility extends WikiPageCompatibility
+use YesWiki\Link;
+
+class WikiLink extends WikiPage
 {
     public function link($tag, $method = "", $text = "")
     {

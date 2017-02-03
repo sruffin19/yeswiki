@@ -1,9 +1,9 @@
 <?php
-namespace YesWiki;
+namespace YesWiki\Compatibility;
 
-require_once('includes/WikiGroupCompatibility.php');
+require_once('includes/compatibility/WikiGroup.php');
 
-class WikiPageCompatibility extends WikiGroupCompatibility
+class WikiPage extends WikiGroup
 {
     public $page;
     public $tag;

@@ -1,7 +1,7 @@
 <?php
-namespace YesWiki;
+namespace YesWiki\Compatibility;
 
-class WikiAclsCompatibility
+class WikiAcls
 {
     public $actionsAclsCache = array();
 
