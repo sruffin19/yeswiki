@@ -6,62 +6,29 @@ class WikiAclsCompatibility
     public $actionsAclsCache = array();
 
     /**
-     * Caching page ACLs (sql query on yeswiki_acls table).
-     * Filled in loadAcl().
-     * Updated in saveAcl().
-     * @var array
-     */
-    protected $aclsCache = array() ;
-
-    /**
      *
      * @param string $tag
      * @param string $privilege
      * @param boolean $useDefaults
      * @return array [page_tag, privilege, list]
      */
-    public function loadAcl($tag, $privilege, $useDefaults = true )
+    public function loadAcl($tag, $privilege)
     {
-        if (isset($this->aclsCache[$tag][$privilege])) {
-            return $this->aclsCache[$tag][$privilege] ;
+        $page = $this->pageFactory->getLastRevision($tag);
+        switch ($privilege) {
+            case 'read':
+                return array('list' => (string) $page->getReadAcl());
+
+            case 'write':
+                return array('list' => (string) $page->getWriteAcl());
+
+            case 'comment':
+                return array('list' => (string) $page->getCommentAcl());
+
+            default:
+                // Jamais ça ne devrait arriver... JAMAIS !
+                return null;
         }
-
-        $this->aclsCache[$tag] = array();
-        if ($useDefaults) {
-            $this->aclsCache[$tag] = array(
-                'read' => array(
-                    'page_tag' => $tag,
-                    'privilege' => 'read',
-                    'list' => $this->getConfigValue('default_read_acl')
-                ),
-                'write' => array(
-                    'page_tag' => $tag,
-                    'privilege' => 'write',
-                    'list' => $this->getConfigValue('default_write_acl')
-                ),
-                'comment' => array(
-                    'page_tag' => $tag,
-                    'privilege' => 'comment',
-                    'list' => $this->getConfigValue('default_comment_acl')
-                )
-            );
-        }
-
-        $table = $this->config['table_prefix'] . 'acls';
-        $tag = $this->database->escapeString($tag);
-        $res = $this->database->loadAll(
-            "SELECT * FROM $table WHERE page_tag = \"$tag\""
-        );
-
-        foreach ($res as $acl) {
-            $this->aclsCache[$tag][$acl['privilege']] = $acl;
-        }
-
-        if (isset($this->aclsCache[$tag][$privilege])) {
-            return $this->aclsCache[$tag][$privilege];
-        }
-
-        return null ;
     }
 
     /**
@@ -70,32 +37,26 @@ class WikiAclsCompatibility
      * @param string $privilege the privilege
      * @param string $list the multiline string describing the acl
      */
-    public function saveAcl($tag, $privilege, $list, $appendAcl = false )
+    public function saveAcl($tag, $privilege, $list)
     {
-        $acl = $this->loadAcl($tag, $privilege, false);
+        $page = $this->pageFactory->getLastRevision($tag);
+        switch ($privilege) {
+            case 'read':
+                $page->updateReadAcl($list);
+                break;
 
-        if ($acl and $appendAcl) {
-            $list = $acl['list']."\n".$list ;
+            case 'write':
+                $page->updateWriteAcl($list);
+                break;
+
+            case 'comment':
+                $page->updateCommentAcl($list);
+                break;
+
+            default:
+                // Nothing
+                break;
         }
-
-
-        $table = $this->config['table_prefix'] . 'acls';
-        $tag = $this->database->escapeString($tag);
-        $privilege = $this->database->escapeString($privilege);
-        $list = $this->database->escapeString(trim(str_replace("\r", '', $list)));
-
-        $sql = "INSERT INTO $table SET list = '$list', page_tag = '$tag', privilege = '$privilege'";
-        if ($acl) {
-            $sql = "UPDATE $table SET list = '$list' WHERE page_tag = '$tag' AND privilege = '$privilege'";
-        }
-        $this->database->query($sql);
-
-        // update the acls cache
-        $this->aclsCache[$tag][$privilege] = array(
-            'page_tag' => $tag,
-            'privilege' => $privilege,
-            'list' => $list
-        );
     }
 
     /**
@@ -104,32 +65,11 @@ class WikiAclsCompatibility
      * @param string|array $privileges A privilege or several privileges to
      *                                 delete from database.
      */
-    public function deleteAcl($tag, $privileges = array('read', 'write', 'comment'))
+    public function deleteAcl($tag)
     {
-        if (!is_array($privileges)) {
-            $privileges = array($privileges);
-        }
-
-        // add '"' at begin and end of each escaped privileges elements.
-        // TODO utiliser array_walk
-        for ($i=0; $i<count($privileges); $i++) {
-            $privileges[$i] = '"' . $this->database->escapeString($privileges[$i]) . '"';
-        }
-
-        // construct a CSV string with privileges elements
-        $privileges = implode(',', $privileges);
-        $strTag = $this->database->escapeString($tag);
-        $table = $this->config['table_prefix'] . 'acls';
-        $this->database->query(
-            "DELETE FROM $table
-                WHERE page_tag = \"$tag\"
-                AND privilege IN ($privileges)"
-        );
-
-        if (isset($this->aclsCache[$strTag])) {
-            unset($this->aclsCache[$strTag]);
-        }
-
+        // En vrai utilisé qu'une fois et supprime tout les droits...
+        $page = $this->pageFactory->get($tag);
+        $page->resetAcl();
     }
 
     /**
@@ -143,26 +83,33 @@ class WikiAclsCompatibility
      */
     public function hasAccess($privilege, $tag = '', $user = '')
     {
-        // set default to current page
-        if (! $tag = trim($tag)) {
-            $tag = $this->getPageTag();
-        }
-        // set default to current user
-        if (!$user) {
-            $user = $this->getUserName();
+        if ($tag === '') {
+            $tag = $this->mainPage->tag;
         }
 
-        // if current user is owner, return true. owner can do anything!
-        if ($this->userIsOwner($tag)) {
-            return true;
+        if ($user === '') {
+            $user = $this->connectedUser->name;
         }
 
-        // load acl
-        $acl = $this->loadAcl($tag, $privilege);
-        // now check them
-        $access = $this->checkACL($acl['list'], $user);
+        $page = $this->pageFactory->getLastRevision($tag);
 
-        return $access ;
+        switch ($privilege) {
+            case 'read':
+                return $page->canRead($user);
+                break;
+
+            case 'write':
+                return $page->canWrite($user);
+                break;
+
+            case 'comment':
+                return $page->canComment($user);
+                break;
+
+            default:
+                return false;
+                break;
+        }
     }
 
     /**
@@ -175,13 +122,14 @@ class WikiAclsCompatibility
      *            the current remote user.
      * @return bool True if the $user satisfies the $acl, false otherwise
      */
-    public function checkACL($acl, $user = null, $admincheck = true)
+    public function checkACL($acl, $user = null)
     {
-        if (! $user) {
-            $user = $this->getUserName();
+
+        if (is_null($user)) {
+            $user = $this->connectedUser->name;
         }
 
-        if ($admincheck and $this->userIsAdmin($user)) {
+        if ($this->userIsAdmin($user)) {
             return true;
         }
 

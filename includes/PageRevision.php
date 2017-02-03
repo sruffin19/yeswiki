@@ -7,7 +7,7 @@ class PageRevision
      * [$infos description]
      * @var array Avec les champs :
      */
-    private $database;
+    protected $database;
 
     public $id;
     public $tag;
@@ -29,10 +29,10 @@ class PageRevision
 
     public function getCreateTime()
     {
-        if (!isset($this->infos['time'])) {
+        if (!isset($this->time)) {
             return false;
         }
-        return $this->infos['time'];
+        return $this->time;
     }
 
     public function isOrphaned()
@@ -59,9 +59,6 @@ class PageRevision
         );
         $this->database->query(
             "DELETE FROM $tableLinks WHERE from_tag='$tag'"
-        );
-        $this->database->query(
-            "DELETE FROM $tableAcls WHERE page_tag='$tag'"
         );
     }
 

@@ -1,7 +1,7 @@
 <?php
 namespace YesWiki;
 
-require_once('includes/PageRevision.php');
+require_once('includes/PageAcls.php');
 
 use \Exception;
 
@@ -9,9 +9,12 @@ class PageFactory
 {
     private $database = null;
 
-    public function __construct($database)
+    public function __construct($database, $config, $userFactory, $groupFactory)
     {
         $this->database = $database;
+        $this->config = $config;
+        $this->userFactory = $userFactory;
+        $this->groupFactory = $groupFactory;
     }
 
     public function getLastRevision($tag)
@@ -23,7 +26,7 @@ class PageFactory
         if (empty($pageInfos)) {
             return false;
         }
-        return new PageRevision($this->database, $this->digest($pageInfos));
+        return $this->makePage($pageInfos);
     }
 
     public function getRevision($tag, $time)
@@ -36,7 +39,7 @@ class PageFactory
         if (empty($pageInfos)) {
             return false;
         }
-        return new PageRevision($this->database, $this->digest($pageInfos));
+        $this->makePage($pageInfos);
     }
 
     public function getById($id)
@@ -49,7 +52,7 @@ class PageFactory
         if (empty($pageInfos)) {
             return false;
         }
-        return new PageRevision($this->database, $this->digest($pageInfos));
+        return $this->makePage($pageInfos);
     }
 
     public function getAllRevisions($tag)
@@ -112,9 +115,9 @@ class PageFactory
 
     /**
      * Sauvegarde une nouvelle version d'une page existante
-     * @param  PageRevision $page [description]
+     * @param  PageAcls $page [descripti $this->groupFactory, $this->userFactory,on]
      * @param  string       $body Contenu de la page
-     * @return PageRevision       La nouvelle page
+     * @return PageAcls       La nouvell $this->groupFactory, $this->userFactory,e page
      */
     public function update($page, $body, $user = "")
     {
@@ -156,9 +159,8 @@ class PageFactory
             $page['body'] = _convert($page['body'], 'ISO-8859-15');
         }
 
-        $userFactory = new UserFactory($this->database);
         if (isset($page['owner'])) {
-            $page['owner'] = $userFactory->get($page['owner']);
+            $page['owner'] = $this->userFactory->get($page['owner']);
         }
 
         if (isset($page['owner'])) {
@@ -171,11 +173,19 @@ class PageFactory
     {
         $pages = array();
         foreach ($pagesInfos as $pageInfos) {
-            $pages[] = new PageRevision(
-                $this->database,
-                $this->digest($pageInfos)
-            );
+            $pages[] = $this->makePage($pageInfos);
         }
         return $pages;
+    }
+
+    private function makePage($pageInfos)
+    {
+        $pageInfos = $this->digest($pageInfos);
+        return new PageAcls(
+            $this->database,
+            $this->config,
+            $this->groupFactory,
+            $this->digest($pageInfos)
+        );
     }
 }
