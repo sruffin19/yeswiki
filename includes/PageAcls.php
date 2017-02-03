@@ -64,8 +64,9 @@ class PageAcls extends PageRevision
     }
 
     /**
-     * [getReadAcl description]
-     * @return [type] [description]
+     * Retourne l'ACL lecture de la page. La prend en cache si déjà utilisé
+     * sinon la prend dans la base de donnée.
+     * @return Acl
      */
     public function getReadAcl(){
         if (is_null($this->readAcl)) {
@@ -75,8 +76,9 @@ class PageAcls extends PageRevision
     }
 
     /**
-     * [getWriteAcl description]
-     * @return [type] [description]
+     * Retourne l'ACL Ecriture de la page. La prend en cache si déjà utilisé
+     * sinon la prend dans la base de donnée.
+     * @return Acl
      */
     public function getWriteAcl(){
         if (is_null($this->writeAcl)) {
@@ -85,6 +87,10 @@ class PageAcls extends PageRevision
         return $this->writeAcl;
     }
 
+    /**
+     * Retourne l'ACL Commentaire de la page.
+     * @return Acl
+     */
     public function getCommentAcl(){
         if (is_null($this->commentAcl)) {
             $this->commentAcl = $this->loadAclFromDB('comment');
@@ -110,9 +116,9 @@ class PageAcls extends PageRevision
     }
 
     /**
-     * [canWrite description]
-     * @param  [type] $user [description]
-     * @return [type]       [description]
+     * Vérifie si un utilisateur a le droit de lire la page.
+     * @param  User $user
+     * @return bool
      */
     public function canWrite($user)
     {
@@ -122,6 +128,11 @@ class PageAcls extends PageRevision
         return $this->getWriteAcl()->isAuthorized($user);
     }
 
+    /**
+     * Vérifie si un utilisateur a le droit d'écrire dans la page.
+     * @param  User $user
+     * @return bool
+     */
     public function canRead($user)
     {
         if ($this->isOwner($user)) {
@@ -130,6 +141,11 @@ class PageAcls extends PageRevision
         return $this->getReadAcl()->isAuthorized($user);
     }
 
+    /**
+     * Vérifie si un utilisateur a le droit de commenter la page.
+     * @param  User $user
+     * @return bool
+     */
     public function canComment($user)
     {
         if ($this->isOwner($user)) {
@@ -138,6 +154,11 @@ class PageAcls extends PageRevision
         return $this->getCommentAcl()->isAuthorized($user);
     }
 
+    /**
+     * Charge une acl depuis la base de donnée
+     * @param  string $privilege read|write|comment
+     * @return Acl
+     */
     protected function loadAclFromDB($privilege)
     {
         $tableAcls = $this->database->prefix . 'acls';
@@ -162,6 +183,11 @@ class PageAcls extends PageRevision
         );
     }
 
+    /**
+     * Enregistre l'ACL dans la base de donnée.
+     * @param  string $privilege read|write|comment
+     * @param  Acl    $acl
+     */
     protected function updateAclInDB($privilege, $acl)
     {
         $tableAcls = $this->database->prefix . 'acls';
