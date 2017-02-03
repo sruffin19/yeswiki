@@ -116,17 +116,26 @@ class PageAcls extends PageRevision
      */
     public function canWrite($user)
     {
-        return $this->getWriteAcl()->isAuthorized($user->name);
+        if ($this->isOwner($user)) {
+            return true;
+        }
+        return $this->getWriteAcl()->isAuthorized($user);
     }
 
     public function canRead($user)
     {
-        return $this->getReadAcl()->isAuthorized($user->name);
+        if ($this->isOwner($user)) {
+            return true;
+        }
+        return $this->getReadAcl()->isAuthorized($user);
     }
 
     public function canComment($user)
     {
-        return $this->getCommentAcl()->isAuthorized($user->name);
+        if ($this->isOwner($user)) {
+            return true;
+        }
+        return $this->getCommentAcl()->isAuthorized($user);
     }
 
     protected function loadAclFromDB($privilege)

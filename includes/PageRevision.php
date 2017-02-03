@@ -43,6 +43,15 @@ class PageRevision
         return $this->orphaned;
     }
 
+    public function isOwner($user)
+    {
+        if ($this->owner === $user) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Supprime une page.
      * @return [type] [description]
