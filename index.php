@@ -135,10 +135,17 @@ if (!(preg_match('#^[A-Za-z0-9_]*$#', $method))) {
     $method = '';
 }
 
+
 $objPlugins = new Plugins('tools');
 $pluginsList = $objPlugins->getActivePlugins();
 $objPlugins->loadTraductions($GLOBALS['prefered_language']);
 
+if ($pluginsList === false) {
+    // Le repertoire extension n'existe pas ou n'est pas accessible. Je considere
+    // donc qu'il n'y a pas d'extensions. TODO ajouter un avertissement et/ou tenter
+    // de créer le repertoire.
+    $pluginsList = array();
+}
 
 $wikiClasses[] = 'Wiki';
 $wikiClassesContent[] = '';
