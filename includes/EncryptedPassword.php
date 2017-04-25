@@ -17,7 +17,7 @@ class EncryptedPassword
 
     /**
      * Vérifie si les deux mot de passe sont identique.
-     * @param  EncryptedPassword|ClearPassword  $password Mot de passe a vérifier.
+     * @param  EncryptedPassword|PlainPassword  $password Mot de passe a vérifier.
      * @return boolean Vrai si les mots de passe sont identiques.
      */
     public function isMatching($password)

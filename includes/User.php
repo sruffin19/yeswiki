@@ -62,7 +62,7 @@ class User
 
     /**
      * Change le mot de passe de l'utilisateur.
-     * @param  ClearPassword|EncryptedPassword $password Nouveau mot de passe.
+     * @param  PlainPassword|EncryptedPassword $password Nouveau mot de passe.
      * TODO remonter erreur si echec
      */
     public function changePassword($newPassword)

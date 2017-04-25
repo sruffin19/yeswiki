@@ -28,8 +28,8 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-require_once('includes/ClearPassword.php');
-use YesWiki\ClearPassword;
+require_once('includes/PlainPassword.php');
+use YesWiki\PlainPassword;
 
 if (!isset($_REQUEST["action"])) {
     $_REQUEST["action"] = '';
@@ -57,8 +57,8 @@ if ($this->connectedUser->isReal()) {
             break;
 
         case 'changepass':
-            $oldPassword = new ClearPassword($_POST["oldpass"]);
-            $password = new ClearPassword($_POST["password"]);
+            $oldPassword = new PlainPassword($_POST["oldpass"]);
+            $password = new PlainPassword($_POST["password"]);
             if (!$this->connectedUser->password->isMatching($oldPassword)) {
                 $error = _t('WRONG_PASSWORD');
                 break;
@@ -94,14 +94,14 @@ if ($this->connectedUser->isReal()) {
     switch ($_REQUEST["action"]) {
         case 'login':
             $user = $this->userFactory->get($_POST['name']);
-            $password = new ClearPassword($_POST['password']);
+            $password = new PlainPassword($_POST['password']);
             // User doesn't exist
             if ($user === false) {
                 // Create user
                 $name = trim($_POST["name"]);
                 $email = trim($_POST["email"]);
-                $password = new ClearPassword($_POST["password"]);
-                $confpassword = new ClearPassword($_POST["confpassword"]);
+                $password = new PlainPassword($_POST["password"]);
+                $confpassword = new PlainPassword($_POST["confpassword"]);
 
                 // check if name is WikkiName style
                 if (!$this->isWikiName($name)) {

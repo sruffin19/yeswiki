@@ -4,7 +4,7 @@ require_once('includes/User.php');
 require_once('includes/UnknowUser.php');
 require_once('includes/AdminUser.php');
 require_once('includes/EncryptedPassword.php');
-require_once('includes/ClearPassword.php');
+require_once('includes/PlainPassword.php');
 
 
 class UserFactory

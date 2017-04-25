@@ -3,15 +3,15 @@ namespace YesWiki;
 
 require_once('includes/EncryptedPassword.php');
 
-class ClearPassword extends EncryptedPassword
+class PlainPassword extends EncryptedPassword
 {
     const MIN_LENGTH = 5;
 
-    private $clearPassword;
+    private $plainPassword;
 
     public function __construct($password)
     {
-        $this->clearPassword = $password;
+        $this->plainPassword = $password;
         $this->encrypt();
     }
 
@@ -23,12 +23,12 @@ class ClearPassword extends EncryptedPassword
      */
     public function isValid(&$error = '')
     {
-        if (preg_match("/ /", $this->clearPassword)) {
+        if (preg_match("/ /", $this->plainPassword)) {
             $error = _t('NO_SPACES_IN_PASSWORD');
             return false;
         }
 
-        if (strlen($this->clearPassword) < self::MIN_LENGTH) {
+        if (strlen($this->plainPassword) < self::MIN_LENGTH) {
             $error = _t('PASSWORD_TOO_SHORT');
             return false;
         }
@@ -42,6 +42,6 @@ class ClearPassword extends EncryptedPassword
      */
     protected function encrypt()
     {
-        $this->password = md5($this->clearPassword);
+        $this->password = md5($this->plainPassword);
     }
 }
