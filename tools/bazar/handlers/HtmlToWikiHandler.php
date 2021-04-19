@@ -58,6 +58,24 @@ class HtmlToWikiHandler extends YesWikiHandler
             if ($htmlPos = strpos($part, '<') === false) continue;
 
             // Parse HTML ?
+            $part = preg_replace(
+                [
+                    '/<p[\s\S]+>/U',
+                    '#</p>#',
+                    '#<span[\s\S]+>|</span>#U',
+                ], [
+                    '',
+                    "\r\n\r\n",
+                    '',
+                ],
+                $part
+            );
+
+            if ($htmlPos = strpos($part, '<') !== false) {
+                $part = '""' . $part . '""';
+            }
+
+            $parts[$i] = $part;
         }
 
         return implode(' ', $parts);
