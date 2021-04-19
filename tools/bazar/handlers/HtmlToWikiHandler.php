@@ -27,6 +27,8 @@ class HtmlToWikiHandler extends YesWikiHandler
 
             dump($content);
 
+            $content = $this->replace($content);
+
             $content = preg_replace(
                 [
                     '/""(\s*)""/U',
@@ -44,5 +46,20 @@ class HtmlToWikiHandler extends YesWikiHandler
         }
 
         return "Handler HTMLtoWiki only runs on entries";
+    }
+
+    private function replace($content)
+    {
+        $parts = explode('""', $content);
+
+        for ($i=1; $i < count($parts); $i+=2) { # For html parts
+            $part = $parts[$i];
+            
+            if ($htmlPos = strpos($part, '<') === false) continue;
+
+            // Parse HTML ?
+        }
+
+        return implode(' ', $parts);
     }
 }
