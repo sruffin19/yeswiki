@@ -32,10 +32,10 @@ class HtmlToWikiHandler extends YesWikiHandler
             $content = preg_replace(
                 [
                     '/""(\s*)""/U',
-                    '/(\n\r){3,}/',
+                    '/(\r\n\s*){3,}/',
                 ], [
                     '$1',
-                    "\n\r\n\r",
+                    "\r\n\r\n",
                 ],
                 $content
             );
