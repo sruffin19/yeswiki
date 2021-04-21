@@ -26,6 +26,7 @@ class MapField extends BazarField
         $this->autocomplete = $values[self::FIELD_AUTOCOMPLETE];
 
         $this->propertyName = 'carte_google';
+        $this->label = $this->propertyName;
     }
 
     protected function renderInput($entry)
