@@ -20,7 +20,7 @@ class BazarImportAction extends YesWikiAction
 
         return([
                 'id' =>  $id,
-                'mode' => isset($_POST['submit_file']) ? 'submitfile' :
+                'mode' => (isset($_POST['submit_file']) && !empty($_FILES['fileimport']['name'])) ? 'submitfile' :
                     ( isset($_POST['importfiche']) ? 'importentries' : 'default'),
                 'importentries' => $_POST['importfiche'] ?? null,
                 'filesData' => $_FILES['fileimport'] ?? null,

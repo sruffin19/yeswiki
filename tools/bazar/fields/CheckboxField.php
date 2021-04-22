@@ -21,7 +21,7 @@ abstract class CheckboxField extends EnumField
         self::CHECKBOX_DISPLAY_MODE_LIST => '@bazar/inputs/checkbox_list.twig',
     ];
 
-    protected const SUFFIX = '_raw' ;
+    public const SUFFIX = '_raw' ;
 
     public function __construct(array $values, ContainerInterface $services)
     {

@@ -2,6 +2,7 @@
 
 namespace YesWiki\Bazar\Service;
 
+use YesWiki\Bazar\Field\CheckboxField;
 use YesWiki\Bazar\Field\EnumField;
 use YesWiki\Bazar\Field\ImageField;
 use YesWiki\Bazar\Field\FileField;
@@ -391,6 +392,10 @@ class ImportManager
                 if (!empty($value)) {
                     if ($field instanceof EnumField){
                         $value = $this->extractValueFromEnumFieldData($value,$field);
+                        if ($field instanceof CheckboxField){
+                            // add _raw entry to emulate POST when saving
+                            $entry[$propertyName.CheckboxField::SUFFIX] = $value;
+                        }
                     } elseif ($field instanceof ImageField){
                         // traitement des images (doivent être présentes dans le dossier files du wiki)
                         $value = $this->extractValueFromImageFieldData($value,$field);
